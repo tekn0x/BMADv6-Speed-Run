@@ -289,7 +289,10 @@ So that users can plan around specific rain timeframes.
 - Implement detectRainWindows() function with 40% threshold
 - Group consecutive hours with probability ≥40%
 - Handle multiple separate rain periods
-- Format timestamps in 12-hour format with AM/PM
+- Format timestamps in 12-hour format with AM/PM using native Date API:
+  - Use Intl.DateTimeFormat for 12-hour formatting (zero bundle size)
+  - Example: new Intl.DateTimeFormat('en-US', { hour: 'numeric', minute: '2-digit', hour12: true })
+  - No date library needed (Day.js, date-fns, etc.)
 - Account for rain periods that span midnight
 - Return array of rain windows with start/end times
 
@@ -372,12 +375,17 @@ So that usage insights are available while maintaining privacy commitment.
 **Prerequisites:** Story 2.6
 
 **Technical Notes:**
-- Create simple logging utility (append to JSON file or use lightweight logging library)
+- Create simple logging utility using Upstash Redis (lightweight, serverless database):
+  - Install @upstash/redis SDK
+  - Create lib/redis.ts client (UPSTASH_REDIS_REST_URL, UPSTASH_REDIS_REST_TOKEN from env)
+  - Set up Upstash Redis client in lib/redis.ts and export redis instance
+  - Use rpush for append-only logging
+  - Implement fire-and-forget pattern (async, fail silently)
 - Log structure: { location: string, timestamp: ISO string }
 - Implement async logging (non-blocking)
 - Add error handling for logging failures (fail silently)
-- Consider log rotation for long-term storage
 - Document analytics approach in code comments
+- Note: Upstash Redis integrates via Vercel Marketplace and auto-populates environment variables
 
 ---
 
@@ -515,6 +523,8 @@ So that I can plan my activities around specific rain times.
 **Given** the API returns a YES decision (≥50% probability)
 **When** the answer is displayed
 **Then** "YES, it will rain" is prominently displayed
+**And** the location tag displays the searched location (e.g., "📍 San Francisco, CA") above the answer
+**And** the location tag uses glassmorphic styling consistent with detail cards
 **And** the probability percentage is shown (e.g., "65% chance")
 **And** rain windows show all expected rain periods with start/end times
 **And** peak rain details show time, intensity, and amount
@@ -548,6 +558,8 @@ So that I can confidently proceed with outdoor plans.
 **Given** the API returns a NO decision (<50% probability)
 **When** the answer is displayed
 **Then** "NO, it won't rain" is prominently displayed
+**And** the location tag displays the searched location (e.g., "📍 San Francisco, CA") above the answer
+**And** the location tag uses glassmorphic styling consistent with detail cards
 **And** the probability percentage is shown for context
 **And** close call message appears if probability is 40-49%
 **And** no additional details are shown (maintains simplicity)
