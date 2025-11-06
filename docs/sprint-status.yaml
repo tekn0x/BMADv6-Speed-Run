@@ -37,7 +37,7 @@ story_location: "{project-root}/docs/stories"
 
 development_status:
   epic-1: contexted
-  1-1-initialize-nextjs-project-with-typescript: review
+  1-1-initialize-nextjs-project-with-typescript: done
   1-2-configure-tailwind-css-v4-and-shadcn-ui: backlog
   1-3-set-up-environment-variables-and-api-key-management: backlog
   1-4-configure-basic-pwa-manifest-and-metadata: backlog
