@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Will It Rain - Hybrid Design Direction</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #000;
+            color: #fff;
+            overflow-x: hidden;
+        }
+
+        .controls {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(10, 10, 10, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid #222;
+            padding: 1rem 2rem;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .controls h1 {
+            font-size: 1.25rem;
+            font-weight: 700;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .nav-btn {
+            padding: 0.5rem 1rem;
+            background: #1a1a1a;
+            border: 1px solid #333;
+            color: #fff;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.875rem;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .nav-btn:hover {
+            background: #2a2a2a;
+            border-color: #444;
+        }
+
+        .nav-btn.active {
+            background: #3b82f6;
+            border-color: #3b82f6;
+        }
+
+        .mockup-container {
+            margin-top: 80px;
+            padding: 2rem;
+        }
+
+        .mockup {
+            display: none;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .mockup.active {
+            display: block;
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .mockup-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .mockup-header h2 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .mockup-header .personality {
+            color: #666;
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .mockup-header .blend {
+            color: #888;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .mockup-header .characteristics {
+            color: #888;
+            font-size: 0.9rem;
+        }
+
+        .screens {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .screen {
+            border: 1px solid #222;
+            border-radius: 12px;
+            overflow: hidden;
+            background: #0a0a0a;
+        }
+
+        .screen-label {
+            padding: 0.75rem 1rem;
+            background: #111;
+            border-bottom: 1px solid #222;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #666;
+        }
+
+        .screen-content {
+            padding: 3rem 2rem;
+            min-height: 550px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .input {
+            width: 100%;
+            padding: 1rem;
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: #fff;
+            font-size: 1rem;
+            font-family: inherit;
+            transition: all 0.2s;
+        }
+
+        .input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .input::placeholder {
+            color: #666;
+        }
+
+        .btn {
+            padding: 0.875rem 2rem;
+            background: #3b82f6;
+            border: none;
+            border-radius: 8px;
+            color: #fff;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn:hover {
+            background: #2563eb;
+            transform: translateY(-1px);
+        }
+
+        .answer-yes {
+            background: linear-gradient(135deg, #1e3a5f 0%, #0a1929 100%);
+        }
+
+        .answer-no {
+            background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%);
+        }
+
+        .glass-card {
+            background: rgba(26, 26, 26, 0.6);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 2.5rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .location-tag {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+            font-size: 0.875rem;
+            color: #888;
+            margin-bottom: 1.5rem;
+        }
+
+        .detail-card {
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            padding: 1.25rem;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .detail-label {
+            color: #888;
+            font-size: 0.8125rem;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .detail-value {
+            font-size: 1.0625rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="controls">
+        <h1>Will It Rain - Design Comparison</h1>
+        <div class="nav-buttons">
+            <button class="nav-btn active" onclick="showMockup('hybrid')">Hybrid (Recommended)</button>
+            <button class="nav-btn" onclick="showMockup('direction1')">Direction 1 (Backup)</button>
+        </div>
+    </div>
+
+    <!-- HYBRID DIRECTION -->
+    <div class="mockup active" id="mockup-hybrid">
+        <div class="mockup-header">
+            <h2>Hybrid Direction: Polished Zen</h2>
+            <p class="personality">Effortless • Sophisticated • Calm Focus</p>
+            <p class="blend">Combining Direction 1's UX flow + Direction 5's structure + Direction 6's glassmorphic polish</p>
+            <p class="characteristics">Layout: Centered | Density: Spacious | Cards: Glass blur + borders | Location: Displayed</p>
+        </div>
+
+        <div class="screens">
+            <div class="screen">
+                <div class="screen-label">Landing State</div>
+                <div class="screen-content" style="justify-content: center;">
+                    <div style="max-width: 500px; width: 100%; text-align: center;">
+                        <div class="glass-card">
+                            <h1 style="font-size: 3rem; font-weight: 700; margin-bottom: 1rem;">Will It Rain?</h1>
+                            <p style="color: #666; font-size: 1.125rem; margin-bottom: 2.5rem;">Get a simple yes or no answer for the next 24 hours</p>
+                            <div style="width: 100%;">
+                                <input type="text" class="input" placeholder="Enter zipcode or city" style="margin-bottom: 1rem; text-align: center;">
+                                <button class="btn" style="width: 100%;">Check Weather</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="screen">
+                <div class="screen-label">YES Answer</div>
+                <div class="screen-content answer-yes" style="justify-content: center;">
+                    <div style="max-width: 550px; width: 100%; text-align: center;">
+                        <div class="glass-card">
+                            <div class="location-tag">📍 San Francisco, CA</div>
+
+                            <h2 style="font-size: 4rem; font-weight: 700; margin-bottom: 0.5rem; line-height: 1.1;">YES</h2>
+                            <p style="font-size: 1.5rem; margin-bottom: 1rem; color: #e0e0e0;">It will rain</p>
+                            <p style="font-size: 1.25rem; color: #aaa; margin-bottom: 2.5rem;">65% chance</p>
+
+                            <div style="display: grid; gap: 1rem; text-align: left; margin-bottom: 2rem;">
+                                <div class="detail-card">
+                                    <div class="detail-label">Rain Expected</div>
+                                    <div class="detail-value">2:00 PM - 5:00 PM</div>
+                                </div>
+
+                                <div class="detail-card">
+                                    <div class="detail-label">Peak Details</div>
+                                    <div class="detail-value">3:00 PM • Moderate • 0.2 inches</div>
+                                </div>
+
+                                <div class="detail-card">
+                                    <div class="detail-label">Clear Windows</div>
+                                    <div class="detail-value">5:00 PM - 9:00 PM, after 11:00 PM</div>
+                                </div>
+                            </div>
+
+                            <button class="btn" style="background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.2); width: 100%;">Search Again</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="screen">
+                <div class="screen-label">NO Answer</div>
+                <div class="screen-content answer-no" style="justify-content: center;">
+                    <div style="max-width: 500px; width: 100%; text-align: center;">
+                        <div class="glass-card">
+                            <div class="location-tag">📍 Los Angeles, CA</div>
+
+                            <h2 style="font-size: 4rem; font-weight: 700; margin-bottom: 0.5rem; line-height: 1.1;">NO</h2>
+                            <p style="font-size: 1.5rem; margin-bottom: 1rem; color: #e0e0e0;">It won't rain</p>
+                            <p style="font-size: 1.25rem; color: #aaa; margin-bottom: 2.5rem;">35% chance</p>
+
+                            <button class="btn" style="background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.2); width: 100%;">Search Again</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div style="text-align: center; margin-top: 3rem; padding: 2rem; background: #111; border-radius: 12px; border: 1px solid #222;">
+            <h3 style="margin-bottom: 1rem;">What This Hybrid Delivers</h3>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin-top: 1.5rem; text-align: left;">
+                <div>
+                    <div style="color: #3b82f6; font-weight: 600; margin-bottom: 0.5rem;">From Direction 1</div>
+                    <div style="color: #888; font-size: 0.9rem;">Centered layout, spacious breathing room, effortless UX flow, answer as hero</div>
+                </div>
+                <div>
+                    <div style="color: #8b5cf6; font-weight: 600; margin-bottom: 0.5rem;">From Direction 5</div>
+                    <div style="color: #888; font-size: 0.9rem;">Card structure, visual organization, clean borders, detail sections</div>
+                </div>
+                <div>
+                    <div style="color: #10b981; font-weight: 600; margin-bottom: 0.5rem;">From Direction 6</div>
+                    <div style="color: #888; font-size: 0.9rem;">Glassmorphic blur, subtle transparency, depth & shadows, premium polish</div>
+                </div>
+                <div>
+                    <div style="color: #f59e0b; font-weight: 600; margin-bottom: 0.5rem;">New Addition</div>
+                    <div style="color: #888; font-size: 0.9rem;">Location display on answer screens, reinforces context for multiple searches</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- DIRECTION 1 BACKUP -->
+    <div class="mockup" id="mockup-direction1">
+        <div class="mockup-header">
+            <h2>Direction 1: Centered Zen (Backup)</h2>
+            <p class="personality">Minimalist • Maximum Breathing Room • Calm Focus</p>
+            <p class="characteristics">Original Direction 1 - Pure simplicity without card containers</p>
+        </div>
+
+        <div class="screens">
+            <div class="screen">
+                <div class="screen-label">Landing State</div>
+                <div class="screen-content" style="justify-content: center;">
+                    <div style="text-align: center; max-width: 500px;">
+                        <h1 style="font-size: 3rem; font-weight: 700; margin-bottom: 1rem;">Will It Rain?</h1>
+                        <p style="color: #666; font-size: 1.125rem; margin-bottom: 3rem;">Get a simple yes or no answer for the next 24 hours</p>
+                        <div style="width: 100%;">
+                            <input type="text" class="input" placeholder="Enter zipcode or city" style="margin-bottom: 1rem; text-align: center; background: transparent; border-color: #333;">
+                            <button class="btn" style="width: 100%;">Check Weather</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="screen">
+                <div class="screen-label">YES Answer</div>
+                <div class="screen-content answer-yes" style="justify-content: center;">
+                    <div style="text-align: center; max-width: 500px;">
+                        <div style="color: #888; font-size: 0.875rem; margin-bottom: 1.5rem;">📍 San Francisco, CA</div>
+
+                        <h2 style="font-size: 4rem; font-weight: 700; margin-bottom: 0.5rem; line-height: 1.1;">YES</h2>
+                        <p style="font-size: 1.5rem; margin-bottom: 2rem; color: #e0e0e0;">It will rain</p>
+                        <p style="font-size: 1.25rem; color: #aaa; margin-bottom: 2rem;">65% chance</p>
+                        <div style="text-align: left; padding: 1.5rem; background: rgba(0,0,0,0.3); border-radius: 8px; border: 1px solid rgba(255,255,255,0.1);">
+                            <div style="margin-bottom: 1rem;">
+                                <div style="color: #888; font-size: 0.875rem; margin-bottom: 0.25rem;">Rain expected</div>
+                                <div style="font-size: 1rem;">2:00 PM - 5:00 PM</div>
+                            </div>
+                            <div style="margin-bottom: 1rem;">
+                                <div style="color: #888; font-size: 0.875rem; margin-bottom: 0.25rem;">Peaks at</div>
+                                <div style="font-size: 1rem;">3:00 PM • Moderate • 0.2 inches</div>
+                            </div>
+                        </div>
+                        <button class="btn" style="margin-top: 2rem; background: transparent; border: 1px solid rgba(255,255,255,0.2);">Search Again</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="screen">
+                <div class="screen-label">NO Answer</div>
+                <div class="screen-content answer-no" style="justify-content: center;">
+                    <div style="text-align: center; max-width: 500px;">
+                        <div style="color: #888; font-size: 0.875rem; margin-bottom: 1.5rem;">📍 Los Angeles, CA</div>
+
+                        <h2 style="font-size: 4rem; font-weight: 700; margin-bottom: 0.5rem; line-height: 1.1;">NO</h2>
+                        <p style="font-size: 1.5rem; margin-bottom: 2rem; color: #e0e0e0;">It won't rain</p>
+                        <p style="font-size: 1.25rem; color: #aaa; margin-bottom: 3rem;">35% chance</p>
+                        <button class="btn" style="background: transparent; border: 1px solid rgba(255,255,255,0.2);">Search Again</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showMockup(type) {
+            document.querySelectorAll('.mockup').forEach(m => m.classList.remove('active'));
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+
+            document.getElementById('mockup-' + type).classList.add('active');
+            event.target.classList.add('active');
+        }
+    </script>
+</body>
+</html>
