@@ -39,9 +39,10 @@ development_status:
   epic-1: contexted
   1-1-initialize-nextjs-project-with-typescript: done
   1-2-configure-tailwind-css-v4-and-shadcn-ui: done
-  1-3-set-up-environment-variables-and-api-key-management: backlog
+  1-3-set-up-environment-variables-and-api-key-management: done
   1-4-configure-basic-pwa-manifest-and-metadata: backlog
   1-5-set-up-development-and-build-scripts: backlog
+  1-6-cleanup-development-test-artifacts: backlog
   epic-1-retrospective: optional
 
   epic-2: backlog

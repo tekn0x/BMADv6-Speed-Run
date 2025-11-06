@@ -22,6 +22,39 @@ Will It Rain provides instant yes/no rain forecasts for any location, helping us
 npm install
 ```
 
+3. Set up environment variables:
+
+```bash
+# Copy the example environment file
+cp .env.example .env.local
+```
+
+4. Configure your API keys in `.env.local`:
+   - **OpenWeather API**: Get a free API key at [https://openweathermap.org/api](https://openweathermap.org/api)
+     - Sign up for a free account
+     - Navigate to API keys section
+     - Generate a new key
+     - Free tier includes 1,000 API calls per day
+
+   - **Upstash Redis** (for analytics): Get credentials at [https://upstash.com/](https://upstash.com/)
+     - Create a free account
+     - Create a new Redis database
+     - Copy the REST URL and REST TOKEN
+     - Free tier includes 256MB storage and 500K commands/month
+
+Your `.env.local` file should look like this:
+
+```env
+OPENWEATHER_API_KEY=your_actual_api_key_here
+UPSTASH_REDIS_REST_URL=your_actual_upstash_url_here
+UPSTASH_REDIS_REST_TOKEN=your_actual_upstash_token_here
+```
+
+**Important Security Notes:**
+- Never commit `.env.local` to version control (already in `.gitignore`)
+- Do not share your API keys publicly
+- Environment variables are server-side only and not exposed to the browser
+
 ### Development
 
 Run the development server:
@@ -72,8 +105,51 @@ will-it-rain/
 - Server Components are used by default (App Router)
 - Path aliases configured: `@/*` maps to project root
 
+## Troubleshooting
+
+### Environment Variable Issues
+
+**Problem: "Environment Variable Validation Failed" error**
+
+This means required environment variables are missing or incorrectly configured.
+
+**Solutions:**
+1. Ensure `.env.local` file exists in the root directory:
+   ```bash
+   ls -la .env.local
+   ```
+
+2. Verify all required variables are defined in `.env.local`:
+   - OPENWEATHER_API_KEY
+   - UPSTASH_REDIS_REST_URL
+   - UPSTASH_REDIS_REST_TOKEN
+
+3. Check that variable values are not empty or still set to placeholders
+
+4. Restart the development server after making changes:
+   ```bash
+   # Stop the server (Ctrl+C) and restart
+   npm run dev
+   ```
+
+**Problem: "Cannot find module '@/lib/env'" error**
+
+This usually means TypeScript can't resolve the path alias.
+
+**Solutions:**
+1. Ensure you're running commands from the project root directory
+2. Restart your IDE/editor to pick up tsconfig.json changes
+3. Clear Next.js cache: `rm -rf .next` and restart dev server
+
+**Problem: API keys not working**
+
+1. Double-check your API keys are correctly copied (no extra spaces)
+2. Verify your OpenWeather API key is activated (can take 10-15 minutes after creation)
+3. Ensure you're using the correct Upstash Redis REST credentials (not standard Redis host/port)
+
 ## Learn More
 
 - [Next.js Documentation](https://nextjs.org/docs)
+- [Next.js Environment Variables Guide](https://nextjs.org/docs/app/building-your-application/configuring/environment-variables)
 - [TypeScript Documentation](https://www.typescriptlang.org/docs/)
 - [Tailwind CSS Documentation](https://tailwindcss.com/docs)

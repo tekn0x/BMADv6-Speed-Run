@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
+import { TestClientEnv } from "./test-client-env";
 
 export default function Home() {
   return (
@@ -14,6 +15,9 @@ export default function Home() {
             Testing Monochrome Storm theme, glassmorphic utilities, and component styling
           </p>
         </div>
+
+        {/* Environment Variable Security Test */}
+        <TestClientEnv />
 
         {/* Button Variants Test */}
         <Card className="glass-card">

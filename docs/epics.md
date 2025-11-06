@@ -173,6 +173,46 @@ So that the development workflow is consistent and deployment-ready.
 
 ---
 
+### Story 1.6: Cleanup Development Test Artifacts
+
+As a developer,
+I want to remove temporary test files and artifacts from Epic 1,
+So that the codebase is clean and production-ready before Epic 2 development begins.
+
+**Acceptance Criteria:**
+
+**Given** Epic 1 stories are complete and validated
+**When** I clean up test artifacts
+**Then** all temporary test files created during Epic 1 validation are removed
+**And** the app/page.tsx landing page is restored to a clean state without test components
+**And** no test-related imports remain in production code
+**And** the development server runs successfully without the test files
+**And** the production build completes successfully
+
+**Prerequisites:** Story 1.5
+
+**Technical Notes:**
+- Remove `app/api/test-env/route.ts` (Story 1.3 test endpoint)
+- Remove `app/test-client-env.tsx` (Story 1.3 security test component)
+- Clean up `app/page.tsx` - remove test component imports and usage
+- Replace page.tsx content with minimal placeholder for Epic 3
+- Verify TypeScript compilation, ESLint, dev server, and production build all pass
+- Keep essential files: lib/env.ts, .env.local, .env.example, all Shadcn UI components
+- Document that foundation is ready for Epic 2
+
+**Files to Remove:**
+- app/api/test-env/route.ts and directory
+- app/test-client-env.tsx
+- Test imports/usage from app/page.tsx
+
+**Files to Keep:**
+- lib/env.ts (used by Epic 2+)
+- .env.local and .env.example
+- All Shadcn UI components
+- All configuration files
+
+---
+
 ## Epic 2: Weather Intelligence Engine
 
 **Epic Goal:** Build the core rain prediction intelligence by integrating with OpenWeather API, processing forecast data, and implementing decision logic that determines if it will rain. This epic delivers the "brain" of the application.
