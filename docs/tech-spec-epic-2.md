@@ -12,8 +12,9 @@ Status: Draft
 Epic 2 builds the core rain prediction intelligence for Will It Rain by integrating with OpenWeather API, processing 24-hour forecast data, and implementing sophisticated decision logic that determines if it will rain. This epic delivers the "brain" of the application - transforming raw weather data into clear, actionable YES/NO answers with contextual rainfall timing details.
 
 The epic implements the complete backend intelligence layer that:
-- Fetches hourly forecast data for the next 24 hours from OpenWeather One Call API 3.0
-- Identifies maximum rain probability across all forecast hours
+- Fetches forecast data for the next 24 hours from OpenWeather 5-day/3-hour Forecast API (free tier)
+- Processes 3-hour interval forecasts (8 data points covering 24 hours)
+- Identifies maximum rain probability across all forecast periods
 - Detects continuous rain windows (periods where probability ≥40%)
 - Calculates safe windows (clear periods between rain events)
 - Applies the 50% probability threshold for YES/NO decisions
@@ -27,8 +28,8 @@ This foundation enables Epic 3's user experience by providing a reliable `/api/c
 
 **In Scope:**
 
-- OpenWeather One Call API 3.0 integration with authentication and error handling (Story 2.1)
-- 24-hour hourly forecast data retrieval and parsing (Story 2.2)
+- OpenWeather 5-day/3-hour Forecast API integration with authentication and error handling (Story 2.1)
+- 24-hour forecast data retrieval and parsing in 3-hour intervals (Story 2.2)
 - Rain probability calculation logic with max probability identification (Story 2.3)
 - Rain window detection for continuous rain periods ≥40% (Story 2.4)
 - Safe window calculation for clear periods between rain events (Story 2.5)
@@ -121,9 +122,9 @@ This foundation enables Epic 3's user experience by providing a reliable `/api/c
 | Module | Responsibility | Inputs | Outputs | Owner |
 |--------|---------------|--------|---------|-------|
 | **`/app/api/check-rain/route.ts`** | Main API endpoint orchestration | `{ location: string }` (POST body) | `RainCheckResponse` or `ErrorResponse` | API Route handler |
-| **`/lib/openweather.ts`** | OpenWeather API client with retry/timeout | Location string, API key | 24-hour hourly forecast data | OpenWeather integration module |
-| **`/lib/rain-logic.ts`** | Rain probability calculation | Hourly forecast array | Max probability, peak time, intensity, amount | Business logic module |
-| **`/lib/rain-windows.ts`** | Rain window & safe period detection | Hourly forecast array | Rain windows array, safe windows array | Business logic module |
+| **`/lib/openweather.ts`** | OpenWeather API client with retry/timeout | Location string, API key | 24-hour forecast data (3-hour intervals) | OpenWeather integration module |
+| **`/lib/rain-logic.ts`** | Rain probability calculation | Forecast array (3-hour intervals) | Max probability, peak time, intensity, amount | Business logic module |
+| **`/lib/rain-windows.ts`** | Rain window & safe period detection | Forecast array (3-hour intervals) | Rain windows array, safe windows array | Business logic module |
 | **`/lib/analytics.ts`** | Privacy-first analytics logging | Location string, timestamp | Redis append operation | Analytics module |
 | **`/lib/redis.ts`** | Upstash Redis client | Environment variables | Redis client instance | Data access module |
 | **`/lib/error-handler.ts`** | Unified error handling & mapping | Error objects, HTTP responses | Standardized `ErrorResponse` | Error handling module |
@@ -213,23 +214,42 @@ export type ErrorCode =
 **OpenWeather API Types (`/types/weather.ts`):**
 
 ```typescript
-// OpenWeather One Call API 3.0 response (subset of relevant fields)
+// OpenWeather 5-day/3-hour Forecast API response
 export interface OpenWeatherResponse {
-  lat: number;
-  lon: number;
-  timezone: string;
-  hourly: HourlyForecast[];
+  cod: string; // Response code (e.g., "200")
+  cnt: number; // Number of data points
+  list: ForecastData[]; // Forecast data in 3-hour intervals
+  city: {
+    name: string;
+    coord: { lat: number; lon: number };
+    country: string;
+    timezone: number;
+  };
 }
 
-// Hourly forecast data point
-export interface HourlyForecast {
+// Single forecast data point (3-hour interval)
+export interface ForecastData {
   dt: number; // Unix timestamp (UTC)
-  temp: number; // Temperature in Fahrenheit
-  pop: number; // Precipitation probability (0.0 - 1.0)
-  weather: WeatherCondition[];
-  rain?: {
-    '1h': number; // Rainfall in mm for the hour
+  main: {
+    temp: number; // Temperature in Fahrenheit
+    feels_like: number;
+    humidity: number;
+    pressure: number;
   };
+  weather: WeatherCondition[];
+  clouds: {
+    all: number; // Cloud coverage percentage
+  };
+  wind: {
+    speed: number; // Wind speed in mph
+    deg: number;
+  };
+  visibility: number;
+  pop: number; // Precipitation probability (0.0 - 1.0)
+  rain?: {
+    '3h': number; // Rainfall in mm for the 3-hour period
+  };
+  dt_txt: string; // Forecast time in ISO 8601 format
 }
 
 // Weather condition descriptor
@@ -393,21 +413,25 @@ Content-Type: application/json
 
 ---
 
-**OpenWeather One Call API 3.0 Integration**
+**OpenWeather 5-day/3-hour Forecast API Integration (Free Tier)**
 
 **Endpoint:**
 ```
-GET https://api.openweathermap.org/data/3.0/onecall
+GET https://api.openweathermap.org/data/2.5/forecast
 ```
 
 **Request Parameters:**
 ```
 lat={latitude}     // From geocoding location input
 lon={longitude}    // From geocoding location input
-exclude=minutely,daily,alerts  // Only need hourly
 appid={OPENWEATHER_API_KEY}    // From environment variable
-units=imperial     // Fahrenheit, inches
+units=imperial     // Fahrenheit, mph
 ```
+
+**Response Format:**
+- Returns up to 40 forecast data points (5 days × 8 intervals per day)
+- Each data point represents a 3-hour period
+- For 24-hour forecast: Use first 8 data points from the `list` array
 
 **Authentication:**
 - API key passed as query parameter `appid`
@@ -1123,20 +1147,20 @@ console.log(JSON.stringify({
 
 **External Service Integrations:**
 
-**1. OpenWeather One Call API 3.0**
+**1. OpenWeather 5-day/3-hour Forecast API**
 
-- **Service:** OpenWeather One Call API 3.0
-- **Purpose:** Fetch 24-hour hourly weather forecast data
-- **Endpoint:** `https://api.openweathermap.org/data/3.0/onecall`
+- **Service:** OpenWeather 5-day/3-hour Forecast API (Free Tier)
+- **Purpose:** Fetch 24-hour weather forecast data in 3-hour intervals
+- **Endpoint:** `https://api.openweathermap.org/data/2.5/forecast`
 - **Authentication:** API key via query parameter (`appid`)
-- **Rate Limits:** 1,000 calls/day, 60 calls/minute (free tier)
-- **Data Format:** JSON
+- **Rate Limits:** 60 calls/minute, 1,000,000 calls/month (free tier)
+- **Data Format:** JSON with 3-hour interval forecasts
 - **Integration Point:** `/lib/openweather.ts`
 - **Error Handling:** Retry once on 5xx, timeout after 5 seconds
 - **Required Environment Variable:** `OPENWEATHER_API_KEY`
 - **Setup Instructions:**
   1. Sign up at https://openweathermap.org/api
-  2. Subscribe to One Call API 3.0 (free tier)
+  2. Get free API key (automatically includes 5-day/3-hour Forecast API)
   3. Copy API key to `.env.local`
   4. Add to Vercel environment variables for production
 
@@ -1329,7 +1353,7 @@ test('POST /api/check-rain returns forecast', async () => {
 | **Upstash Redis downtime** | Low | Low (analytics only) | Fire-and-forget pattern, app continues without analytics |
 | **Rate limit exceeded (OpenWeather)** | Low | Medium (temporary outage) | Monitor usage, future: implement client-side caching |
 | **API key leak** | Medium | High (security breach) | Environment variables, .gitignore, Vercel secrets |
-| **Breaking API changes (OpenWeather)** | Low | High (app breaks) | Version pinning (API 3.0), monitor release notes |
+| **Breaking API changes (OpenWeather)** | Low | High (app breaks) | Use stable 2.5 API endpoint, monitor release notes |
 
 ---
 
@@ -1337,8 +1361,8 @@ test('POST /api/check-rain returns forecast', async () => {
 
 **Before Epic 2 Development:**
 - [ ] OpenWeather account created
-- [ ] One Call API 3.0 subscription activated (free tier)
-- [ ] API key obtained and stored in `.env.local`
+- [ ] Free API key obtained (includes 5-day/3-hour Forecast API access)
+- [ ] API key stored in `.env.local`
 - [ ] Upstash Redis installed from Vercel Marketplace
 - [ ] Redis environment variables verified
 - [ ] Test API call to OpenWeather successful
@@ -1371,8 +1395,8 @@ test('POST /api/check-rain returns forecast', async () => {
 - ✅ No unhandled exceptions or server crashes
 
 **AC-2: OpenWeather API Integration**
-- ✅ Successfully fetches 24-hour hourly forecast from OpenWeather One Call API 3.0
-- ✅ Handles location geocoding via OpenWeather's built-in geocoding
+- ✅ Successfully fetches 24-hour forecast (3-hour intervals) from OpenWeather 5-day Forecast API
+- ✅ Handles location geocoding via OpenWeather Geocoding API
 - ✅ Implements 5-second timeout with AbortController
 - ✅ Retries once on 5xx errors with 1-second delay
 - ✅ Parses JSON response into typed TypeScript interfaces
@@ -1431,7 +1455,7 @@ test('POST /api/check-rain returns forecast', async () => {
 - ✅ `/lib/openweather.ts` module created
 - ✅ Function `fetchWeatherData(location: string)` implemented
 - ✅ API key loaded from `OPENWEATHER_API_KEY` environment variable
-- ✅ Geocoding + forecast fetch in single API call (One Call API 3.0)
+- ✅ Geocoding + forecast fetch in two API calls (Geocoding API + 5-day Forecast API)
 - ✅ Returns typed `OpenWeatherResponse` with 24-hour `hourly` array
 - ✅ Basic error handling: throws on API failure (handled by error-handler later)
 
@@ -1720,7 +1744,7 @@ test('POST /api/check-rain returns forecast', async () => {
 
 | Assumption ID | Assumption | Validity Check | Risk if Wrong | Mitigation |
 |---------------|------------|----------------|---------------|------------|
-| **ASSUM-2.1** | OpenWeather One Call API 3.0 free tier provides 1,000 calls/day | ✅ Verified on openweathermap.org | App unusable if limit lower | Monitor usage, upgrade to paid tier if needed |
+| **ASSUM-2.1** | OpenWeather 5-day/3-hour Forecast API free tier provides 60 calls/min, 1M calls/month | ✅ Verified on openweathermap.org | App unusable if limit lower | Monitor usage patterns, free tier is generous |
 | **ASSUM-2.2** | 24 hours of forecast data is sufficient for user needs | ✅ Validated in PRD | Users want longer forecast | PRD explicitly scopes to 24 hours, future enhancement if requested |
 | **ASSUM-2.3** | 50% probability threshold is appropriate for YES/NO decision | ⚠️ Needs user testing | Users disagree with threshold | Implement close call flag (✅), gather user feedback, adjust if needed |
 | **ASSUM-2.4** | OpenWeather location geocoding handles all user inputs correctly | ⚠️ Needs testing | Invalid/ambiguous locations | Test with various inputs, provide suggestions on errors (✅) |
@@ -1754,7 +1778,7 @@ test('POST /api/check-rain returns forecast', async () => {
 
 | Decision ID | Decision | Rationale | Date | Decided By |
 |-------------|----------|-----------|------|------------|
-| **DEC-2.1** | Use OpenWeather One Call API 3.0 (not Geocoding + Current Weather) | Single API call for both geocoding and forecast, simpler integration | PRD phase | Architect |
+| **DEC-2.1** | Use OpenWeather 5-day/3-hour Forecast API (free tier) | Free tier access, 3-hour intervals sufficient for 24h forecast, no subscription needed | Implementation (Story 2.1) | Developer |
 | **DEC-2.2** | Fire-and-forget pattern for analytics | Analytics failures must not block forecasts, user experience > analytics completeness | Architecture phase | Architect |
 | **DEC-2.3** | Single retry on 5xx errors (not exponential backoff) | Balances reliability with response time, <2 second target requires single retry max | Architecture phase | Architect |
 | **DEC-2.4** | 5-second timeout for OpenWeather API | Prevents long-hanging requests, aligns with <2 second user expectation + 3s buffer | Epic 2 planning | Dev Lead |

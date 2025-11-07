@@ -230,7 +230,7 @@ So that the app can fetch weather forecast data.
 **Then** a Next.js API route `/api/check-rain` is created
 **And** the route accepts POST requests with location data
 **And** OpenWeather API client is configured with authentication
-**And** the API endpoint is correctly formatted for One Call API 3.0 or Hourly Forecast
+**And** the API endpoint is correctly formatted for 5-day/3-hour Forecast API (v2.5)
 **And** a test request successfully authenticates and connects to OpenWeather
 **And** basic error handling returns meaningful error messages
 
@@ -238,7 +238,7 @@ So that the app can fetch weather forecast data.
 
 **Technical Notes:**
 - Create `/app/api/check-rain/route.ts` for the API endpoint
-- Use OpenWeather One Call API 3.0 or Hourly Forecast endpoint
+- Use OpenWeather 5-day/3-hour Forecast API (free tier, data/2.5/forecast endpoint)
 - Implement API key authentication
 - Add 5-second timeout for API calls
 - Create utility functions for API communication
@@ -249,7 +249,7 @@ So that the app can fetch weather forecast data.
 ### Story 2.2: Fetch and Parse 24-Hour Forecast Data
 
 As a developer,
-I want to fetch 24 hours of hourly forecast data from OpenWeather,
+I want to fetch 24 hours of forecast data from OpenWeather (in 3-hour intervals),
 So that I can analyze rain probability across the full time window.
 
 **Acceptance Criteria:**

@@ -45,7 +45,7 @@ This establishes the base architecture with these decisions:
 | **Linting** | ESLint | Next.js config | Epic 1, 5 | Code quality, React/Next.js best practices enforcement |
 | **Deployment** | Vercel | Platform | All | Native Next.js optimization, serverless functions, PWA support, zero config |
 | **Analytics Storage** | Upstash Redis | Free tier: 256MB, 500K cmds/month | Epic 2 | Serverless-native, privacy-first logging, generous free tier |
-| **External API** | OpenWeather One Call API 3.0 | v3 | Epic 2 | 24-hour hourly forecast, precipitation probability, free tier: 1K calls/day |
+| **External API** | OpenWeather 5-day/3-hour Forecast API | v2.5 | Epic 2 | 24-hour forecast (3-hour intervals), precipitation probability, free tier: 60/min, 1M/month |
 | **API Client** | Native Fetch | Built-in | Epic 2 | Standard approach, no dependencies, sufficient for REST calls |
 | **Date/Time** | Native Date API + Intl | Built-in | Epic 2, 3 | Zero bundle size, Intl.DateTimeFormat for 12-hour AM/PM formatting |
 | **Error Handling** | Structured Retry Pattern | Custom | All epics | Retry once on 5xx, timeout at 5s, user-friendly error codes |
@@ -162,9 +162,9 @@ will-it-rain/
 - Auto environment variables (UPSTASH_REDIS_REST_URL, UPSTASH_REDIS_REST_TOKEN)
 - Privacy-first logging (location + timestamp only)
 
-**External API: OpenWeather One Call API 3.0**
-- 24-hour hourly forecast
-- Precipitation probability per hour
+**External API: OpenWeather 5-day/3-hour Forecast API (Free Tier)**
+- 24-hour forecast in 3-hour intervals (8 data points)
+- Precipitation probability per 3-hour period
 - Weather descriptions, intensity
 - Free tier: 1,000 calls/day
 - 5-second timeout enforced
@@ -197,14 +197,13 @@ Error Response: {
 
 **Backend → OpenWeather API:**
 ```typescript
-// GET https://api.openweathermap.org/data/3.0/onecall
+// GET https://api.openweathermap.org/data/2.5/forecast
 Query params:
   - lat, lon (from geocoding location input)
-  - exclude: minutely,daily,alerts (only need hourly)
   - appid: OPENWEATHER_API_KEY
-  - units: imperial (for Fahrenheit, inches)
+  - units: imperial (for Fahrenheit, mph)
 
-Returns: 48 hours of hourly forecast (we use first 24)
+Returns: 40 forecast data points in 3-hour intervals (we use first 8 for 24 hours)
 ```
 
 **Backend → Upstash Redis:**
