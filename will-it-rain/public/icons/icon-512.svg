@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <!-- Dark background matching theme -->
+  <rect width="512" height="512" fill="#0a0a0a"/>
+
+  <!-- Simple umbrella icon in light gray -->
+  <g transform="translate(256, 256)">
+    <!-- Umbrella arc -->
+    <path d="M -170.66666666666666 0 Q -170.66666666666666 -170.66666666666666 0 -170.66666666666666 Q 170.66666666666666 -170.66666666666666 170.66666666666666 0"
+          fill="none"
+          stroke="#e5e5e5"
+          stroke-width="17.066666666666666"
+          stroke-linecap="round"/>
+
+    <!-- Handle -->
+    <path d="M 0 -42.666666666666664 L 0 128 Q 64 170.66666666666666 85.33333333333333 128"
+          fill="none"
+          stroke="#e5e5e5"
+          stroke-width="17.066666666666666"
+          stroke-linecap="round"/>
+
+    <!-- Rain drops -->
+    <circle cx="-85.33333333333333" cy="64" r="12.8" fill="#a1a1aa"/>
+    <circle cx="0" cy="85.33333333333333" r="12.8" fill="#a1a1aa"/>
+    <circle cx="85.33333333333333" cy="64" r="12.8" fill="#a1a1aa"/>
+  </g>
+</svg>

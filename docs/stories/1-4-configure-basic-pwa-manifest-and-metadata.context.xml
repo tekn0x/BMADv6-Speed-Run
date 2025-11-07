@@ -1,0 +1,316 @@
+<story-context id="bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>1</epicId>
+    <storyId>4</storyId>
+    <title>Configure Basic PWA Manifest and Metadata</title>
+    <status>drafted</status>
+    <generatedAt>2025-11-06</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/stories/1-4-configure-basic-pwa-manifest-and-metadata.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>a developer</asA>
+    <iWant>to set up the basic PWA manifest and app metadata</iWant>
+    <soThat>the app can be installed and has proper identity across platforms</soThat>
+    <tasks>
+- Task 1: Create PWA manifest using Next.js 16 metadata API (AC: 1)
+  - Create app/manifest.ts file
+  - Define app name: "Will It Rain"
+  - Define short_name: "Will It Rain"
+  - Define description: "Get a simple yes or no answer for the next 24 hours"
+  - Set start_url to "/"
+  - Set display mode to "standalone"
+  - Define background_color: "#0a0a0a" (from UX spec)
+  - Define theme_color: "#0a0a0a" (from UX spec)
+
+- Task 2: Generate and configure app icons (AC: 1)
+  - Create public/icons/ directory
+  - Generate 192x192 app icon (Android home screen)
+  - Generate 512x512 app icon (Android splash)
+  - Generate maskable icon for Android adaptive icons (512x512)
+  - Define icons array in manifest with proper sizes and purpose
+  - Ensure icon paths are correct (public/icons/*)
+
+- Task 3: Configure favicon (AC: 1)
+  - Generate favicon.ico file
+  - Place in public/ directory
+  - Verify favicon loads in browser tab
+  - Test across Chrome, Safari, Firefox
+
+- Task 4: Link manifest in root layout (AC: 1)
+  - Verify Next.js 16 auto-links manifest.ts (no manual linking needed)
+  - Add metadata configuration to app/layout.tsx if needed
+  - Verify manifest is accessible at /manifest.webmanifest
+
+- Task 5: Validate PWA configuration (AC: 1)
+  - Run Lighthouse PWA audit
+  - Verify manifest validates without errors
+  - Check that all required manifest fields are present
+  - Confirm icons load correctly
+  - Test manifest on both development and production builds
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+AC 1: **Given** the app should work as a Progressive Web App
+       **When** I configure PWA basics
+       **Then** a web app manifest file is created with app metadata
+       **And** manifest includes app name, short name, description
+       **And** theme colors are defined
+       **And** display mode is set to "standalone"
+       **And** manifest is linked in the root layout
+       **And** basic app icons are generated (at least 192x192 and 512x512)
+       **And** favicon is configured
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc>
+        <path>docs/tech-spec-epic-1.md</path>
+        <title>Epic 1 Technical Specification</title>
+        <section>PWA Configuration</section>
+        <snippet>PWA Basics Configured: app/manifest.ts created with app metadata, app icons generated (192x192, 512x512), favicon configured, manifest validates with PWA tools. Native Next.js 16 manifest.ts support eliminates need for external dependencies.</snippet>
+      </doc>
+      <doc>
+        <path>docs/tech-spec-epic-1.md</path>
+        <title>Epic 1 Technical Specification</title>
+        <section>Data Models - PWA Manifest Schema</section>
+        <snippet>MetadataRoute.Manifest interface defines typed manifest structure with name, short_name, description, start_url, display (standalone), background_color (#0a0a0a), theme_color (#0a0a0a), and icons array with purpose tags (any/maskable).</snippet>
+      </doc>
+      <doc>
+        <path>docs/architecture.md</path>
+        <title>Architecture Document</title>
+        <section>Project Structure</section>
+        <snippet>PWA manifest at app/manifest.ts (Next.js 16 native support). App icons in public/icons/ directory: icon-192.png (Android home), icon-512.png (Android splash), maskable-icon.png (adaptive icon).</snippet>
+      </doc>
+      <doc>
+        <path>docs/architecture.md</path>
+        <title>Architecture Document</title>
+        <section>Decision Summary</section>
+        <snippet>PWA Support: Native Next.js manifest.ts (Next.js 16). No external dependencies - native support added fall 2024. Eliminates need for next-pwa plugin.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ux-design-specification.md</path>
+        <title>UX Design Specification</title>
+        <section>Color System</section>
+        <snippet>Base colors for PWA manifest: Background #0a0a0a (pure black), Theme color #0a0a0a (status bar on mobile). Monochrome Storm theme with high-contrast dark mode inspired by Linear.app.</snippet>
+      </doc>
+      <doc>
+        <path>docs/epics.md</path>
+        <title>Epic Breakdown</title>
+        <section>Story 1.4 - Configure Basic PWA Manifest and Metadata</section>
+        <snippet>Set up basic PWA manifest and app metadata so app can be installed with proper identity across platforms. Includes manifest file, app name/description, theme colors, standalone display mode, and basic app icons (192x192, 512x512).</snippet>
+      </doc>
+    </docs>
+    <code>
+      <artifact>
+        <path>will-it-rain/app/layout.tsx</path>
+        <kind>layout</kind>
+        <symbol>RootLayout</symbol>
+        <lines>1-27</lines>
+        <reason>Root layout where PWA manifest will be auto-linked by Next.js 16. Currently has metadata export for title/description that can be extended. Inter font already configured.</reason>
+      </artifact>
+      <artifact>
+        <path>will-it-rain/app/page.tsx</path>
+        <kind>page</kind>
+        <symbol>Home</symbol>
+        <lines>1-100</lines>
+        <reason>Main landing page. Currently has test components that will be cleaned in Story 1.6. Contains TestClientEnv import to be removed.</reason>
+      </artifact>
+      <artifact>
+        <path>will-it-rain/app/favicon.ico</path>
+        <kind>asset</kind>
+        <symbol>N/A</symbol>
+        <lines>N/A</lines>
+        <reason>Existing favicon file in app directory. May need to be updated or replaced with branded version.</reason>
+      </artifact>
+      <artifact>
+        <path>will-it-rain/app/globals.css</path>
+        <kind>stylesheet</kind>
+        <symbol>N/A</symbol>
+        <lines>N/A</lines>
+        <reason>Global CSS file with Tailwind directives and Monochrome Storm theme. Contains custom utilities like glass-card, glass-surface.</reason>
+      </artifact>
+      <artifact>
+        <path>will-it-rain/public/</path>
+        <kind>directory</kind>
+        <symbol>N/A</symbol>
+        <lines>N/A</lines>
+        <reason>Public assets directory where icons subdirectory needs to be created. Currently contains Next.js SVG assets.</reason>
+      </artifact>
+      <artifact>
+        <path>will-it-rain/components/ui/button.tsx</path>
+        <kind>component</kind>
+        <symbol>Button</symbol>
+        <lines>N/A</lines>
+        <reason>Shadcn UI button component already installed. Part of foundation established in Story 1.2.</reason>
+      </artifact>
+      <artifact>
+        <path>will-it-rain/components/ui/input.tsx</path>
+        <kind>component</kind>
+        <symbol>Input</symbol>
+        <lines>N/A</lines>
+        <reason>Shadcn UI input component already installed. Part of foundation established in Story 1.2.</reason>
+      </artifact>
+      <artifact>
+        <path>will-it-rain/components/ui/card.tsx</path>
+        <kind>component</kind>
+        <symbol>Card</symbol>
+        <lines>N/A</lines>
+        <reason>Shadcn UI card component already installed. Part of foundation established in Story 1.2.</reason>
+      </artifact>
+    </code>
+    <dependencies>
+      <node>
+        <framework name="next" version="16.0.1">Core framework with native PWA manifest support</framework>
+        <framework name="react" version="19.2.0">UI library</framework>
+        <framework name="react-dom" version="19.2.0">React DOM renderer</framework>
+        <library name="@radix-ui/react-slot" version="^1.2.4">Shadcn UI dependency for composable components</library>
+        <library name="class-variance-authority" version="^0.7.1">CVA for component variants</library>
+        <library name="clsx" version="^2.1.1">Classname utility</library>
+        <library name="tailwind-merge" version="^3.3.1">Tailwind class merging utility</library>
+        <library name="lucide-react" version="^0.552.0">Icon library</library>
+        <library name="tailwindcss-animate" version="^1.0.7">Tailwind animation utilities</library>
+      </node>
+      <node-dev>
+        <tool name="tailwindcss" version="^4">Tailwind CSS v4 styling framework</tool>
+        <tool name="@tailwindcss/postcss" version="^4">PostCSS integration for Tailwind v4</tool>
+        <tool name="typescript" version="^5">TypeScript compiler with strict mode</tool>
+        <tool name="@types/node" version="^20">Node.js type definitions</tool>
+        <tool name="@types/react" version="^19">React type definitions</tool>
+        <tool name="@types/react-dom" version="^19">React DOM type definitions</tool>
+        <tool name="eslint" version="^9">Code linting</tool>
+        <tool name="eslint-config-next" version="16.0.1">Next.js ESLint configuration</tool>
+      </node-dev>
+      <notes>
+        <note>Next.js 16.0.1 confirmed (actual version in package.json) - native manifest.ts support included</note>
+        <note>React 19.2.0 confirmed - latest stable version with concurrent features</note>
+        <note>TypeScript 5.x with strict mode enforced via tsconfig.json</note>
+        <note>Tailwind CSS v4 with native PostCSS plugin (no separate config needed)</note>
+        <note>NO PWA-specific dependencies needed - Next.js handles manifest generation natively</note>
+      </notes>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint>Use Next.js 16 native manifest.ts file-based approach - NO external PWA plugins (next-pwa, etc.)</constraint>
+    <constraint>TypeScript strict mode enforced - all code must be strictly typed with proper interfaces</constraint>
+    <constraint>Manifest file MUST export MetadataRoute.Manifest type from next package</constraint>
+    <constraint>Theme colors MUST match UX spec: background_color and theme_color both set to #0a0a0a</constraint>
+    <constraint>Display mode MUST be "standalone" for native app feel (per architecture decision)</constraint>
+    <constraint>Icons MUST include purpose tags: "any" for standard icons, "maskable" for adaptive Android icons</constraint>
+    <constraint>Icon files MUST be PNG format and stored in public/icons/ directory</constraint>
+    <constraint>Minimum icon sizes REQUIRED: 192x192 (Android home) and 512x512 (Android splash)</constraint>
+    <constraint>Favicon MUST be placed in app/ directory (Next.js 16 convention) NOT public/</constraint>
+    <constraint>For Epic 1: Simple placeholder icons sufficient - professional branding deferred to Epic 4 Story 4.5</constraint>
+    <constraint>All file paths in manifest MUST be relative to public directory (e.g., /icons/icon-192.png)</constraint>
+    <constraint>Project structure MUST follow architecture conventions: app/ for application code, public/ for static assets</constraint>
+    <constraint>NO automated tests required for Epic 1 (per tech spec) - manual validation only</constraint>
+  </constraints>
+  <interfaces>
+    <interface>
+      <name>MetadataRoute.Manifest</name>
+      <kind>TypeScript interface</kind>
+      <signature>
+export default function manifest(): MetadataRoute.Manifest {
+  return {
+    name: string,
+    short_name: string,
+    description: string,
+    start_url: string,
+    display: "standalone" | "fullscreen" | "minimal-ui" | "browser",
+    background_color: string,
+    theme_color: string,
+    icons: Array&lt;{
+      src: string,
+      sizes: string,
+      type: string,
+      purpose?: "any" | "maskable" | "monochrome"
+    }&gt;
+  }
+}
+      </signature>
+      <path>node_modules/next/dist/lib/metadata/types/metadata-types.d.ts</path>
+    </interface>
+    <interface>
+      <name>Metadata (layout.tsx)</name>
+      <kind>TypeScript interface</kind>
+      <signature>
+export const metadata: Metadata = {
+  title: string | Template,
+  description: string,
+  // Additional metadata fields available but not required for Story 1.4
+}
+      </signature>
+      <path>will-it-rain/app/layout.tsx</path>
+    </interface>
+  </interfaces>
+  <tests>
+    <standards>
+For Epic 1, no automated tests are required (per tech spec). All validation is manual and focuses on:
+1. TypeScript compilation (npx tsc --noEmit) - ensures type safety
+2. ESLint validation (npm run lint) - ensures code quality
+3. Lighthouse PWA audit - validates manifest structure and accessibility
+4. Manual browser testing - confirms icons, favicon, and theme colors display correctly
+5. Cross-browser validation - test on Chrome, Safari, Firefox for compatibility
+
+Testing approach follows progressive enhancement: validate foundation works before adding complexity. Manual checks ensure PWA basics are correctly configured before moving to advanced PWA features in Epic 4.
+    </standards>
+    <locations>
+      <location>N/A - No test files for Epic 1 stories (manual validation only)</location>
+      <location>will-it-rain/ - Run commands from project root: npm run lint, npm run build, npx tsc --noEmit</location>
+      <location>Chrome DevTools - Lighthouse tab for PWA audit (Application > Manifest for inspection)</location>
+      <location>Browser tabs - Visual confirmation of favicon and theme colors</location>
+    </locations>
+    <ideas>
+      <test id="AC1-1" description="Verify manifest.ts file creation and structure">
+        - Create will-it-rain/app/manifest.ts file
+        - Confirm it exports default function returning MetadataRoute.Manifest
+        - TypeScript compilation passes without errors
+        - Manifest includes all required fields: name, short_name, description, start_url, display, background_color, theme_color, icons
+      </test>
+      <test id="AC1-2" description="Verify app metadata values">
+        - name: "Will It Rain"
+        - short_name: "Will It Rain"
+        - description: "Get a simple yes or no answer for the next 24 hours"
+        - start_url: "/"
+        - display: "standalone"
+        - background_color: "#0a0a0a"
+        - theme_color: "#0a0a0a"
+      </test>
+      <test id="AC1-3" description="Verify icon files creation">
+        - public/icons/ directory exists
+        - icon-192.png exists with 192x192 dimensions
+        - icon-512.png exists with 512x512 dimensions
+        - maskable-icon.png exists with 512x512 dimensions and proper safe zone
+        - All icons are PNG format
+        - Icons array in manifest.ts correctly references all three icons
+      </test>
+      <test id="AC1-4" description="Verify favicon configuration">
+        - favicon.ico exists in app/ directory (Next.js 16 convention)
+        - Favicon displays in browser tab when running dev server
+        - Favicon displays correctly across Chrome, Safari, Firefox
+      </test>
+      <test id="AC1-5" description="Verify manifest auto-linking">
+        - Start dev server (npm run dev)
+        - Navigate to localhost:3000/manifest.webmanifest
+        - Manifest JSON displays with all configured fields
+        - No manual linking required in layout.tsx (Next.js 16 auto-links)
+      </test>
+      <test id="AC1-6" description="Verify PWA validation">
+        - Run Lighthouse PWA audit in Chrome DevTools
+        - Manifest validation passes without errors
+        - Icons are accessible and properly formatted
+        - Theme color applies on mobile browsers
+        - Display mode "standalone" recognized
+      </test>
+      <test id="AC1-7" description="Verify build integrity">
+        - npm run build completes without errors
+        - Production build includes manifest at .next/server/app/manifest.webmanifest
+        - npm run start serves production build successfully
+        - Manifest accessible in production mode
+      </test>
+    </ideas>
+  </tests>
+</story-context>

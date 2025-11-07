@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <!-- Dark background matching theme -->
+  <rect width="512" height="512" fill="#0a0a0a"/>
+
+  <!-- Content in safe zone (80% center) -->
+  <g transform="translate(256, 256)">
+    <!-- Umbrella arc - scaled to fit safe zone -->
+    <path d="M -136.53333333333333 0 Q -136.53333333333333 -136.53333333333333 0 -136.53333333333333 Q 136.53333333333333 -136.53333333333333 136.53333333333333 0"
+          fill="none"
+          stroke="#e5e5e5"
+          stroke-width="13.653333333333334"
+          stroke-linecap="round"/>
+
+    <!-- Handle -->
+    <path d="M 0 -34.13333333333333 L 0 102.4 Q 51.2 136.53333333333333 68.26666666666667 102.4"
+          fill="none"
+          stroke="#e5e5e5"
+          stroke-width="13.653333333333334"
+          stroke-linecap="round"/>
+
+    <!-- Rain drops -->
+    <circle cx="-68.26666666666667" cy="51.2" r="10.24" fill="#a1a1aa"/>
+    <circle cx="0" cy="68.26666666666667" r="10.24" fill="#a1a1aa"/>
+    <circle cx="68.26666666666667" cy="51.2" r="10.24" fill="#a1a1aa"/>
+  </g>
+</svg>
