@@ -13,7 +13,11 @@
  */
 
 import { env } from '@/lib/env';
-import type { OpenWeatherResponse, GeocodingResponse } from '@/types/weather';
+import type {
+  OpenWeatherResponse,
+  GeocodingResponse,
+  ZipCodeGeocodingResponse,
+} from '@/types/weather';
 import type { ErrorCode } from '@/types/api';
 
 const OPENWEATHER_BASE_URL = 'https://api.openweathermap.org';
@@ -91,7 +95,100 @@ async function fetchWithTimeout(
 }
 
 /**
+ * Detects if a location string is a US ZIP code
+ *
+ * Matches patterns:
+ * - 5-digit ZIP codes: "94102"
+ * - ZIP+4 format: "94102-1234"
+ *
+ * Edge cases:
+ * - Leading zeros preserved: "01234" is valid
+ * - Numeric city names like "90210" treated as ZIP codes (intentional)
+ *
+ * @param location - Input string to test
+ * @returns true if location matches US ZIP code pattern
+ */
+function isZipCode(location: string): boolean {
+  // Regex pattern: 5 digits, optionally followed by hyphen and 4 digits
+  const zipCodePattern = /^\d{5}(-\d{4})?$/;
+  return zipCodePattern.test(location);
+}
+
+/**
+ * Converts US ZIP code to geographic coordinates using ZIP Code Geocoding API
+ *
+ * Uses OpenWeather ZIP Code API endpoint: /geo/1.0/zip
+ * Supports both 5-digit and ZIP+4 formats (ZIP+4 truncated to 5 digits).
+ *
+ * @param zip - US ZIP code (5-digit or ZIP+4 format)
+ * @returns Geographic coordinates and location name
+ * @throws {OpenWeatherError} If ZIP code is invalid or not found
+ */
+async function geocodeZipCode(
+  zip: string
+): Promise<{ lat: number; lon: number; name: string }> {
+  // Truncate ZIP+4 format to 5 digits
+  const zipCode = zip.split('-')[0];
+
+  // Build ZIP Code API URL
+  // Format: /geo/1.0/zip?zip={zip},{country}&appid={key}
+  const url = `${OPENWEATHER_BASE_URL}/geo/1.0/zip?zip=${encodeURIComponent(
+    zipCode
+  )},US&appid=${env.OPENWEATHER_API_KEY}`;
+
+  const response = await fetchWithTimeout(url);
+
+  // Handle 404 - ZIP code not found
+  if (response.status === 404) {
+    throw new OpenWeatherError(
+      'invalid_location',
+      `ZIP code "${zip}" not found`,
+      404
+    );
+  }
+
+  // Handle 400 - invalid request format
+  if (response.status === 400) {
+    throw new OpenWeatherError(
+      'invalid_location',
+      `Invalid ZIP code format: "${zip}"`,
+      400
+    );
+  }
+
+  // Handle 5xx errors that weren't resolved by retry
+  if (response.status >= 500) {
+    throw new OpenWeatherError(
+      'service_unavailable',
+      'OpenWeather API is temporarily unavailable',
+      503
+    );
+  }
+
+  // Handle successful response
+  if (!response.ok) {
+    throw new OpenWeatherError(
+      'service_unavailable',
+      `OpenWeather API returned status ${response.status}`,
+      response.status
+    );
+  }
+
+  const data = (await response.json()) as ZipCodeGeocodingResponse;
+
+  return {
+    lat: data.lat,
+    lon: data.lon,
+    name: data.name,
+  };
+}
+
+/**
  * Converts location string to geographic coordinates using Geocoding API
+ *
+ * Routes to appropriate geocoding endpoint based on input type:
+ * - ZIP code pattern (5-digit or ZIP+4) → ZIP Code API
+ * - All other inputs → Direct Geocoding API (city names)
  *
  * @param location - City name or ZIP code (e.g., "San Francisco" or "94102")
  * @returns Geographic coordinates and location name
@@ -100,6 +197,12 @@ async function fetchWithTimeout(
 async function geocodeLocation(
   location: string
 ): Promise<{ lat: number; lon: number; name: string }> {
+  // Detect ZIP code and route to appropriate API
+  if (isZipCode(location)) {
+    return geocodeZipCode(location);
+  }
+
+  // Use Direct Geocoding API for city names
   const url = `${OPENWEATHER_BASE_URL}/geo/1.0/direct?q=${encodeURIComponent(
     location
   )}&limit=1&appid=${env.OPENWEATHER_API_KEY}`;

@@ -275,6 +275,43 @@ So that I can analyze rain probability across the full time window.
 
 ---
 
+### Story 2.2A: Add ZIP Code Location Support
+
+As a user,
+I want to search by ZIP code in addition to city names,
+So that I can quickly check rain forecasts using my postal code without typing full city names.
+
+**Acceptance Criteria:**
+
+**Given** a user provides a 5-digit US ZIP code (e.g., "94102")
+**When** the API route processes the request
+**Then** the ZIP code is detected using pattern matching
+**And** OpenWeather ZIP Code Geocoding API is called
+**And** coordinates are successfully retrieved
+**And** forecast data is fetched and returned normally
+
+**Given** a user provides a city name (existing functionality)
+**When** the API route processes the request
+**Then** Direct Geocoding API is used (existing behavior)
+**And** backward compatibility is maintained
+
+**Given** an invalid ZIP code is provided
+**When** the API route processes the request
+**Then** `invalid_location` error is returned with helpful message
+
+**Prerequisites:** Story 2.2
+
+**Technical Notes:**
+- Add ZIP code detection utility (regex: /^\d{5}(-\d{4})?$/)
+- Implement ZIP Code Geocoding API integration (`/geo/1.0/zip`)
+- Update location routing logic to detect input type
+- Route ZIP codes to ZIP Code API, city names to Direct Geocoding API
+- Maintain unified return interface and error handling
+- Support both 5-digit and ZIP+4 formats
+- Test valid/invalid ZIP codes and backward compatibility with city names
+
+---
+
 ### Story 2.3: Implement Rain Probability Calculation Logic
 
 As a developer,

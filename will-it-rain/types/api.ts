@@ -16,8 +16,8 @@ export interface RainCheckRequest {
 /**
  * Successful response from /api/check-rain endpoint
  *
- * Note: For Story 2.1, this is a minimal structure.
- * Future stories will add calculated fields like willRain, probability, etc.
+ * Updated in Story 2.2 to include parsed and normalized forecast data.
+ * Future stories (2.3-2.6) will add calculated fields like willRain, safeWindow, etc.
  */
 export interface RainCheckResponse {
   /** Location that was queried */
@@ -26,14 +26,26 @@ export interface RainCheckResponse {
   lat: number;
   /** Longitude of the location */
   lon: number;
-  /** Raw hourly forecast data (will be processed in later stories) */
-  hourlyData: Array<{
-    /** Unix timestamp of the forecast hour */
-    dt: number;
+  /**
+   * Parsed 24-hour forecast data in 3-hour intervals (8 data points)
+   * Data is normalized: probability in 0-100 range, amounts in inches, intensity classified
+   * Replaces hourlyData from Story 2.1
+   */
+  forecast: Array<{
+    /** JavaScript Date object for this forecast period */
+    time: Date;
+    /** Unix timestamp (UTC) for this forecast period */
+    timestamp: number;
+    /** Precipitation probability as percentage (0-100) */
+    probability: number;
+    /** Rainfall intensity: "none" | "light" | "moderate" | "heavy" */
+    intensity: 'none' | 'light' | 'moderate' | 'heavy';
+    /** Total rainfall amount in inches for this 3-hour period */
+    amount: number;
     /** Temperature in Fahrenheit */
-    temp: number;
-    /** Precipitation probability (0-1) */
-    pop: number;
+    temperature: number;
+    /** Weather description */
+    description: string;
   }>;
 }
 

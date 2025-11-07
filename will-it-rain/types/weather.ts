@@ -138,3 +138,63 @@ export interface GeocodingResponse {
   /** State/province (for US locations) */
   state?: string;
 }
+
+/**
+ * Response from OpenWeather ZIP Code Geocoding API
+ *
+ * Used to convert US ZIP codes to lat/lon coordinates.
+ * Based on: https://openweathermap.org/api/geocoding-api#zip
+ *
+ * Note: Unlike Direct Geocoding API, ZIP Code API returns a single object (not an array)
+ */
+export interface ZipCodeGeocodingResponse {
+  /** ZIP code */
+  zip: string;
+  /** Location name (city) */
+  name: string;
+  /** Latitude */
+  lat: number;
+  /** Longitude */
+  lon: number;
+  /** Country code (ISO 3166) */
+  country: string;
+}
+
+/**
+ * Parsed and normalized forecast data for a single 3-hour interval
+ *
+ * Data has been normalized from OpenWeather API format:
+ * - Probability: converted from 0.0-1.0 range to 0-100 percentage
+ * - Rainfall amount: converted from millimeters to inches
+ * - Intensity: classified based on rainfall thresholds
+ * - Timestamps: Unix timestamp converted to Date object
+ */
+export interface ParsedForecast {
+  /** JavaScript Date object for this forecast period */
+  time: Date;
+  /** Unix timestamp (UTC) for this forecast period (same as ForecastData.dt) */
+  timestamp: number;
+  /**
+   * Precipitation probability as percentage (0-100)
+   * Converted from OpenWeather's 0.0-1.0 range
+   */
+  probability: number;
+  /**
+   * Rainfall intensity classification
+   * - "none": No rain expected (0 mm)
+   * - "light": 0.1-2.5 mm per 3-hour period
+   * - "moderate": 2.5-7.6 mm per 3-hour period
+   * - "heavy": >7.6 mm per 3-hour period
+   */
+  intensity: 'none' | 'light' | 'moderate' | 'heavy';
+  /**
+   * Total rainfall amount in inches for this 3-hour period
+   * Converted from OpenWeather's millimeters (rain['3h'])
+   * 0 if no rain expected
+   */
+  amount: number;
+  /** Temperature in Fahrenheit */
+  temperature: number;
+  /** Weather description (e.g., "light rain", "moderate rain", "clear sky") */
+  description: string;
+}

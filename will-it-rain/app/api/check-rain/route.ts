@@ -13,6 +13,7 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { fetchWeatherData, OpenWeatherError } from '@/lib/openweather';
+import { parseForecastData } from '@/lib/forecast-parser';
 import type { RainCheckRequest, RainCheckResponse, ErrorResponse } from '@/types/api';
 
 /**
@@ -63,19 +64,20 @@ export async function POST(request: NextRequest) {
     // Fetch weather data from OpenWeather API
     const weatherData = await fetchWeatherData(location.trim());
 
-    // Build response with forecast data
-    // Note: For Story 2.1, we return raw forecast data (3-hour intervals)
-    // Future stories (2.3-2.6) will add rain prediction logic
-    // 5-day forecast API provides 3-hour intervals, so we take first 8 data points (24 hours)
+    // Extract first 8 data points (24 hours / 3-hour intervals)
+    const next24Hours = weatherData.forecast.list.slice(0, 8);
+
+    // Parse and normalize forecast data
+    // Converts probability to 0-100, rainfall to inches, classifies intensity
+    const parsedForecast = parseForecastData(next24Hours);
+
+    // Build response with parsed forecast data
+    // Note: Future stories (2.3-2.6) will add rain prediction logic (willRain, safeWindow, etc.)
     const response: RainCheckResponse = {
       location: weatherData.location,
       lat: weatherData.lat,
       lon: weatherData.lon,
-      hourlyData: weatherData.forecast.list.slice(0, 8).map((forecast) => ({
-        dt: forecast.dt,
-        temp: forecast.main.temp,
-        pop: forecast.pop,
-      })),
+      forecast: parsedForecast,
     };
 
     return NextResponse.json<RainCheckResponse>(response, { status: 200 });

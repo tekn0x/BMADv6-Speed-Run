@@ -47,8 +47,9 @@ development_status:
 
   epic-2: contexted
   2-1-create-openweather-api-integration-layer: done
-  2-2-fetch-and-parse-24-hour-forecast-data: backlog
-  2-3-implement-rain-probability-calculation-logic: backlog
+  2-2-fetch-and-parse-24-hour-forecast-data: done
+  2-2a-add-zip-code-location-support: done
+  2-3-implement-rain-probability-calculation-logic: done
   2-4-implement-rain-window-detection: backlog
   2-5-implement-safe-window-calculation: backlog
   2-6-integrate-complete-decision-logic: backlog
