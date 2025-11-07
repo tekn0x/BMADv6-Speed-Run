@@ -1,0 +1,284 @@
+<story-context id="bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>2</epicId>
+    <storyId>5</storyId>
+    <title>Implement Safe Window Calculation</title>
+    <status>ready-for-dev</status>
+    <generatedAt>2025-11-07</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/stories/2-5-implement-safe-window-calculation.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>a developer</asA>
+    <iWant>to identify clear periods between rain windows</iWant>
+    <soThat>users can find safe timeframes for outdoor activities</soThat>
+    <tasks>
+- Task 1: Extend rain-windows module with safe window calculation (AC: 1, 2, 3)
+  - Add `SafeWindow` interface to `/will-it-rain/lib/rain-windows.ts` matching `RainWindow` structure
+  - Implement `calculateSafeWindows()` function accepting `RainWindow[]` array as input
+  - Calculate gaps between consecutive rain windows (end of window N → start of window N+1)
+  - Filter out safe windows with duration < 1 hour (< 60 minutes)
+  - Return array of safe windows in chronological order
+  - Export function for use by Story 2.6 API integration
+
+- Task 2: Handle clear period after last rain window (AC: 5)
+  - Accept forecast end time as parameter (e.g., current time + 24 hours)
+  - Calculate safe window from end of last rain window to forecast end time
+  - Apply same 1-hour minimum duration filter
+  - Include "after rain" safe window in results if duration ≥ 1 hour
+  - Handle case where last rain window ends very close to forecast end (< 1 hour remaining)
+
+- Task 3: Handle edge cases and single rain window scenarios (AC: 4, 7)
+  - Handle empty rain windows array (no rain detected) → return empty safe windows array
+  - Handle single rain window (only one rain period) → calculate only "after rain" safe window if applicable
+  - Handle multiple rain windows with some gaps < 1 hour → filter out short gaps
+  - Handle rain windows that span most of 24 hours → minimal or no safe windows
+  - Ensure no off-by-one errors in time calculations
+
+- Task 4: Reuse time formatting from Story 2.4 (AC: 6)
+  - Import `formatTimeRange()` from rain-windows.ts (already exists from Story 2.4)
+  - Use same 12-hour AM/PM formatting for safe window display
+  - Ensure consistent time formatting between rain windows and safe windows
+  - No additional time formatting logic needed (already implemented)
+
+- Task 5: Return structured safe windows for API consumption (AC: 1, 2)
+  - Return `SafeWindow[]` array with start/end Date objects
+  - Ensure TypeScript strict mode compliance (no `any` types)
+  - Prepare for integration with Story 2.6 (API response formatting)
+  - Structure output to match SafeWindow interface from tech spec
+
+- Task 6: Manual testing and verification (AC: 1-7)
+  - Test with multiple rain windows and gaps between them (e.g., morning rain, afternoon rain)
+  - Test with single rain window ending mid-day (verify "after rain" safe window detected)
+  - Test with gaps < 1 hour duration (verify filtering works)
+  - Test with gaps ≥ 1 hour duration (verify included in results)
+  - Test with no rain windows (empty array) → expect empty safe windows
+  - Test with rain windows spanning most of 24 hours → expect minimal safe windows
+  - Test edge case: last rain window ends < 1 hour before forecast end
+  - Verify time formatting displays correctly in 12-hour AM/PM format
+  - TypeScript compilation passes (`npm run type-check`)
+  - ESLint validation passes (`npm run lint`)
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+1. **Given** detected rain windows within 24 hours
+   **When** I calculate safe windows
+   **Then** gaps between rain periods are identified as safe windows
+   **And** each safe window has accurate start time (end of previous rain period) and end time (start of next rain period)
+   **And** safe windows are returned in chronological order
+
+2. **Given** multiple rain windows exist with gaps between them
+   **When** I calculate safe windows
+   **Then** each gap between consecutive rain windows is identified as a separate safe window
+   **And** the start time of each safe window equals the end time of the previous rain window
+   **And** the end time of each safe window equals the start time of the next rain window
+
+3. **Given** a safe window has a very short duration
+   **When** I filter safe windows
+   **Then** safe windows shorter than 1 hour (< 60 minutes) are excluded from the results
+   **And** only safe windows ≥ 1 hour duration are included in the output
+   **And** minimum duration filtering ensures users only see meaningful safe periods
+
+4. **Given** there is only one rain window in the 24-hour period
+   **When** I calculate safe windows
+   **Then** no safe windows between rain periods are returned (empty array for gaps)
+   **And** the clear period after the last rain window until end of forecast is identified (if ≥ 1 hour)
+   **And** single rain period scenarios are handled correctly
+
+5. **Given** rain windows end before the 24-hour forecast ends
+   **When** I calculate safe windows
+   **Then** the clear period after the last rain window is identified as a safe window
+   **And** the safe window starts at the end time of the last rain period
+   **And** the safe window ends at the end of the 24-hour forecast period
+   **And** this "after rain" safe window is included only if duration ≥ 1 hour
+
+6. **Given** safe window times need to be user-friendly
+   **When** I format time strings
+   **Then** times use 12-hour format with AM/PM (e.g., "5:00 PM - 9:00 PM")
+   **And** time formatting uses native Intl.DateTimeFormat (reuses existing formatTimeRange from Story 2.4)
+   **And** safe window times are displayed in a readable, consistent format
+
+7. **Given** there are no rain windows detected (no rain in 24 hours)
+   **When** I calculate safe windows
+   **Then** no safe windows are returned (empty array)
+   **And** the entire 24-hour period is clear (handled implicitly by NO answer)
+   **And** edge case of zero rain windows does not cause errors
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc>
+        <path>docs/tech-spec-epic-2.md</path>
+        <title>Epic 2 Technical Specification - Weather Intelligence Engine</title>
+        <section>Story 2.5: Safe Window Calculation</section>
+        <snippet>Enhances /lib/rain-windows.ts with safe window logic. Implements clear period detection between rain events. Calculates gaps between consecutive rain windows (end of window N → start of window N+1). Applies 1-hour minimum duration filter. Handles "after rain" safe window (clear period after last rain until forecast end).</snippet>
+      </doc>
+      <doc>
+        <path>docs/architecture.md</path>
+        <title>Architecture Document</title>
+        <section>ADR-002: No Database - Stateless Architecture</section>
+        <snippet>No database, no caching, fresh data every request. Pure functions with no side effects. Weather data must be fresh. All calculations are stateless and deterministic.</snippet>
+      </doc>
+      <doc>
+        <path>docs/architecture.md</path>
+        <title>Architecture Document</title>
+        <section>ADR-004: Native Date API (No Library)</section>
+        <snippet>Use native Date and Intl.DateTimeFormat (no Day.js or date-fns). Zero bundle size. Intl.DateTimeFormat handles 12-hour AM/PM formatting. Sufficient for simple formatting needs.</snippet>
+      </doc>
+      <doc>
+        <path>docs/stories/2-4-implement-rain-window-detection.md</path>
+        <title>Story 2.4 - Rain Window Detection (Completed)</title>
+        <section>Learnings and Patterns</section>
+        <snippet>Created rain-windows.ts with RainWindow interface and formatTimeRange() function. Established pure stateless functions pattern. Manual testing approach with comprehensive edge case coverage. TypeScript strict mode compliance. Senior Developer Review approved as "textbook" quality.</snippet>
+      </doc>
+    </docs>
+    <code>
+      <artifact>
+        <path>will-it-rain/lib/rain-windows.ts</path>
+        <kind>module</kind>
+        <symbol>RainWindow interface, detectRainWindows(), formatTimeRange()</symbol>
+        <lines>1-146</lines>
+        <reason>Existing module from Story 2.4. This story extends it with SafeWindow interface and calculateSafeWindows() function. Reuse formatTimeRange() for consistent time formatting.</reason>
+      </artifact>
+      <artifact>
+        <path>will-it-rain/lib/rain-windows.test-manual.ts</path>
+        <kind>test</kind>
+        <symbol>Manual test suite for rain window detection</symbol>
+        <lines>all</lines>
+        <reason>Reference for testing pattern. Create similar comprehensive manual test suite for safe window calculation with edge case coverage.</reason>
+      </artifact>
+      <artifact>
+        <path>will-it-rain/types/api.ts</path>
+        <kind>types</kind>
+        <symbol>RainCheckRequest, RainCheckResponse, ErrorResponse</symbol>
+        <lines>1-72</lines>
+        <reason>API contract types. SafeWindow interface will be added here (matching RainWindow structure). Story 2.6 will consume SafeWindow[] for API response.</reason>
+      </artifact>
+      <artifact>
+        <path>will-it-rain/types/weather.ts</path>
+        <kind>types</kind>
+        <symbol>ParsedForecast interface</symbol>
+        <lines>inferred</lines>
+        <reason>Imported by rain-windows.ts. Defines forecast data structure (time, probability, intensity, amount). Input to rain window detection.</reason>
+      </artifact>
+    </code>
+    <dependencies>
+      <node>
+        <next>16.0.1</next>
+        <react>19.2.0</react>
+        <react-dom>19.2.0</react-dom>
+        <typescript>^5</typescript>
+        <tailwindcss>^4</tailwindcss>
+        <lucide-react>^0.552.0</lucide-react>
+        <radix-ui-react-slot>^1.2.4</radix-ui-react-slot>
+        <class-variance-authority>^0.7.1</class-variance-authority>
+        <clsx>^2.1.1</clsx>
+        <tailwind-merge>^3.3.1</tailwind-merge>
+        <tailwindcss-animate>^1.0.7</tailwindcss-animate>
+      </node>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint>
+      <type>Architecture Pattern</type>
+      <rule>Stateless pure functions only - no side effects, no external dependencies, no API calls, no database queries (ADR-002)</rule>
+    </constraint>
+    <constraint>
+      <type>Module Organization</type>
+      <rule>Extend existing will-it-rain/lib/rain-windows.ts module. Add SafeWindow interface and calculateSafeWindows() function to same file as RainWindow and detectRainWindows()</rule>
+    </constraint>
+    <constraint>
+      <type>Type Safety</type>
+      <rule>TypeScript strict mode required. No 'any' types permitted. Input: RainWindow[] from Story 2.4. Output: SafeWindow[] with identical structure (start/end Date properties)</rule>
+    </constraint>
+    <constraint>
+      <type>Time Formatting</type>
+      <rule>Reuse existing formatTimeRange() function from rain-windows.ts. DO NOT recreate time formatting logic. Use native Intl.DateTimeFormat (no date libraries)</rule>
+    </constraint>
+    <constraint>
+      <type>Minimum Duration</type>
+      <rule>Safe windows must be ≥ 1 hour (60 minutes) duration. Filter out gaps shorter than 60 minutes. Rationale: Very short gaps aren't meaningful for planning outdoor activities</rule>
+    </constraint>
+    <constraint>
+      <type>Clear Period After Rain</type>
+      <rule>Calculate safe window from end of last rain window to forecast end time (current time + 24 hours). Include only if duration ≥ 1 hour. Requires forecastEndTime parameter</rule>
+    </constraint>
+    <constraint>
+      <type>Testing Approach</type>
+      <rule>Manual testing only (no automated unit tests until Epic 5). Create comprehensive manual test suite with hardcoded test data. TypeScript type-check and ESLint validation required</rule>
+    </constraint>
+    <constraint>
+      <type>Documentation</type>
+      <rule>Comprehensive JSDoc comments required (follow Story 2.4 pattern). Explain algorithm, edge cases, parameters, and return values</rule>
+    </constraint>
+  </constraints>
+  <interfaces>
+    <interface>
+      <name>SafeWindow</name>
+      <kind>TypeScript interface</kind>
+      <signature>interface SafeWindow { start: Date; end: Date; }</signature>
+      <path>will-it-rain/lib/rain-windows.ts</path>
+      <description>Identical structure to RainWindow interface. Represents a clear period between rain windows where users can safely plan outdoor activities</description>
+    </interface>
+    <interface>
+      <name>calculateSafeWindows</name>
+      <kind>Function signature</kind>
+      <signature>function calculateSafeWindows(rainWindows: RainWindow[], forecastEndTime: Date): SafeWindow[]</signature>
+      <path>will-it-rain/lib/rain-windows.ts</path>
+      <description>Pure function accepting rain windows array and forecast end time. Returns array of safe windows (gaps between rain periods ≥ 1 hour). Applies minimum duration filter. Handles "after rain" safe window calculation</description>
+    </interface>
+    <interface>
+      <name>formatTimeRange (reuse)</name>
+      <kind>Function signature</kind>
+      <signature>function formatTimeRange(start: Date, end: Date): string</signature>
+      <path>will-it-rain/lib/rain-windows.ts</path>
+      <description>Already exists from Story 2.4. Returns 12-hour AM/PM formatted time range (e.g., "5:00 PM - 9:00 PM"). DO NOT recreate - import and reuse</description>
+    </interface>
+    <interface>
+      <name>RainWindow (from Story 2.4)</name>
+      <kind>TypeScript interface</kind>
+      <signature>interface RainWindow { start: Date; end: Date; }</signature>
+      <path>will-it-rain/lib/rain-windows.ts</path>
+      <description>Input type for calculateSafeWindows(). Represents continuous rain period detected by detectRainWindows() function</description>
+    </interface>
+  </interfaces>
+  <tests>
+    <standards>Manual testing approach for Epic 2 (automated tests deferred to Epic 5). Create comprehensive manual test suite with hardcoded RainWindow[] test data. Test all acceptance criteria with realistic scenarios. Run TypeScript compilation validation (npm run type-check). Run ESLint validation (npm run lint). Document test cases and results in Dev Agent Record. Consider extending existing rain-windows.test-manual.ts with safe window tests.</standards>
+    <locations>will-it-rain/lib/rain-windows.test-manual.ts (extend or create new file)</locations>
+    <ideas>
+      <test id="AC1" scenario="Multiple rain windows with gaps ≥ 1 hour">
+        Verify safe windows detected correctly. Create test data with 2+ rain windows separated by 1-2 hour gaps. Expect safe window array with correct start/end times matching gaps.
+      </test>
+      <test id="AC2" scenario="Gaps between consecutive rain windows">
+        Verify start time of safe window = end time of previous rain window. Verify end time of safe window = start time of next rain window. Test chronological ordering.
+      </test>
+      <test id="AC3" scenario="Gaps shorter than 1 hour filtered out">
+        Create rain windows with 30-minute and 45-minute gaps. Expect these gaps filtered out (not in results). Only gaps ≥ 60 minutes included.
+      </test>
+      <test id="AC4" scenario="Single rain window">
+        Test with only one rain window ending mid-day. Expect no gap safe windows (empty array for gaps). Verify "after rain" safe window detected if applicable.
+      </test>
+      <test id="AC5" scenario="Clear period after last rain">
+        Rain window ends at hour 18, forecast ends at hour 24 (6 hours remaining). Expect safe window from hour 18 to hour 24. Test with < 1 hour remaining (should not create safe window).
+      </test>
+      <test id="AC6" scenario="Time formatting consistency">
+        Verify safe window times formatted in 12-hour AM/PM format. Compare with formatTimeRange() output to ensure consistency with rain windows.
+      </test>
+      <test id="AC7" scenario="No rain windows (empty array)">
+        Pass empty RainWindow[] array. Expect empty SafeWindow[] array returned. Verify no errors thrown.
+      </test>
+      <test id="edge-case-1" scenario="Rain windows spanning most of 24 hours">
+        Test with rain windows covering hours 0-20 with minimal gaps. Expect minimal or no safe windows. Verify filtering logic works correctly.
+      </test>
+      <test id="edge-case-2" scenario="Exactly 1 hour gap (60 minutes boundary)">
+        Create rain windows with exactly 60-minute gap. Expect safe window included (≥ 1 hour condition is inclusive).
+      </test>
+      <test id="edge-case-3" scenario="59 minutes gap (just below threshold)">
+        Create rain windows with 59-minute gap. Expect gap filtered out (< 1 hour). Verify boundary condition.
+      </test>
+    </ideas>
+  </tests>
+</story-context>
