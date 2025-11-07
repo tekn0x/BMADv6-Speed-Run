@@ -4,7 +4,7 @@ A simple, radically simple Progressive Web App that answers one question: **Will
 
 ## Description
 
-Will It Rain provides instant yes/no rain forecasts for any location, helping users make quick decisions about their day. Built with Next.js 15 and TypeScript, this PWA delivers fast, reliable weather information in an accessible interface.
+Will It Rain provides instant yes/no rain forecasts for any location, helping users make quick decisions about their day. Built with Next.js 16 and TypeScript, this PWA delivers fast, reliable weather information in an accessible interface.
 
 ## Requirements
 
@@ -57,6 +57,16 @@ UPSTASH_REDIS_REST_TOKEN=your_actual_upstash_token_here
 
 ### Development
 
+#### Available Scripts
+
+- **`npm run dev`** - Start development server with Turbopack (fast HMR < 1 second)
+- **`npm run build`** - Create optimized production build
+- **`npm run start`** - Serve production build locally for testing
+- **`npm run lint`** - Run ESLint checks on all TypeScript/TSX files
+- **`npm run type-check`** - Run TypeScript type checking without emitting files
+
+#### Starting Development
+
 Run the development server:
 
 ```bash
@@ -74,10 +84,18 @@ npm run build
 npm start
 ```
 
-### Linting
+### Code Quality
+
+Run ESLint to check code quality:
 
 ```bash
 npm run lint
+```
+
+Run TypeScript type checking:
+
+```bash
+npm run type-check
 ```
 
 ## Technology Stack

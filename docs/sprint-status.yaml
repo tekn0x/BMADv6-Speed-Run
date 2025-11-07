@@ -41,8 +41,8 @@ development_status:
   1-2-configure-tailwind-css-v4-and-shadcn-ui: done
   1-3-set-up-environment-variables-and-api-key-management: done
   1-4-configure-basic-pwa-manifest-and-metadata: done
-  1-5-set-up-development-and-build-scripts: backlog
-  1-6-cleanup-development-test-artifacts: drafted
+  1-5-set-up-development-and-build-scripts: done
+  1-6-cleanup-development-test-artifacts: done
   epic-1-retrospective: optional
 
   epic-2: backlog
