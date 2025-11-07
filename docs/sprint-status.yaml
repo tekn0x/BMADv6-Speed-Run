@@ -45,7 +45,7 @@ development_status:
   1-6-cleanup-development-test-artifacts: done
   epic-1-retrospective: optional
 
-  epic-2: backlog
+  epic-2: contexted
   2-1-create-openweather-api-integration-layer: backlog
   2-2-fetch-and-parse-24-hour-forecast-data: backlog
   2-3-implement-rain-probability-calculation-logic: backlog
