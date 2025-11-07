@@ -2,7 +2,7 @@
 
 ## Executive Summary
 
-**Will It Rain** uses a modern, serverless Next.js architecture optimized for radical simplicity and fast deployment. The application leverages Next.js 15 App Router with TypeScript, Tailwind CSS v4, and Shadcn UI for a glassmorphic dark mode interface. All components are stateless except for React state management, with no database needed—only lightweight analytics via Upstash Redis. The architecture prioritizes sub-2-second response times, WCAG 2.1 AA accessibility, and PWA capabilities through native Next.js features.
+**Will It Rain** uses a modern, serverless Next.js architecture optimized for radical simplicity and fast deployment. The application leverages Next.js 16 App Router with TypeScript, Tailwind CSS v4, and Shadcn UI for a glassmorphic dark mode interface. All components are stateless except for React state management, with no database needed—only lightweight analytics via Upstash Redis. The architecture prioritizes sub-2-second response times, WCAG 2.1 AA accessibility, and PWA capabilities through native Next.js features.
 
 ## Project Initialization
 
@@ -25,7 +25,7 @@ npm install @upstash/redis
 ```
 
 This establishes the base architecture with these decisions:
-- ✅ Next.js 15 with App Router
+- ✅ Next.js 16 with App Router
 - ✅ TypeScript for type safety
 - ✅ Tailwind CSS v4 for styling
 - ✅ ESLint for code quality
@@ -41,7 +41,7 @@ This establishes the base architecture with these decisions:
 | **Styling** | Tailwind CSS | v4 | Epic 1, 3, 4 | Glassmorphic effects, dark mode, utility-first, zero runtime |
 | **Component Library** | Shadcn UI | Latest | Epic 1, 3 | Accessible (Radix UI), customizable, dark mode ready, copy-paste architecture |
 | **Font** | Inter (Variable) | Latest | Epic 3, 4 | UX spec requirement (Linear.app inspiration), modern web font |
-| **Build Tool** | Turbopack (dev) / Webpack (prod) | Next.js 15 | Epic 1 | Fast HMR (< 1s), optimized production builds |
+| **Build Tool** | Turbopack (dev) / Webpack (prod) | Next.js 16 | Epic 1 | Fast HMR (< 1s), optimized production builds |
 | **Linting** | ESLint | Next.js config | Epic 1, 5 | Code quality, React/Next.js best practices enforcement |
 | **Deployment** | Vercel | Platform | All | Native Next.js optimization, serverless functions, PWA support, zero config |
 | **Analytics Storage** | Upstash Redis | Free tier: 256MB, 500K cmds/month | Epic 2 | Serverless-native, privacy-first logging, generous free tier |
@@ -49,7 +49,7 @@ This establishes the base architecture with these decisions:
 | **API Client** | Native Fetch | Built-in | Epic 2 | Standard approach, no dependencies, sufficient for REST calls |
 | **Date/Time** | Native Date API + Intl | Built-in | Epic 2, 3 | Zero bundle size, Intl.DateTimeFormat for 12-hour AM/PM formatting |
 | **Error Handling** | Structured Retry Pattern | Custom | All epics | Retry once on 5xx, timeout at 5s, user-friendly error codes |
-| **PWA Support** | Native Next.js manifest.ts | Next.js 15 | Epic 4 | No external dependencies (native support added fall 2024) |
+| **PWA Support** | Native Next.js manifest.ts | Next.js 16 | Epic 4 | No external dependencies (native support added fall 2024) |
 | **State Management** | React useState | Built-in | Epic 3 | Stateless app, no complex state, hooks sufficient for form/loading/answer |
 
 ## Project Structure
@@ -125,7 +125,7 @@ will-it-rain/
 
 ### Core Technologies
 
-**Framework: Next.js 15**
+**Framework: Next.js 16**
 - App Router architecture (file-based routing)
 - Server Components by default
 - API Routes in `/app/api/`
@@ -695,11 +695,11 @@ npm run dev
 
 ## Architecture Decision Records (ADRs)
 
-### ADR-001: Use Next.js 15 App Router
+### ADR-001: Use Next.js 16 App Router
 
 **Context:** Need modern React framework with SSR, API routes, and PWA support
 
-**Decision:** Use Next.js 15 with App Router architecture
+**Decision:** Use Next.js 16 with App Router architecture
 
 **Rationale:**
 - Native PWA support (manifest.ts added in fall 2024)
@@ -710,7 +710,7 @@ npm run dev
 **Consequences:**
 - Must learn App Router conventions (Server/Client Components)
 - Cannot use Pages Router patterns
-- Requires Next.js 15+ (latest stable)
+- Requires Next.js 16+ (latest stable)
 
 ---
 

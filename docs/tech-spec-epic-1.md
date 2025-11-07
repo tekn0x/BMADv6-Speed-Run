@@ -9,7 +9,7 @@ Status: Draft
 
 ## Overview
 
-Epic 1 establishes the technical foundation for Will It Rain by initializing the Next.js 15 project with TypeScript, configuring the styling system (Tailwind CSS v4 + Shadcn UI), setting up environment management for API keys, configuring basic PWA capabilities, and establishing development tooling. This epic is the prerequisite for all subsequent development work - no other epic can begin until the foundation is complete.
+Epic 1 establishes the technical foundation for Will It Rain by initializing the Next.js 16 project with TypeScript, configuring the styling system (Tailwind CSS v4 + Shadcn UI), setting up environment management for API keys, configuring basic PWA capabilities, and establishing development tooling. This epic is the prerequisite for all subsequent development work - no other epic can begin until the foundation is complete.
 
 The epic delivers a working development environment where:
 - The Next.js dev server runs successfully on localhost
@@ -19,13 +19,13 @@ The epic delivers a working development environment where:
 - PWA manifest and metadata are configured
 - Build and lint scripts are functional
 
-This foundation adheres to the architecture decisions documented in `architecture.md`, including Next.js 15 App Router, TypeScript strict mode, Tailwind CSS v4, Shadcn UI component library, and native PWA support.
+This foundation adheres to the architecture decisions documented in `architecture.md`, including Next.js 16 App Router, TypeScript strict mode, Tailwind CSS v4, Shadcn UI component library, and native PWA support.
 
 ## Objectives and Scope
 
 **In Scope:**
 
-- Initialize Next.js 15 project with App Router and TypeScript (Story 1.1)
+- Initialize Next.js 16 project with App Router and TypeScript (Story 1.1)
 - Configure Tailwind CSS v4 and Shadcn UI with dark mode theme (Story 1.2)
 - Set up environment variable management and API key protection (Story 1.3)
 - Configure basic PWA manifest with app metadata and icons (Story 1.4)
@@ -58,7 +58,7 @@ This foundation adheres to the architecture decisions documented in `architectur
 
 **Architecture Components Involved:**
 
-- **Framework:** Next.js 15 with App Router (ADR-001)
+- **Framework:** Next.js 16 with App Router (ADR-001)
 - **Language:** TypeScript with strict mode
 - **Styling:** Tailwind CSS v4 + Shadcn UI (ADR-006)
 - **Deployment Target:** Vercel (ADR-007)
@@ -95,7 +95,7 @@ will-it-rain/
 
 **Constraints from Architecture:**
 
-- Must use Next.js 15 (not 14 or older)
+- Must use Next.js 16 (not 14 or older)
 - TypeScript strict mode required (no `any` types)
 - Tailwind CSS v4 (not v3)
 - Shadcn UI components copied into project (not npm package)
@@ -294,7 +294,7 @@ const nextConfig = {
   // Enable strict mode for development
   reactStrictMode: true,
 
-  // Turbopack for development (Next.js 15 default)
+  // Turbopack for development (Next.js 16 default)
   // No configuration needed
 }
 
@@ -365,7 +365,7 @@ Foundation Complete ✅
 
 **NFR-P3: Hot Module Replacement (HMR)**
 - Target: < 1 second for component changes
-- Turbopack enables fast HMR in Next.js 15
+- Turbopack enables fast HMR in Next.js 16
 - Acceptance: Changes to components reflect in browser < 1 second
 
 **NFR-P4: Bundle Size (Initial)**
@@ -388,7 +388,7 @@ Foundation Complete ✅
 
 **NFR-S3: Dependency Security**
 - Only install necessary dependencies
-- Use latest stable versions (Next.js 15, React 18)
+- Use latest stable versions (Next.js 16, React 19)
 - Acceptance: `npm audit` shows no high/critical vulnerabilities
 
 **NFR-S4: HTTPS (Production Only)**
@@ -487,7 +487,7 @@ Foundation Complete ✅
 **Version Constraints:**
 
 - Next.js: 15.0.0 or higher (required for native PWA support)
-- React: 18.3.0 or higher (required by Next.js 15)
+- React: 18.3.0 or higher (required by Next.js 16)
 - TypeScript: 5.3.0 or higher (strict mode features)
 - Tailwind CSS: 4.0.0 or higher (UX spec requirement)
 - Node.js: 18.0.0 or higher (Next.js requirement)
@@ -504,7 +504,7 @@ Foundation Complete ✅
 **Epic-Level Acceptance Criteria:**
 
 1. **Project Initialized:**
-   - Next.js 15 project created with App Router
+   - Next.js 16 project created with App Router
    - TypeScript configured with strict mode
    - Git repository initialized
    - README documents setup instructions
@@ -566,7 +566,7 @@ See individual story files for detailed acceptance criteria. Epic tech spec prov
 
 **Architecture Decision Traceability:**
 
-- **ADR-001 (Next.js 15):** Project uses Next.js 15 with App Router ✅
+- **ADR-001 (Next.js 16):** Project uses Next.js 16 with App Router ✅
 - **ADR-006 (Shadcn UI):** Shadcn UI + Tailwind CSS configured ✅
 - **ADR-007 (Vercel):** Project structure compatible with Vercel deployment ✅
 
@@ -576,7 +576,7 @@ See individual story files for detailed acceptance criteria. Epic tech spec prov
 
 | Risk | Probability | Impact | Mitigation |
 |------|------------|--------|------------|
-| **RISK-1:** Next.js 15 breaking changes from v14 | Low | Medium | Follow official migration guide, test thoroughly |
+| **RISK-1:** Next.js 16 breaking changes from v14 | Low | Medium | Follow official migration guide, test thoroughly |
 | **RISK-2:** Tailwind CSS v4 alpha instability | Medium | Medium | Use stable v3 if v4 causes issues, or wait for stable release |
 | **RISK-3:** Shadcn UI component incompatibility | Low | Low | Components are copy-paste, can fix locally if needed |
 | **RISK-4:** TypeScript strict mode too restrictive | Low | Low | Strict mode is project standard, benefits outweigh friction |
