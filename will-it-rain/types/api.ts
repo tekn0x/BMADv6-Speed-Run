@@ -122,4 +122,6 @@ export interface ErrorResponse {
   error: ErrorCode;
   /** Human-readable error message */
   message: string;
+  /** Optional suggestions for invalid_location errors (e.g., "San Francisco, CA") */
+  suggestions?: string[];
 }
