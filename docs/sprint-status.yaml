@@ -75,7 +75,7 @@ development_status:
   4-3-optimize-responsive-design-for-all-devices: done
   4-4-implement-touch-friendly-interactions: done
   4-5-configure-app-icons-and-splash-screens: done
-  4-6-optimize-installation-experience: backlog
+  4-6-optimize-installation-experience: done
   4-7-cross-browser-testing-and-compatibility: backlog
   epic-4-retrospective: optional
 
