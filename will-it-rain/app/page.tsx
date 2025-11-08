@@ -1,35 +1,113 @@
 "use client"
 
-import { useState } from 'react'
+import { useState, useRef, type FormEvent } from 'react'
 import { Input } from '@/components/ui/input'
+import { Button } from '@/components/ui/button'
 
 /**
  * Home Page Component - Landing Page for "Will It Rain?" Application
  *
  * Displays the main landing page with value proposition, location input field,
- * and footer with privacy statement and attribution.
+ * form submission, and footer with privacy statement and attribution.
  *
  * Features:
  * - Clear H1 heading and subheading explaining the app's purpose
- * - Prominently positioned location input field (placeholder only in this story)
+ * - Location input field with validation and form submission
+ * - Search button for triggering forecast check
+ * - Loading state management during API calls
+ * - Client-side validation for empty input
+ * - Focus management for accessibility (returns focus after API response)
  * - Privacy statement and OpenWeather attribution in footer
  * - Mobile-first responsive design using Tailwind CSS breakpoints
  * - Semantic HTML structure for accessibility (header, main, footer)
- * - Keyboard accessible with proper focus management
+ * - Full keyboard accessibility (Tab navigation, Enter to submit)
  *
  * State Management:
- * - location: User's input for city or zipcode (currently placeholder only)
+ * - location: User's input for city or zipcode
+ * - isLoading: Tracks API call in progress (disables input/button)
+ * - validationError: Stores validation error message for empty input
+ * - answerData: Will store API success response (display in Stories 3.4/3.5)
+ * - errorData: Will store API error response (display in Story 3.7)
+ *
+ * Form Flow:
+ * 1. User enters location and submits form (button click or Enter key)
+ * 2. Validate input is not empty (show error if empty)
+ * 3. Set loading state (disable input and button)
+ * 4. Call API with location
+ * 5. Handle response (success or error)
+ * 6. Clear loading state
+ * 7. Return focus to input for easy re-search
  *
  * @returns JSX.Element - The landing page component
  */
 export default function HomePage() {
-  // State hook for location input (prepared for Story 3.2)
+  // State hooks for form management
   const [location, setLocation] = useState<string>('')
+  const [isLoading, setIsLoading] = useState<boolean>(false)
+  const [validationError, setValidationError] = useState<string>('')
 
-  // Note: Additional state hooks (isLoading, answerData, errorData) will be added in:
-  // - Story 3.3: Loading state
-  // - Story 3.4/3.5: Answer data display
-  // - Story 3.7: Error handling display
+  // State hooks for API response (display logic in future stories)
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [answerData, setAnswerData] = useState<unknown>(null)
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [errorData, setErrorData] = useState<unknown>(null)
+
+  // Ref for programmatic focus management
+  const inputRef = useRef<HTMLInputElement>(null)
+
+  /**
+   * Handle form submission
+   *
+   * Validates input, calls API, and manages loading state.
+   * Returns focus to input after response for easy re-search.
+   *
+   * @param e - Form event
+   */
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+
+    // Client-side validation: Check for empty input
+    if (!location.trim()) {
+      setValidationError('Please enter a location')
+      return
+    }
+
+    // Clear validation error and set loading state
+    setValidationError('')
+    setIsLoading(true)
+
+    try {
+      // Call backend API
+      const response = await fetch('/api/check-rain', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ location: location.trim() }),
+      })
+
+      const data = await response.json()
+
+      if (response.ok) {
+        // Success response
+        setAnswerData(data)
+        setErrorData(null)
+      } else {
+        // Error response from API
+        setErrorData(data)
+        setAnswerData(null)
+      }
+    } catch {
+      // Network error - catch block required but error details not used
+      setErrorData({
+        error: 'network_error',
+        message: 'Network connection failed. Please check your internet and try again.',
+      })
+      setAnswerData(null)
+    } finally {
+      // Always clear loading state and return focus
+      setIsLoading(false)
+      inputRef.current?.focus()
+    }
+  }
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
@@ -43,20 +121,45 @@ export default function HomePage() {
         </p>
       </header>
 
-      {/* Main Content - Location Input */}
+      {/* Main Content - Location Input and Form */}
       <main className="flex-1 max-w-2xl mx-auto w-full px-4 py-8 sm:py-12">
-        <div className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-4">
           <Input
+            ref={inputRef}
             type="text"
             placeholder="Enter zipcode or city"
             value={location}
-            onChange={(e) => setLocation(e.target.value)}
+            onChange={(e) => {
+              setLocation(e.target.value)
+              // Clear validation error when user starts typing
+              if (validationError) {
+                setValidationError('')
+              }
+            }}
+            disabled={isLoading}
             className="text-center text-lg h-12 sm:h-14"
             aria-label="Location input - Enter your zipcode or city name"
             autoComplete="off"
           />
-          {/* Note: Search button and submission logic will be added in Story 3.2 */}
-        </div>
+
+          {/* Validation Error Display */}
+          {validationError && (
+            <p className="text-sm text-destructive text-center" role="alert">
+              {validationError}
+            </p>
+          )}
+
+          {/* Submit Button */}
+          <Button
+            type="submit"
+            disabled={isLoading}
+            className="w-full h-12 sm:h-14 text-base sm:text-lg"
+          >
+            {isLoading ? 'Checking...' : 'Check Forecast'}
+          </Button>
+        </form>
+
+        {/* Note: Answer and error display will be added in Stories 3.4, 3.5, 3.7 */}
       </main>
 
       {/* Footer - Privacy and Attribution */}
