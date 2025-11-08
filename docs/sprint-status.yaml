@@ -67,7 +67,7 @@ development_status:
   3-7-implement-error-display-with-user-guidance: done
   3-8-enable-search-again-functionality: done
   3-9-connect-frontend-to-backend-api: done
-  epic-3-retrospective: optional
+  epic-3-retrospective: completed
 
   epic-4: backlog
   4-1-complete-pwa-manifest-configuration: backlog
