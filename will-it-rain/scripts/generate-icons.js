@@ -1,169 +1,145 @@
 #!/usr/bin/env node
 
 /**
- * Simple icon generator for Epic 1 placeholder icons
- * Generates SVG-based PNG icons without external dependencies
+ * Icon generator for "Will It Rain" PWA (Epic 4, Story 4.5)
+ * Generates all required icon sizes for PWA compliance:
+ * - 192x192, 512x512: Android PWA standard icons
+ * - 512x512 maskable: Android adaptive icon with 80% safe zone
+ * - 180x180: Apple touch icon for iOS
+ * - 32x32: Favicon
  *
- * This creates basic placeholder icons for Story 1.4
- * Professional icons will be created in Epic 4 Story 4.5
+ * Design: Simple raindrop icon representing the "Will It Rain" app
  */
 
 const fs = require('fs');
 const path = require('path');
 
-// SVG template for a simple umbrella/rain icon
+// Enhanced raindrop icon design
 const createIconSVG = (size) => `<?xml version="1.0" encoding="UTF-8"?>
 <svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" xmlns="http://www.w3.org/2000/svg">
-  <!-- Dark background matching theme -->
-  <rect width="${size}" height="${size}" fill="#0a0a0a"/>
+  <!-- Dark background matching app theme (#000000) -->
+  <rect width="${size}" height="${size}" fill="#000000"/>
 
-  <!-- Simple umbrella icon in light gray -->
+  <!-- Raindrop with modern gradient -->
+  <defs>
+    <linearGradient id="dropGradient-${size}" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#60A5FA;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#3B82F6;stop-opacity:1" />
+    </linearGradient>
+    <radialGradient id="highlight-${size}" cx="30%" cy="30%">
+      <stop offset="0%" style="stop-color:#93C5FD;stop-opacity:0.8" />
+      <stop offset="100%" style="stop-color:#60A5FA;stop-opacity:0" />
+    </radialGradient>
+  </defs>
+
   <g transform="translate(${size/2}, ${size/2})">
-    <!-- Umbrella arc -->
-    <path d="M -${size/3} 0 Q -${size/3} -${size/3} 0 -${size/3} Q ${size/3} -${size/3} ${size/3} 0"
-          fill="none"
-          stroke="#e5e5e5"
-          stroke-width="${size/30}"
-          stroke-linecap="round"/>
+    <!-- Main raindrop shape -->
+    <path
+      d="M 0,-${size*0.25}
+         C -${size*0.15},-${size*0.25} -${size*0.15},${size*0.05} 0,${size*0.25}
+         C ${size*0.15},${size*0.05} ${size*0.15},-${size*0.25} 0,-${size*0.25}
+         Z"
+      fill="url(#dropGradient-${size})"
+      stroke="#2563EB"
+      stroke-width="${Math.max(2, size/100)}"
+    />
 
-    <!-- Handle -->
-    <path d="M 0 -${size/12} L 0 ${size/4} Q ${size/8} ${size/3} ${size/6} ${size/4}"
-          fill="none"
-          stroke="#e5e5e5"
-          stroke-width="${size/30}"
-          stroke-linecap="round"/>
-
-    <!-- Rain drops -->
-    <circle cx="-${size/6}" cy="${size/8}" r="${size/40}" fill="#a1a1aa"/>
-    <circle cx="0" cy="${size/6}" r="${size/40}" fill="#a1a1aa"/>
-    <circle cx="${size/6}" cy="${size/8}" r="${size/40}" fill="#a1a1aa"/>
+    <!-- Highlight -->
+    <ellipse
+      cx="-${size*0.06}"
+      cy="-${size*0.12}"
+      rx="${size*0.05}"
+      ry="${size*0.08}"
+      fill="url(#highlight-${size})"
+    />
   </g>
 </svg>`;
 
-// Create maskable icon with safe zone (80% content in center)
+// Create maskable icon with 80% safe zone (40px padding on 512px canvas)
 const createMaskableIconSVG = (size) => {
-  const safeSize = size * 0.8;
-  const offset = size * 0.1;
+  // Maskable icons must keep content within 80% safe zone
+  const scale = 0.8;
 
   return `<?xml version="1.0" encoding="UTF-8"?>
 <svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" xmlns="http://www.w3.org/2000/svg">
-  <!-- Dark background matching theme -->
-  <rect width="${size}" height="${size}" fill="#0a0a0a"/>
+  <!-- Dark background matching app theme (#000000) -->
+  <rect width="${size}" height="${size}" fill="#000000"/>
 
-  <!-- Content in safe zone (80% center) -->
+  <!-- Raindrop with modern gradient - scaled for safe zone -->
+  <defs>
+    <linearGradient id="dropGradient-maskable-${size}" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#60A5FA;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#3B82F6;stop-opacity:1" />
+    </linearGradient>
+    <radialGradient id="highlight-maskable-${size}" cx="30%" cy="30%">
+      <stop offset="0%" style="stop-color:#93C5FD;stop-opacity:0.8" />
+      <stop offset="100%" style="stop-color:#60A5FA;stop-opacity:0" />
+    </radialGradient>
+  </defs>
+
   <g transform="translate(${size/2}, ${size/2})">
-    <!-- Umbrella arc - scaled to fit safe zone -->
-    <path d="M -${safeSize/3} 0 Q -${safeSize/3} -${safeSize/3} 0 -${safeSize/3} Q ${safeSize/3} -${safeSize/3} ${safeSize/3} 0"
-          fill="none"
-          stroke="#e5e5e5"
-          stroke-width="${safeSize/30}"
-          stroke-linecap="round"/>
+    <!-- Main raindrop shape - scaled to fit safe zone -->
+    <path
+      d="M 0,-${size*0.25*scale}
+         C -${size*0.15*scale},-${size*0.25*scale} -${size*0.15*scale},${size*0.05*scale} 0,${size*0.25*scale}
+         C ${size*0.15*scale},${size*0.05*scale} ${size*0.15*scale},-${size*0.25*scale} 0,-${size*0.25*scale}
+         Z"
+      fill="url(#dropGradient-maskable-${size})"
+      stroke="#2563EB"
+      stroke-width="${Math.max(2, size/100)}"
+    />
 
-    <!-- Handle -->
-    <path d="M 0 -${safeSize/12} L 0 ${safeSize/4} Q ${safeSize/8} ${safeSize/3} ${safeSize/6} ${safeSize/4}"
-          fill="none"
-          stroke="#e5e5e5"
-          stroke-width="${safeSize/30}"
-          stroke-linecap="round"/>
-
-    <!-- Rain drops -->
-    <circle cx="-${safeSize/6}" cy="${safeSize/8}" r="${safeSize/40}" fill="#a1a1aa"/>
-    <circle cx="0" cy="${safeSize/6}" r="${safeSize/40}" fill="#a1a1aa"/>
-    <circle cx="${safeSize/6}" cy="${safeSize/8}" r="${safeSize/40}" fill="#a1a1aa"/>
+    <!-- Highlight -->
+    <ellipse
+      cx="-${size*0.06*scale}"
+      cy="-${size*0.12*scale}"
+      rx="${size*0.05*scale}"
+      ry="${size*0.08*scale}"
+      fill="url(#highlight-maskable-${size})"
+    />
   </g>
 </svg>`;
 };
 
-// Output directory
+// Output directories
 const iconsDir = path.join(__dirname, '../public/icons');
+const publicDir = path.join(__dirname, '../public');
 
-// Ensure directory exists
+// Ensure directories exist
 if (!fs.existsSync(iconsDir)) {
   fs.mkdirSync(iconsDir, { recursive: true });
 }
 
-console.log('Generating placeholder PWA icons for Epic 1...\n');
+console.log('Generating PWA icons for "Will It Rain" (Epic 4, Story 4.5)...\n');
 
-// Generate SVG files (browsers can use these directly as PNGs aren't needed for basic testing)
+// All required icons for PWA compliance
 const icons = [
-  { name: 'icon-192.png', size: 192, isMaskable: false },
-  { name: 'icon-512.png', size: 512, isMaskable: false },
-  { name: 'maskable-icon.png', size: 512, isMaskable: true }
+  { name: 'icon-192.png', size: 192, isMaskable: false, dir: iconsDir },
+  { name: 'icon-512.png', size: 512, isMaskable: false, dir: iconsDir },
+  { name: 'maskable-icon.png', size: 512, isMaskable: true, dir: iconsDir },
+  { name: 'apple-touch-icon.png', size: 180, isMaskable: false, dir: iconsDir },
+  { name: 'favicon.png', size: 32, isMaskable: false, dir: publicDir }
 ];
 
-// For Epic 1, we'll create SVG versions that can be converted to PNG later
-// This avoids dependency on canvas/sharp packages
-icons.forEach(({ name, size, isMaskable }) => {
+// Generate SVG files
+icons.forEach(({ name, size, isMaskable, dir }) => {
   const svgContent = isMaskable ? createMaskableIconSVG(size) : createIconSVG(size);
-  const svgPath = path.join(iconsDir, name.replace('.png', '.svg'));
+  const svgPath = path.join(dir, name.replace('.png', '.svg'));
 
   fs.writeFileSync(svgPath, svgContent);
   console.log(`✓ Created ${name.replace('.png', '.svg')} (${size}x${size})`);
 });
 
-console.log('\nℹ️  Note: SVG icons created for Epic 1 foundation');
-console.log('   For production (Epic 4), convert these to PNG format');
-console.log('   or use professional icon design tools.\n');
-
-// Also create PNG versions using data URLs (for immediate testing)
-// This creates actual PNG files using canvas if available
-try {
-  const { createCanvas } = require('canvas');
-
-  icons.forEach(({ name, size, isMaskable }) => {
-    const canvas = createCanvas(size, size);
-    const ctx = canvas.getContext('2d');
-
-    // Background
-    ctx.fillStyle = '#0a0a0a';
-    ctx.fillRect(0, 0, size, size);
-
-    const scale = isMaskable ? 0.8 : 1.0;
-    const iconSize = size * scale;
-    const offset = (size - iconSize) / 2;
-
-    ctx.save();
-    ctx.translate(size / 2, size / 2);
-
-    // Draw umbrella arc
-    ctx.strokeStyle = '#e5e5e5';
-    ctx.lineWidth = iconSize / 30;
-    ctx.lineCap = 'round';
-    ctx.beginPath();
-    ctx.arc(0, 0, iconSize / 3, Math.PI, 0, true);
-    ctx.stroke();
-
-    // Draw handle
-    ctx.beginPath();
-    ctx.moveTo(0, -iconSize / 12);
-    ctx.lineTo(0, iconSize / 4);
-    ctx.quadraticCurveTo(iconSize / 8, iconSize / 3, iconSize / 6, iconSize / 4);
-    ctx.stroke();
-
-    // Draw rain drops
-    ctx.fillStyle = '#a1a1aa';
-    ctx.beginPath();
-    ctx.arc(-iconSize / 6, iconSize / 8, iconSize / 40, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.beginPath();
-    ctx.arc(0, iconSize / 6, iconSize / 40, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.beginPath();
-    ctx.arc(iconSize / 6, iconSize / 8, iconSize / 40, 0, Math.PI * 2);
-    ctx.fill();
-
-    ctx.restore();
-
-    // Save PNG
-    const buffer = canvas.toBuffer('image/png');
-    const pngPath = path.join(iconsDir, name);
-    fs.writeFileSync(pngPath, buffer);
-    console.log(`✓ Created PNG: ${name} (${size}x${size})`);
-  });
-
-  console.log('\n✅ PNG icons generated successfully using canvas!\n');
-} catch (err) {
-  console.log('\nℹ️  Canvas package not available - SVG icons created instead');
-  console.log('   Rename .svg files to .png for basic PWA testing');
-  console.log('   Or install canvas: npm install canvas --save-dev\n');
-}
+console.log('\n📝 SVG icons created. Converting to PNG...\n');
+console.log('   Run: npm run convert-icons (uses sharp for PNG conversion)\n');
+console.log('Icon locations:');
+console.log('  - public/icons/icon-192.svg → .png (192x192)');
+console.log('  - public/icons/icon-512.svg → .png (512x512)');
+console.log('  - public/icons/maskable-icon.svg → .png (512x512 with safe zone)');
+console.log('  - public/icons/apple-touch-icon.svg → .png (180x180)');
+console.log('  - public/favicon.svg → .png (32x32)');
+console.log('\nNext steps:');
+console.log('  1. Convert SVGs to PNGs: npm run convert-icons');
+console.log('  2. Test maskable icon at https://maskable.app');
+console.log('  3. Verify manifest.ts references correct icon paths');
+console.log('  4. Run Lighthouse PWA audit\n');

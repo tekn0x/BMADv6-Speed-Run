@@ -1,27 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
-  <!-- Dark background matching theme -->
-  <rect width="512" height="512" fill="#0a0a0a"/>
+  <!-- Dark background matching app theme (#000000) -->
+  <rect width="512" height="512" fill="#000000"/>
 
-  <!-- Simple umbrella icon in light gray -->
+  <!-- Raindrop with modern gradient -->
+  <defs>
+    <linearGradient id="dropGradient-512" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#60A5FA;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#3B82F6;stop-opacity:1" />
+    </linearGradient>
+    <radialGradient id="highlight-512" cx="30%" cy="30%">
+      <stop offset="0%" style="stop-color:#93C5FD;stop-opacity:0.8" />
+      <stop offset="100%" style="stop-color:#60A5FA;stop-opacity:0" />
+    </radialGradient>
+  </defs>
+
   <g transform="translate(256, 256)">
-    <!-- Umbrella arc -->
-    <path d="M -170.66666666666666 0 Q -170.66666666666666 -170.66666666666666 0 -170.66666666666666 Q 170.66666666666666 -170.66666666666666 170.66666666666666 0"
-          fill="none"
-          stroke="#e5e5e5"
-          stroke-width="17.066666666666666"
-          stroke-linecap="round"/>
+    <!-- Main raindrop shape -->
+    <path
+      d="M 0,-128
+         C -76.8,-128 -76.8,25.6 0,128
+         C 76.8,25.6 76.8,-128 0,-128
+         Z"
+      fill="url(#dropGradient-512)"
+      stroke="#2563EB"
+      stroke-width="5.12"
+    />
 
-    <!-- Handle -->
-    <path d="M 0 -42.666666666666664 L 0 128 Q 64 170.66666666666666 85.33333333333333 128"
-          fill="none"
-          stroke="#e5e5e5"
-          stroke-width="17.066666666666666"
-          stroke-linecap="round"/>
-
-    <!-- Rain drops -->
-    <circle cx="-85.33333333333333" cy="64" r="12.8" fill="#a1a1aa"/>
-    <circle cx="0" cy="85.33333333333333" r="12.8" fill="#a1a1aa"/>
-    <circle cx="85.33333333333333" cy="64" r="12.8" fill="#a1a1aa"/>
+    <!-- Highlight -->
+    <ellipse
+      cx="-30.72"
+      cy="-61.44"
+      rx="25.6"
+      ry="40.96"
+      fill="url(#highlight-512)"
+    />
   </g>
 </svg>

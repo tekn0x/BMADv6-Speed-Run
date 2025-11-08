@@ -23,6 +23,9 @@ export const metadata: Metadata = {
     description: "Get a simple yes or no answer about rain in your area for the next 24 hours",
     type: "website",
   },
+  other: {
+    "theme-color": "#000000",
+  },
 };
 
 export const viewport: Viewport = {
