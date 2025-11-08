@@ -73,7 +73,7 @@ development_status:
   4-1-complete-pwa-manifest-configuration: done
   4-2-implement-service-worker-for-asset-caching: done
   4-3-optimize-responsive-design-for-all-devices: done
-  4-4-implement-touch-friendly-interactions: backlog
+  4-4-implement-touch-friendly-interactions: done
   4-5-configure-app-icons-and-splash-screens: backlog
   4-6-optimize-installation-experience: backlog
   4-7-cross-browser-testing-and-compatibility: backlog
