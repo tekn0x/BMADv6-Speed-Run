@@ -70,7 +70,7 @@ development_status:
   epic-3-retrospective: completed
 
   epic-4: contexted
-  4-1-complete-pwa-manifest-configuration: backlog
+  4-1-complete-pwa-manifest-configuration: done
   4-2-implement-service-worker-for-asset-caching: backlog
   4-3-optimize-responsive-design-for-all-devices: backlog
   4-4-implement-touch-friendly-interactions: backlog
