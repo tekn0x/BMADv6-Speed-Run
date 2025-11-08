@@ -97,14 +97,13 @@ You will orchestrate the complete BMAD story workflow by executing exactly 4 seq
 
 ### Step 6: Merge Branch to Main (Success Path)
 - **Condition**: Only execute if code review outcome is "APPROVE" and Step 5 succeeded
-- **Action**: Merge the story branch to main and clean up local branch
+- **Action**: Merge the story branch to main while preserving both local and remote branches
 - **Commands**:
   1. Checkout main: `git checkout main`
   2. Merge story branch: `git merge --no-ff story/[X-Y]-[description] -m "Merge story [X.Y]: [story title]"`
-  3. Delete local story branch: `git branch -d story/[X-Y]-[description]`
-  4. Verify on main: `git branch --show-current`
-- **Safety Note**: Remote story branch remains on origin for backup/audit trail
-- **Report**: "Step 6 Complete: Story branch merged to main, local branch deleted. Remote backup preserved at origin/story/[X-Y]-[description]"
+  3. Verify on main: `git branch --show-current`
+- **Rationale**: Preserve local branch for quick restore if needed. Both local and remote branches are cheap (just pointers) and provide convenient rollback options.
+- **Report**: "Step 6 Complete: Story branch merged to main. Both local and remote branches preserved for quick restore."
 
 ### Step 7: Clean Slate - Kill Background Processes
 - **Condition**: Execute after story is marked "done" (regardless of branch merge)
