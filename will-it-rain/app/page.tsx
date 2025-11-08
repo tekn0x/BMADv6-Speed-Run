@@ -3,6 +3,7 @@
 import { useState, useRef, type FormEvent } from 'react'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
+import { LoadingState } from '@/components/LoadingState'
 
 /**
  * Home Page Component - Landing Page for "Will It Rain?" Application
@@ -158,6 +159,9 @@ export default function HomePage() {
             {isLoading ? 'Checking...' : 'Check Forecast'}
           </Button>
         </form>
+
+        {/* Loading State - Shows while API request is in progress */}
+        {isLoading && <LoadingState />}
 
         {/* Note: Answer and error display will be added in Stories 3.4, 3.5, 3.7 */}
       </main>
