@@ -69,7 +69,7 @@ development_status:
   3-9-connect-frontend-to-backend-api: done
   epic-3-retrospective: completed
 
-  epic-4: backlog
+  epic-4: contexted
   4-1-complete-pwa-manifest-configuration: backlog
   4-2-implement-service-worker-for-asset-caching: backlog
   4-3-optimize-responsive-design-for-all-devices: backlog
