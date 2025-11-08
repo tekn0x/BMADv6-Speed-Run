@@ -58,7 +58,7 @@ development_status:
   epic-2-retrospective: optional
 
   epic-3: contexted
-  3-1-build-landing-page-with-value-proposition: backlog
+  3-1-build-landing-page-with-value-proposition: done
   3-2-create-location-input-field-with-validation: backlog
   3-3-implement-loading-state-with-user-feedback: backlog
   3-4-build-yes-answer-display-with-rain-details: backlog

@@ -8,8 +8,13 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Will It Rain",
-  description: "Get a simple yes or no answer for the next 24 hours",
+  title: "Will It Rain? | Simple 24-Hour Rain Forecast",
+  description: "Get a simple yes or no answer about rain in your area for the next 24 hours",
+  openGraph: {
+    title: "Will It Rain? | Simple 24-Hour Rain Forecast",
+    description: "Get a simple yes or no answer about rain in your area for the next 24 hours",
+    type: "website",
+  },
 };
 
 export default function RootLayout({
