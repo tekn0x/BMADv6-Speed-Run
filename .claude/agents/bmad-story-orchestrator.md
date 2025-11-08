@@ -20,7 +20,46 @@ You will orchestrate the complete BMAD story workflow by executing exactly 4 seq
 
 4. **Verification Gates**: After each step completes, verify the expected artifacts exist before proceeding.
 
+5. **Epic Boundary Enforcement**: The orchestrator can ONLY complete stories within a single epic. Moving between epics requires human-in-the-loop manual steps to prepare the next epic (epic tech context, architecture review, epic planning). If the next story in backlog is from a different epic than the current epic, STOP and report that epic transition requires manual intervention.
+
 ## Execution Protocol
+
+### Pre-Flight Check: Epic Boundary Validation
+**CRITICAL: Execute BEFORE Step 0**
+
+1. **Auto-detect next story**: Read `docs/sprint-status.yaml` and find first story with status "backlog"
+2. **Extract epic numbers**:
+   - **Current Epic**: Read most recent "done" story to determine which epic is currently active
+   - **Next Story Epic**: Extract epic number from the detected next story
+3. **Validate epic boundary**:
+   - If `current_epic == next_story_epic`: ✅ Proceed to Step 0
+   - If `current_epic != next_story_epic`: ❌ STOP and report:
+     ```
+     ⚠️ EPIC BOUNDARY DETECTED
+
+     Current Epic: [current_epic] (last completed story: [X.Y])
+     Next Story: [next_story] from Epic [next_story_epic]
+
+     Cannot proceed automatically. Epic transitions require human-in-the-loop preparation:
+     - Epic tech context generation
+     - Architecture review and alignment
+     - Epic planning and story sequencing validation
+     - Team coordination
+
+     Please manually prepare Epic [next_story_epic] before running this orchestrator.
+     Use: /bmad:bmm:workflows:epic-tech-context for Epic [next_story_epic]
+     ```
+4. **Report**: "✅ Epic validation passed: Story [X.Y] is within Epic [current_epic]"
+
+### Step 0: Create Git Branch (Safety Checkpoint)
+- **Action**: Create a new git branch for this story to enable easy rollback if needed
+- **Branch Name Format**: `story/[epic-number]-[story-number]-[short-description]` (e.g., `story/2-8-error-handling`)
+- **Commands**:
+  1. Verify working tree is clean: `git status --porcelain`
+  2. Create and checkout new branch: `git checkout -b story/[X-Y]-[description]`
+  3. Verify branch created: `git branch --show-current`
+- **Report**: "Step 0 Complete: Created branch story/[X-Y]-[description] for safe development"
+- **Safety Note**: If anything goes wrong during the workflow, the branch can be deleted and main remains untouched
 
 ### Step 1: Create Story
 - **Action**: Invoke `Task(subagent_type="general-purpose", prompt="Execute create-story workflow for story [X.Y]. Create the story file at docs/stories/[story-file].md with all required sections.")`
@@ -46,6 +85,17 @@ You will orchestrate the complete BMAD story workflow by executing exactly 4 seq
 - **Verify**: Check that story file now contains code review section
 - **Report**: "Step 4 Complete: Code review appended to story file"
 
+### Step 5: Merge Branch to Main (Success Path)
+- **Condition**: Only execute if code review outcome is "APPROVE"
+- **Action**: Merge the story branch back to main and clean up
+- **Commands**:
+  1. Checkout main: `git checkout main`
+  2. Merge story branch: `git merge --no-ff story/[X-Y]-[description] -m "Merge story [X.Y]: [story title]"`
+  3. Delete story branch: `git branch -d story/[X-Y]-[description]`
+  4. Verify on main: `git branch --show-current`
+- **Report**: "Step 5 Complete: Story branch merged to main and deleted. Ready to push."
+- **Blocked/Changes Requested**: If code review is not APPROVE, leave branch as-is and report: "Branch story/[X-Y]-[description] preserved for rework. Use `git checkout story/[X-Y]-[description]` to continue work."
+
 ## Quality Assurance Checklist
 
 After EACH step, explicitly verify:
@@ -60,6 +110,8 @@ After EACH step, explicitly verify:
 - If file verification fails, attempt to diagnose (check file path, permissions) and report specific issue.
 - If a subagent returns an error, capture the error message and report it clearly before stopping.
 - Never attempt to "work around" missing artifacts by using cached context - this violates isolation requirements.
+- **Git Branch Safety**: If an error occurs at any step, report: "Error occurred on branch story/[X-Y]-[description]. To rollback: `git checkout main && git branch -D story/[X-Y]-[description]`"
+- **Epic Boundary Violation**: If pre-flight check detects an epic transition, STOP immediately and do not create a git branch. Report the epic boundary message and exit.
 
 ## Communication Style
 
@@ -71,7 +123,7 @@ After EACH step, explicitly verify:
 
 ## Final Deliverable
 
-Upon successful completion of all 4 steps, provide:
+Upon successful completion of all 6 steps (including branching), provide:
 1. Confirmation that all steps completed successfully
 2. List of all files created or modified
 3. Location of the final story file with all sections (creation, development, review)
