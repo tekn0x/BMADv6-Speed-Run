@@ -4,6 +4,8 @@ import { useState, useRef, type FormEvent } from 'react'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { LoadingState } from '@/components/LoadingState'
+import { AnswerDisplay } from '@/components/AnswerDisplay'
+import type { RainCheckResponse } from '@/types/api'
 
 /**
  * Home Page Component - Landing Page for "Will It Rain?" Application
@@ -47,9 +49,8 @@ export default function HomePage() {
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [validationError, setValidationError] = useState<string>('')
 
-  // State hooks for API response (display logic in future stories)
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [answerData, setAnswerData] = useState<unknown>(null)
+  // State hooks for API response
+  const [answerData, setAnswerData] = useState<RainCheckResponse | null>(null)
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [errorData, setErrorData] = useState<unknown>(null)
 
@@ -73,8 +74,10 @@ export default function HomePage() {
       return
     }
 
-    // Clear validation error and set loading state
+    // Clear validation error, previous results, and set loading state
     setValidationError('')
+    setAnswerData(null)
+    setErrorData(null)
     setIsLoading(true)
 
     try {
@@ -163,7 +166,12 @@ export default function HomePage() {
         {/* Loading State - Shows while API request is in progress */}
         {isLoading && <LoadingState />}
 
-        {/* Note: Answer and error display will be added in Stories 3.4, 3.5, 3.7 */}
+        {/* Answer Display - Shows API response with rain details */}
+        {answerData && (
+          <AnswerDisplay response={answerData} searchedLocation={location} />
+        )}
+
+        {/* Note: Error display will be added in Story 3.7 */}
       </main>
 
       {/* Footer - Privacy and Attribution */}
