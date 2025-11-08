@@ -373,13 +373,12 @@ BENEFITS OF RUNNING RETROSPECTIVE:
 - Prepare for next epic with better context
 
 ═══════════════════════════════════════════════════════════
-
-Would you like to:
-A) Clear context and run retrospective now (recommended)
-B) Skip retrospective (will remain marked as "optional")
-C) Continue to next epic without retrospective
 ```
 
+**IMPORTANT:** This workflow CANNOT clear context or run the retrospective for you.
+The user must manually clear context and load the SM agent to run the retrospective.
+
+**DO NOT offer to execute the retrospective automatically.**
 **DO NOT execute the retrospective as a Task within this workflow.**
 
 ---
