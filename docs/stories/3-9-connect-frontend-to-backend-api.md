@@ -1,6 +1,6 @@
 # Story 3.9: Connect Frontend to Backend API
 
-Status: review
+Status: done
 
 ## Story
 

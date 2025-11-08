@@ -219,17 +219,19 @@ Task(subagent_type="general-purpose",
 
 **CRITICAL**: This step fixes the bug where story files remain at "Status: review" even after approval.
 
-```bash
-# Update the story file status from "review" to "done"
-# This ensures the story file itself reflects the final status
+**Execute directly using Edit tool (not via Task):**
+
+```
+1. Read the story file: docs/stories/[story-file].md
+2. Use Edit tool to update the Status line:
+   old_string: "Status: review"
+   new_string: "Status: done"
+3. Verify the change was made successfully
 ```
 
-**Using Edit tool:**
-- Read the story file at `docs/stories/[story-file].md`
-- Update the Status line from "Status: review" to "Status: done"
-
 **Verify**:
-- Story file now shows "Status: done" (typically around line 3)
+- Story file now shows "Status: done" (typically around line 3-5)
+- Read the file again to confirm if needed
 
 **Report**: "✅ Story [X.Y] Step 4a: Story file status updated to done"
 
@@ -328,37 +330,57 @@ After completing all 10 steps for a story:
 
 ---
 
-## Final Step: Epic Retrospective
+## Final Step: Epic Retrospective (Manual Process)
 
 **After all stories are complete:**
 
-1. Report epic completion summary
-2. Ask user if they want to run epic retrospective:
+Report epic completion summary and provide guidance for running the retrospective manually:
 
 ```
 🎉 Epic [N] Complete!
 
 All [X] stories have been successfully implemented, reviewed, and deployed.
 
-Would you like to run the epic retrospective workflow to capture learnings and prepare for the next epic?
+═══════════════════════════════════════════════════════════
+NEXT STEP: Epic Retrospective (Optional but Recommended)
+═══════════════════════════════════════════════════════════
 
-Options:
-- Yes, run retrospective now
-- No, skip retrospective (marked as optional)
+The Epic Retrospective is an INTERACTIVE, CONVERSATIONAL workflow that
+should NOT be run within this orchestration. It requires human input
+and collaborative discussion between team personas.
+
+To run the retrospective:
+
+1. CLEAR YOUR CONTEXT (important for fresh perspective):
+   - Use /clear command to reset conversation
+   - Or start a new conversation
+
+2. LOAD THE SCRUM MASTER AGENT:
+   - Run: /bmad:bmm:agents:sm
+   - This loads the SM (Scrum Master) persona
+
+3. RUN THE RETROSPECTIVE WORKFLOW:
+   - Run: /bmad:bmm:workflows:retrospective
+   - The SM will facilitate an interactive retrospective session
+   - You'll be prompted for input during the discussion
+   - The workflow will create: docs/retrospectives/epic-[N]-retrospective.md
+   - Sprint status will be updated to mark retrospective as "completed"
+
+BENEFITS OF RUNNING RETROSPECTIVE:
+- Capture learnings from Epic [N]
+- Identify improvements for Epic [N+1]
+- Document best practices and patterns
+- Prepare for next epic with better context
+
+═══════════════════════════════════════════════════════════
+
+Would you like to:
+A) Clear context and run retrospective now (recommended)
+B) Skip retrospective (will remain marked as "optional")
+C) Continue to next epic without retrospective
 ```
 
-**If user chooses Yes:**
-```
-Task(subagent_type="general-purpose",
-     prompt="Execute the retrospective workflow for Epic [N].
-             Load bmad/core/tasks/workflow.xml and execute with
-             workflow-config: bmad/bmm/workflows/4-implementation/retrospective/workflow.yaml
-             Review epic completion, extract learnings, identify improvements.
-             Update sprint-status.yaml to mark epic-[N]-retrospective as 'completed'.")
-```
-
-**If user chooses No:**
-- Update sprint-status.yaml to keep epic-[N]-retrospective as "optional"
+**DO NOT execute the retrospective as a Task within this workflow.**
 
 ---
 

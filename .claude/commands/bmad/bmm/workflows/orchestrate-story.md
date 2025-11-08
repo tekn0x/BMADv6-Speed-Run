@@ -164,17 +164,19 @@ Task(subagent_type="general-purpose",
 
 **CRITICAL**: This step fixes the bug where story files remain at "Status: review" even after approval.
 
-```bash
-# Update the story file status from "review" to "done"
-# This ensures the story file itself reflects the final status
+**Execute directly using Edit tool (not via Task):**
+
+```
+1. Read the story file: docs/stories/[story-file].md
+2. Use Edit tool to update the Status line:
+   old_string: "Status: review"
+   new_string: "Status: done"
+3. Verify the change was made successfully
 ```
 
-**Using Edit tool:**
-- Read the story file at `docs/stories/[story-file].md`
-- Update the Status line from "Status: review" to "Status: done"
-
 **Verify**:
-- Story file now shows "Status: done" (typically around line 3)
+- Story file now shows "Status: done" (typically around line 3-5)
+- Read the file again to confirm if needed
 
 **Report**: "✅ Step 4a: Story file status updated to done"
 
