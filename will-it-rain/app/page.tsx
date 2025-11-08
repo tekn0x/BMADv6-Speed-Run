@@ -5,7 +5,8 @@ import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { LoadingState } from '@/components/LoadingState'
 import { AnswerDisplay } from '@/components/AnswerDisplay'
-import type { RainCheckResponse } from '@/types/api'
+import { ErrorDisplay } from '@/components/ErrorDisplay'
+import type { RainCheckResponse, ErrorResponse } from '@/types/api'
 
 /**
  * Home Page Component - Landing Page for "Will It Rain?" Application
@@ -51,8 +52,7 @@ export default function HomePage() {
 
   // State hooks for API response
   const [answerData, setAnswerData] = useState<RainCheckResponse | null>(null)
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [errorData, setErrorData] = useState<unknown>(null)
+  const [errorData, setErrorData] = useState<ErrorResponse | null>(null)
 
   // Ref for programmatic focus management
   const inputRef = useRef<HTMLInputElement>(null)
@@ -171,7 +171,8 @@ export default function HomePage() {
           <AnswerDisplay response={answerData} searchedLocation={location} />
         )}
 
-        {/* Note: Error display will be added in Story 3.7 */}
+        {/* Error Display - Shows user-friendly error messages with guidance */}
+        {errorData && <ErrorDisplay error={errorData} />}
       </main>
 
       {/* Footer - Privacy and Attribution */}
