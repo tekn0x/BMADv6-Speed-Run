@@ -10,6 +10,14 @@ const inter = Inter({
 export const metadata: Metadata = {
   title: "Will It Rain? | Simple 24-Hour Rain Forecast",
   description: "Get a simple yes or no answer about rain in your area for the next 24 hours",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "Will It Rain?",
+  },
+  icons: {
+    apple: "/icons/apple-touch-icon.png",
+  },
   openGraph: {
     title: "Will It Rain? | Simple 24-Hour Rain Forecast",
     description: "Get a simple yes or no answer about rain in your area for the next 24 hours",
