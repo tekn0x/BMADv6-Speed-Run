@@ -54,7 +54,7 @@ development_status:
   2-5-implement-safe-window-calculation: done
   2-6-integrate-complete-decision-logic: done
   2-7-add-privacy-first-analytics-logging: done
-  2-8-implement-comprehensive-error-handling: backlog
+  2-8-implement-comprehensive-error-handling: done
   epic-2-retrospective: optional
 
   epic-3: backlog

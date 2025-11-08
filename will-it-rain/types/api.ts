@@ -58,7 +58,25 @@ export type ErrorCode =
   | 'timeout'              // Request took longer than 5 seconds
   | 'network_error'        // Network connectivity issue
   | 'missing_api_key'      // OPENWEATHER_API_KEY not configured
-  | 'invalid_request';     // Malformed request (missing location, etc.)
+  | 'invalid_request'      // Malformed request (missing location, etc.)
+  | 'unknown_error';       // Unexpected error not matching above cases
+
+/**
+ * Internal ApiError interface for centralized error handling
+ *
+ * Used by error handler module to represent errors before converting to API response.
+ * Contains error code, user-friendly message, and HTTP status code.
+ *
+ * @see ErrorResponse - External API response format
+ */
+export interface ApiError {
+  /** Standardized error code for programmatic handling */
+  code: ErrorCode;
+  /** User-friendly error message (no technical details) */
+  message: string;
+  /** HTTP status code (404, 500, 503, 504, etc.) */
+  statusCode: number;
+}
 
 /**
  * Error response from /api/check-rain endpoint

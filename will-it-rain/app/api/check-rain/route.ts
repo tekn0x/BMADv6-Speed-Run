@@ -20,11 +20,12 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-import { fetchWeatherData, OpenWeatherError } from '@/lib/openweather';
+import { fetchWeatherData } from '@/lib/openweather';
 import { parseForecastData } from '@/lib/forecast-parser';
 import { calculateRainProbability } from '@/lib/rain-logic';
 import { detectRainWindows, calculateSafeWindows, formatTimeRange } from '@/lib/rain-windows';
 import { logSearch } from '@/lib/analytics';
+import { mapErrorToApiError, logError, createErrorResponse } from '@/lib/error-handler';
 import type { RainCheckRequest, ErrorResponse } from '@/types/api';
 
 /**
@@ -209,26 +210,13 @@ export async function POST(request: NextRequest) {
     // STEP 8: Error handling and HTTP status mapping
     // ========================================
 
-    // Handle OpenWeatherError with standardized error codes
-    if (error instanceof OpenWeatherError) {
-      const statusCode = error.statusCode || 500;
-      return NextResponse.json<ErrorResponse>(
-        {
-          error: error.code,
-          message: error.message,
-        },
-        { status: statusCode }
-      );
-    }
+    // Map error to standardized ApiError format
+    const apiError = mapErrorToApiError(error);
 
-    // Handle unexpected errors
-    console.error('Unexpected error in /api/check-rain:', error);
-    return NextResponse.json<ErrorResponse>(
-      {
-        error: 'service_unavailable',
-        message: 'An unexpected error occurred',
-      },
-      { status: 500 }
-    );
+    // Log full error details server-side (includes stack trace)
+    logError(error, 'API Route');
+
+    // Return user-friendly error response
+    return createErrorResponse(apiError);
   }
 }
