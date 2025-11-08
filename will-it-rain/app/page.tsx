@@ -106,18 +106,18 @@ export default function HomePage() {
   return (
     <div className="min-h-screen flex flex-col bg-background">
       {/* Header Section - Value Proposition */}
-      <header className="text-center pt-12 px-4 sm:pt-16 md:pt-20">
-        <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-foreground">
+      <header className="text-center pt-12 px-4 sm:pt-16 md:pt-20 lg:pt-24">
+        <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-foreground">
           Will It Rain?
         </h1>
-        <p className="text-lg sm:text-xl md:text-2xl text-muted-foreground mt-4 max-w-2xl mx-auto">
+        <p className="text-lg sm:text-xl md:text-2xl text-muted-foreground mt-4 max-w-2xl mx-auto px-2">
           Get a simple yes or no answer for the next 24 hours
         </p>
       </header>
 
       {/* Main Content - Location Input and Form */}
-      <main className="flex-1 max-w-2xl mx-auto w-full px-4 py-8 sm:py-12">
-        <form onSubmit={handleSubmit} className="space-y-4">
+      <main className="flex-1 max-w-full sm:max-w-xl md:max-w-2xl lg:max-w-3xl mx-auto w-full px-4 py-8 sm:py-12 md:py-16">
+        <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5">
           <Input
             ref={inputRef}
             type="text"
@@ -131,14 +131,14 @@ export default function HomePage() {
               }
             }}
             disabled={isLoading}
-            className="text-center text-lg h-12 sm:h-14"
+            className="text-center text-base sm:text-lg md:text-xl h-12 sm:h-14 md:h-16 w-full"
             aria-label="Location input - Enter your zipcode or city name"
             autoComplete="off"
           />
 
           {/* Validation Error Display */}
           {validationError && (
-            <p className="text-sm text-destructive text-center" role="alert">
+            <p className="text-base sm:text-sm text-destructive text-center" role="alert">
               {validationError}
             </p>
           )}
@@ -147,7 +147,7 @@ export default function HomePage() {
           <Button
             type="submit"
             disabled={isLoading}
-            className="w-full h-12 sm:h-14 text-base sm:text-lg"
+            className="w-full h-12 sm:h-14 md:h-16 text-base sm:text-lg md:text-xl font-medium"
           >
             {isLoading ? 'Checking...' : 'Check Forecast'}
           </Button>
