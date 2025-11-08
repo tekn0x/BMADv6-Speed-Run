@@ -1,3 +1,7 @@
+---
+description: 'Execute complete epic lifecycle: tech spec → all stories (create → context → develop → review → merge → deploy) → retrospective. Fully automated epic orchestration with context isolation.'
+---
+
 # orchestrate-epic
 
 **EXECUTION CONTEXT**: This slash command is executed by the **main assistant**, not a subagent. You have full access to all tools including Task, Bash, Read, Edit, etc.
