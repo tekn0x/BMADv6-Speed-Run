@@ -1,0 +1,230 @@
+<story-context id="bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>3</epicId>
+    <storyId>1</storyId>
+    <title>Build Landing Page with Value Proposition</title>
+    <status>drafted</status>
+    <generatedAt>2025-11-07</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/stories/3-1-build-landing-page-with-value-proposition.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>a user</asA>
+    <iWant>to immediately understand what this tool does when I arrive</iWant>
+    <soThat>I can start using it without confusion</soThat>
+    <tasks>
+- Task 1: Create main page component structure (AC: 1)
+  - Create `/app/page.tsx` as client component with `"use client"` directive
+  - Add semantic HTML structure: `<header>`, `<main>`, `<footer>` elements
+  - Import necessary Shadcn UI components (Button, Input, Card)
+  - Set up React state hooks for location input, loading, answer data, error states
+
+- Task 2: Implement landing page header and value proposition (AC: 1)
+  - Add H1 heading with text "Will It Rain?"
+  - Style H1 with large, prominent typography using Tailwind CSS
+  - Add subheading with text "Get a simple yes or no answer for the next 24 hours"
+  - Use Shadcn UI typography patterns for consistent styling
+  - Center content with generous white space (mobile-first approach)
+
+- Task 3: Add location input field placeholder (AC: 1)
+  - Import Shadcn UI Input component
+  - Create controlled input with placeholder "Enter zipcode or city"
+  - Position input prominently below value proposition
+  - Add proper ARIA labels for accessibility
+  - Add focus management for keyboard users
+  - Note: Full validation and submission logic deferred to Story 3.2
+
+- Task 4: Create footer with privacy statement and attribution (AC: 1)
+  - Add footer element at bottom of page
+  - Include privacy statement: "We don't store your location or search history"
+  - Add OpenWeather attribution: "Weather data provided by OpenWeather"
+  - Use subtle typography (smaller font size, muted color)
+  - Ensure footer is visible but doesn't distract from main content
+
+- Task 5: Implement responsive design (AC: 1)
+  - Use Tailwind CSS mobile-first breakpoints (sm:, md:, lg:)
+  - Test layout on mobile (320px-767px): single-column, centered
+  - Test layout on tablet (768px-1024px): centered with comfortable spacing
+  - Test layout on desktop (1025px+): centered content with max-width constraint
+  - Ensure text is readable without zooming (minimum 16px base font)
+  - Verify no horizontal scrolling at any breakpoint
+
+- Task 6: Add SEO meta tags and basic PWA metadata (AC: 1)
+  - Update `app/page.tsx` with metadata export (Next.js 15 pattern)
+  - Set page title: "Will It Rain? | Simple 24-Hour Rain Forecast"
+  - Add meta description: "Get a simple yes or no answer about rain in your area for the next 24 hours"
+  - Verify PWA manifest metadata from Story 1.4 is still active
+  - Add Open Graph tags for social sharing (optional enhancement)
+
+- Task 7: Manual testing and validation (AC: 1)
+  - Test landing page loads without errors (`npm run dev`)
+  - Verify H1 and subheading display correctly
+  - Verify input field is visible and accessible (placeholder text visible)
+  - Verify footer displays privacy statement and attribution
+  - Test responsive design on Chrome DevTools (mobile, tablet, desktop)
+  - Test keyboard accessibility: Tab to input, focus indicators visible
+  - TypeScript compilation passes (`npm run type-check`)
+  - ESLint validation passes (`npm run lint`)
+  - Lighthouse audit: Accessibility > 95
+</tasks>
+  </story>
+
+  <acceptanceCriteria>
+1. **Given** a user visits the app for the first time
+   **When** the landing page loads
+   **Then** the H1 heading displays "Will It Rain?"
+   **And** a clear subheading explains: "Get a simple yes or no answer for the next 24 hours"
+   **And** the location input field is prominently visible and accessible
+   **And** the page uses clean, minimal design with Shadcn UI components
+   **And** a footer includes privacy statement and OpenWeather attribution
+   **And** the page is fully responsive (mobile, tablet, desktop)
+</acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc>
+        <path>docs/tech-spec-epic-3.md</path>
+        <title>Epic Technical Specification: Simple Answer Experience</title>
+        <section>System Architecture Alignment</section>
+        <snippet>Frontend architecture using Next.js App Router with app/page.tsx as primary file. Uses React useState hooks for state management, Tailwind CSS v4 with Shadcn UI components (Button, Input, Card). All interactive elements require "use client" directive.</snippet>
+      </doc>
+      <doc>
+        <path>docs/tech-spec-epic-3.md</path>
+        <title>Epic Technical Specification: Simple Answer Experience</title>
+        <section>AC-1: Landing Page Displays Correctly</section>
+        <snippet>H1 heading "Will It Rain?" prominently displayed, subheading "Get a simple yes or no answer for the next 24 hours", location input field centered and accessible, footer with privacy statement and OpenWeather attribution, responsive on mobile/tablet/desktop.</snippet>
+      </doc>
+      <doc>
+        <path>docs/tech-spec-epic-3.md</path>
+        <title>Epic Technical Specification: Simple Answer Experience</title>
+        <section>AC-10: Accessibility Foundations</section>
+        <snippet>All interactive elements keyboard accessible (Tab, Enter), semantic HTML (h1, main, form, button, label), form inputs have associated labels, loading states use aria-live="polite", error messages use aria-live="assertive", focus indicators visible.</snippet>
+      </doc>
+      <doc>
+        <path>docs/tech-spec-epic-3.md</path>
+        <title>Epic Technical Specification: Simple Answer Experience</title>
+        <section>AC-11: Responsive Design</section>
+        <snippet>Mobile (320px-767px): single-column layout, touch-optimized. Tablet (768px-1024px): centered layout, comfortable spacing. Desktop (1025px+): centered content, max-width constraint. Text readable without zooming (16px base), touch targets 44x44px, no horizontal scrolling.</snippet>
+      </doc>
+      <doc>
+        <path>docs/tech-spec-epic-3.md</path>
+        <title>Epic Technical Specification: Simple Answer Experience</title>
+        <section>Dependencies and Integrations</section>
+        <snippet>All frontend dependencies installed in Epic 1. No new dependencies required. Shadcn UI components (Button, Input, Card) already available. TypeScript types from Epic 2 available for reuse (types/api.ts, types/weather.ts).</snippet>
+      </doc>
+      <doc>
+        <path>docs/tech-spec-epic-3.md</path>
+        <title>Epic Technical Specification: Simple Answer Experience</title>
+        <section>Test Strategy Summary</section>
+        <snippet>Manual browser testing on localhost:3000. No automated unit tests (deferred to Epic 5). TypeScript validation (npm run type-check), ESLint validation (npm run lint), Lighthouse audit for accessibility and performance. Test responsive design on Chrome DevTools.</snippet>
+      </doc>
+    </docs>
+    <code>
+      <artifact>
+        <path>will-it-rain/app/page.tsx</path>
+        <kind>page component</kind>
+        <symbol>Home</symbol>
+        <lines>1-17</lines>
+        <reason>Current placeholder page that will be replaced with landing page implementation. Shows structure for Next.js page component.</reason>
+      </artifact>
+      <artifact>
+        <path>will-it-rain/components/ui/button.tsx</path>
+        <kind>ui component</kind>
+        <symbol>Button</symbol>
+        <lines>1-30</lines>
+        <reason>Shadcn UI Button component installed in Epic 1.2. Will be imported for future search submission functionality (Story 3.2).</reason>
+      </artifact>
+      <artifact>
+        <path>will-it-rain/components/ui/input.tsx</path>
+        <kind>ui component</kind>
+        <symbol>Input</symbol>
+        <lines>1-22</lines>
+        <reason>Shadcn UI Input component installed in Epic 1.2. Required for location input field with placeholder "Enter zipcode or city".</reason>
+      </artifact>
+      <artifact>
+        <path>will-it-rain/components/ui/card.tsx</path>
+        <kind>ui component</kind>
+        <symbol>Card, CardHeader</symbol>
+        <lines>1-30</lines>
+        <reason>Shadcn UI Card component installed in Epic 1.2. Will be imported for future answer display cards (Story 3.4, 3.5).</reason>
+      </artifact>
+      <artifact>
+        <path>will-it-rain/app/layout.tsx</path>
+        <kind>layout component</kind>
+        <symbol>RootLayout</symbol>
+        <lines>N/A</lines>
+        <reason>Root layout with Tailwind CSS configuration from Epic 1.2. Provides global styling context for page components.</reason>
+      </artifact>
+    </code>
+    <dependencies>
+      <node>
+        <react>19.2.0</react>
+        <next>16.0.1</next>
+        <typescript>^5</typescript>
+        <tailwindcss>^4</tailwindcss>
+        <lucide-react>^0.552.0</lucide-react>
+        <radix-ui-react-slot>^1.2.4</radix-ui-react-slot>
+        <class-variance-authority>^0.7.1</class-variance-authority>
+        <clsx>^2.1.1</clsx>
+        <tailwind-merge>^3.3.1</tailwind-merge>
+        <tailwindcss-animate>^1.0.7</tailwindcss-animate>
+      </node>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint>Use Next.js 15 App Router pattern - page.tsx must be a client component with "use client" directive for interactive elements</constraint>
+    <constraint>Import Shadcn UI components from @/components/ui/* - Button, Input, Card components are available</constraint>
+    <constraint>Use TypeScript strict mode - no any types, proper typing for all props and state</constraint>
+    <constraint>Mobile-first responsive design - use Tailwind breakpoints sm:, md:, lg: for responsive layout</constraint>
+    <constraint>Semantic HTML structure - use header, main, footer elements for accessibility</constraint>
+    <constraint>Add ARIA labels and keyboard navigation support - all interactive elements must be accessible</constraint>
+    <constraint>Minimum 16px base font size for readability without zooming</constraint>
+    <constraint>Test with TypeScript compilation (npm run type-check) and ESLint (npm run lint)</constraint>
+    <constraint>Follow code quality standards from Epic 2 - comprehensive JSDoc comments, clear error handling</constraint>
+    <constraint>Do NOT implement API integration yet - deferred to Story 3.2 and 3.9</constraint>
+  </constraints>
+  <interfaces>
+    <interface>
+      <name>Shadcn UI Input Component Import</name>
+      <kind>React Component Import</kind>
+      <signature>import { Input } from '@/components/ui/input'</signature>
+      <path>will-it-rain/components/ui/input.tsx</path>
+    </interface>
+    <interface>
+      <name>Shadcn UI Button Component Import (Future Use)</name>
+      <kind>React Component Import</kind>
+      <signature>import { Button } from '@/components/ui/button'</signature>
+      <path>will-it-rain/components/ui/button.tsx</path>
+    </interface>
+    <interface>
+      <name>React useState Hook</name>
+      <kind>React Hook</kind>
+      <signature>const [location, setLocation] = useState&lt;string&gt;('')</signature>
+      <path>N/A - React core</path>
+    </interface>
+    <interface>
+      <name>Next.js Metadata Export Pattern</name>
+      <kind>Next.js Metadata</kind>
+      <signature>export const metadata: Metadata = { title: '...', description: '...' }</signature>
+      <path>N/A - Next.js 15 pattern</path>
+    </interface>
+  </interfaces>
+  <tests>
+    <standards>Manual browser testing is the primary approach for Epic 3. Start development server (npm run dev), test on http://localhost:3000. Run TypeScript validation (npm run type-check) and ESLint validation (npm run lint). Use Lighthouse audit in Chrome DevTools for accessibility and performance scores (targets: Accessibility &gt; 95, Performance &gt; 90). Test responsive design using Chrome DevTools device emulation. No automated unit tests required for Epic 3 (deferred to Epic 5).</standards>
+    <locations>N/A - No automated test files for Epic 3. Manual testing only.</locations>
+    <ideas>
+      <idea ac="1">Test landing page loads without errors by running npm run dev and navigating to http://localhost:3000. Verify no console errors appear.</idea>
+      <idea ac="1">Verify H1 heading displays "Will It Rain?" with large, prominent typography. Check font size and visual hierarchy.</idea>
+      <idea ac="1">Verify subheading displays "Get a simple yes or no answer for the next 24 hours" with appropriate styling. Check text color and size.</idea>
+      <idea ac="1">Verify location input field is visible with placeholder text "Enter zipcode or city". Test that input accepts keyboard input.</idea>
+      <idea ac="1">Verify footer displays privacy statement "We don't store your location or search history" and OpenWeather attribution "Weather data provided by OpenWeather".</idea>
+      <idea ac="1">Test responsive design on Chrome DevTools: Mobile (320px), Tablet (768px), Desktop (1024px+). Verify single-column layout on mobile, centered layout on larger screens.</idea>
+      <idea ac="1">Test keyboard accessibility: Press Tab key to move focus to input field. Verify focus indicator (ring) is visible.</idea>
+      <idea ac="1">Run npm run type-check to verify TypeScript compilation passes with zero errors.</idea>
+      <idea ac="1">Run npm run lint to verify ESLint validation passes with zero errors.</idea>
+      <idea ac="1">Run Lighthouse audit in Chrome DevTools. Verify Accessibility score &gt; 95 and Performance score &gt; 90.</idea>
+    </ideas>
+  </tests>
+</story-context>
