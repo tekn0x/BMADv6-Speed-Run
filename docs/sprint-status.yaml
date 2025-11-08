@@ -71,7 +71,7 @@ development_status:
 
   epic-4: contexted
   4-1-complete-pwa-manifest-configuration: done
-  4-2-implement-service-worker-for-asset-caching: backlog
+  4-2-implement-service-worker-for-asset-caching: done
   4-3-optimize-responsive-design-for-all-devices: backlog
   4-4-implement-touch-friendly-interactions: backlog
   4-5-configure-app-icons-and-splash-screens: backlog
