@@ -79,14 +79,46 @@ You will orchestrate the complete BMAD story workflow by executing exactly 4 seq
 - **Verify**: Check that implementation files were modified and story file updated with development section
 - **Report**: "Step 3 Complete: Story implementation finished, files modified: [list files]"
 
-### Step 4: Code Review
+### Step 4: Code Review (with Auto-Retry Loop)
 - **Action**: Invoke `Task(subagent_type="general-purpose", prompt="Execute code-review workflow for story [X.Y]. Read the story file and implementation changes, perform comprehensive review, and append review section to story file.")`
 - **Wait**: Confirm subagent has fully exited
 - **Verify**: Check that story file now contains code review section
-- **Report**: "Step 4 Complete: Code review appended to story file"
+- **Parse Review Outcome**: Read the review section to determine outcome (APPROVE / Changes Requested / Blocked)
+- **Report**: "Step 4 Complete: Code review appended to story file. Outcome: [outcome]"
+
+### Step 4a: Auto-Retry Loop (If Review Finds Issues)
+- **Condition**: Execute if code review outcome is "Changes Requested" or "Blocked"
+- **Max Retries**: 3 attempts (configurable)
+- **Retry Logic**:
+  1. **If outcome = "Changes Requested" or "Blocked" AND retry_count < max_retries**:
+     - Increment retry counter
+     - Report: "⚠️ Code review found issues (attempt [N]/3). Automatically retrying dev-story to fix..."
+     - **Loop back to Step 3**: Invoke dev-story subagent with additional context:
+       ```
+       Task(subagent_type="general-purpose", prompt="Re-execute dev-story workflow for story [X.Y].
+       CRITICAL: This is retry attempt [N] due to code review findings.
+       Read the 'Senior Developer Review (AI)' section in the story file for specific issues to fix.
+       Address ALL action items marked as required.
+       Update implementation, re-run tests, and update story completion notes.")
+       ```
+     - After dev-story completes, **loop back to Step 4**: Re-run code review
+     - Continue loop until APPROVE or max retries exceeded
+
+  2. **If retry_count >= max_retries AND outcome still not APPROVE**:
+     - Report: "❌ Max retries (3) exceeded. Code review still finding issues. Manual intervention required."
+     - STOP workflow execution
+     - Preserve branch for manual fixing
+     - Report instructions: "Branch story/[X-Y]-[description] preserved. Review findings in story file under 'Senior Developer Review (AI)' section. Fix manually and re-run orchestrator."
+
+  3. **If outcome = "APPROVE"**:
+     - Report: "✅ Code review APPROVED (after [N] retry attempts)"
+     - Proceed to Step 5
+
+- **Rationale**: Automated retry loop enables the orchestrator to fix common issues autonomously (missing tests, incomplete implementations, simple bugs). Only escalates to human intervention after multiple failed attempts.
+- **Safety**: Max retry limit prevents infinite loops. Each retry is a fresh context-isolated dev-story execution.
 
 ### Step 5: Push Story Branch (Backup Checkpoint)
-- **Condition**: Execute if code review outcome is "APPROVE"
+- **Condition**: Execute if code review outcome is "APPROVE" (either first attempt or after successful retry)
 - **Action**: Push story branch to remote as permanent backup before merging
 - **Commands**:
   1. Push story branch to remote: `git push -u origin story/[X-Y]-[description]`
@@ -143,6 +175,7 @@ After EACH step, explicitly verify:
 - Never attempt to "work around" missing artifacts by using cached context - this violates isolation requirements.
 - **Git Branch Safety**: If an error occurs at any step, report: "Error occurred on branch story/[X-Y]-[description]. To rollback: `git checkout main && git branch -D story/[X-Y]-[description]`"
 - **Epic Boundary Violation**: If pre-flight check detects an epic transition, STOP immediately and do not create a git branch. Report the epic boundary message and exit.
+- **Retry Loop Exhausted**: If max retries (3) exceeded and code review still finds issues, preserve branch and provide clear manual intervention instructions. Do NOT proceed to merge.
 
 ## Communication Style
 
@@ -150,7 +183,8 @@ After EACH step, explicitly verify:
 - Report completion status after each step with clear confirmation of artifacts created
 - Use structured reporting: "Step [N] Complete: [specific outcome]"
 - If waiting for a subagent to complete, inform the user: "Waiting for [step name] subagent to complete and exit..."
-- Provide a final summary listing all created/modified files when all 4 steps complete
+- **Retry Loop Reporting**: Clearly indicate retry attempts: "⚠️ Retry [N]/3: Code review found issues, re-running dev-story..."
+- Provide a final summary listing all created/modified files when all steps complete
 
 ## Final Deliverable
 
