@@ -14,10 +14,30 @@ export interface RainCheckRequest {
 }
 
 /**
+ * Time window for rain or safe periods
+ */
+export interface RainWindow {
+  /** Start time in 12-hour format (e.g., "2:00 PM") */
+  start: string;
+  /** End time in 12-hour format (e.g., "5:00 PM") */
+  end: string;
+}
+
+/**
+ * Safe window (identical structure to RainWindow)
+ */
+export interface SafeWindow {
+  /** Start time in 12-hour format (e.g., "10:00 AM") */
+  start: string;
+  /** End time in 12-hour format (e.g., "1:00 PM") */
+  end: string;
+}
+
+/**
  * Successful response from /api/check-rain endpoint
  *
- * Updated in Story 2.2 to include parsed and normalized forecast data.
- * Future stories (2.3-2.6) will add calculated fields like willRain, safeWindow, etc.
+ * Updated in Story 2.6 to include final decision logic with YES/NO answer format.
+ * This is the format that the frontend AnswerDisplay component expects.
  */
 export interface RainCheckResponse {
   /** Location that was queried */
@@ -26,10 +46,26 @@ export interface RainCheckResponse {
   lat: number;
   /** Longitude of the location */
   lon: number;
+  /** Will it rain? (≥50% probability = true) */
+  willRain: boolean;
+  /** Overall rain probability percentage (0-100) */
+  probability: number;
+  /** Rain windows - only present for YES answers (willRain: true) */
+  rainWindows?: RainWindow[];
+  /** Peak rain time - only present for YES answers */
+  peakTime?: string;
+  /** Peak rain intensity - only present for YES answers */
+  intensity?: 'light' | 'moderate' | 'heavy';
+  /** Peak rain amount - only present for YES answers (e.g., "0.2 inches") */
+  amount?: string;
+  /** Safe windows between rain periods - only present if multiple rain periods exist */
+  safeWindows?: SafeWindow[];
+  /** Close call flag - true if probability is 40-49% */
+  closeCall: boolean;
   /**
    * Parsed 24-hour forecast data in 3-hour intervals (8 data points)
    * Data is normalized: probability in 0-100 range, amounts in inches, intensity classified
-   * Replaces hourlyData from Story 2.1
+   * Available for debugging and detailed views
    */
   forecast: Array<{
     /** JavaScript Date object for this forecast period */
