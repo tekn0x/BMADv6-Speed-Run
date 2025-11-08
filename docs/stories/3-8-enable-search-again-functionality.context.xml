@@ -1,0 +1,149 @@
+<story-context id="bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>3</epicId>
+    <storyId>8</storyId>
+    <title>Enable Search Again Functionality</title>
+    <status>drafted</status>
+    <generatedAt>2025-11-08</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/stories/3-8-enable-search-again-functionality.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>a user</asA>
+    <iWant>to easily search for another location</iWant>
+    <soThat>I can check rain forecasts for multiple places without page reloads</soThat>
+    <tasks>
+      - Task 1: Verify state management properly clears previous results on new search
+      - Task 2: Ensure input field remains visible at all times
+      - Task 3: Implement proper focus management for repeated searches
+      - Task 4: Validate state reset logic between searches
+      - Task 5: Test seamless user experience for repeated searches
+      - Task 6: Validate keyboard navigation for multiple searches
+      - Task 7: Optimize for quick successive searches
+      - Task 8: Test responsive behavior for search again on all devices
+      - Task 9: Validate end-to-end search again scenarios
+      - Task 10: Validate code quality and testing standards
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+    1. **Given** an answer (YES or NO) or error is displayed
+       **When** I want to search again
+       **Then** the location input field remains visible and accessible
+       **And** I can enter a new location without page reload
+       **And** submitting a new search clears the previous result
+       **And** the new search follows the same flow (loading, answer/error)
+       **And** the interface feels seamless and responsive
+       **And** keyboard navigation works smoothly for repeated searches
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc path="docs/epics.md" title="Epic Breakdown" section="Story 3.8: Enable Search Again Functionality">
+        Story defines search again functionality as maintaining input field visibility, clearing previous results on new searches, and ensuring seamless repeated use without page reloads. Prerequisites include Stories 3.4 (YES answer), 3.5 (NO answer), and 3.7 (error handling).
+      </doc>
+      <doc path="docs/PRD.md" title="Product Requirements Document" section="FR3.4 - Search Again Functionality">
+        PRD specifies: Input field remains accessible after answer displayed, user can search new location without page reload, previous results cleared when new search initiated. Part of radical simplicity value proposition - effortless repeated use.
+      </doc>
+      <doc path="docs/architecture.md" title="Architecture" section="ADR-002: No Database - Stateless Architecture">
+        Architecture mandates stateless approach with no session management, no localStorage, no caching. Every request is fresh. This design inherently supports search again functionality through clean state management.
+      </doc>
+      <doc path="docs/tech-spec-epic-3.md" title="Epic 3 Technical Specification" section="Detailed Design - State Management">
+        Tech spec defines state flow: location (string), isLoading (boolean), answerData (RainCheckResponse | null), errorData (ErrorResponse | null). Each new search should clear previous answerData/errorData and set isLoading to true.
+      </doc>
+      <doc path="docs/tech-spec-epic-3.md" title="Epic 3 Technical Specification" section="Workflows and Sequencing - Primary User Flow">
+        Defines complete user flow including step 7: "User can search again - Input remains visible and enabled, User enters new location → flow repeats from step 2". State transition diagram shows circular flow from any result state back to loading.
+      </doc>
+      <doc path="docs/stories/3-2-create-location-input-field-with-validation.md" title="Story 3.2 Completion" section="Focus Management">
+        Story 3.2 implemented focus management using inputRef.current?.focus() to return focus to input after results display. Pattern: useRef for input, focus() call in finally block after API response.
+      </doc>
+      <doc path="docs/stories/3-7-implement-error-display-with-user-guidance.md" title="Story 3.7 Completion" section="State Management Excellence">
+        Story 3.7 demonstrated clean state management with errorData properly typed and managed. Error state cleared when new search begins (setErrorData(null)). Focus returns to input after error via inputRef.current?.focus().
+      </doc>
+    </docs>
+    <code>
+      <file path="will-it-rain/app/page.tsx" kind="page-component" symbol="HomePage" lines="47-185" reason="Main component managing search again state flow - contains location, isLoading, answerData, errorData state variables and handleSubmit function that clears previous results (lines 79-80)">
+        HomePage component manages all state for search functionality. State clearing happens in handleSubmit: setAnswerData(null) and setErrorData(null) before API call. Focus management in finally block (line 112): inputRef.current?.focus() returns focus after each search.
+      </file>
+      <file path="will-it-rain/app/page.tsx" kind="page-component" symbol="handleSubmit" lines="68-114" reason="Core search handler that implements search again logic - clears previous state, calls API, manages loading, returns focus">
+        handleSubmit function implements search again pattern: (1) validates input, (2) clears validation error and previous results (lines 78-80), (3) sets loading state, (4) calls API, (5) updates answerData or errorData, (6) clears loading and returns focus to input (lines 110-112).
+      </file>
+      <file path="will-it-rain/app/page.tsx" kind="page-component" symbol="JSX structure" lines="116-185" reason="Layout structure keeps input visible at all times - input/button always rendered regardless of answer/error state">
+        Main section (lines 129-176) shows form is always visible. LoadingState, AnswerDisplay, and ErrorDisplay are conditionally rendered below the form but never hide it. Input field remains accessible in all states for search again functionality.
+      </file>
+      <file path="will-it-rain/components/AnswerDisplay.tsx" kind="component" symbol="AnswerDisplay" lines="58-132" reason="Renders YES/NO answers but doesn't interfere with input visibility - component structure supports search again">
+        AnswerDisplay is conditionally rendered when answerData exists but doesn't hide or disable the input field. Component is self-contained and doesn't affect parent search functionality. Supports seamless search again flow.
+      </file>
+      <file path="will-it-rain/components/ErrorDisplay.tsx" kind="component" symbol="ErrorDisplay" lines="43-104" reason="Renders error messages without blocking input field - preserves search again capability in error states">
+        ErrorDisplay renders errors with guidance but maintains input accessibility. Component includes helper text (lines 96-99) encouraging retry. Error doesn't disable input field, enabling immediate search again.
+      </file>
+      <file path="will-it-rain/components/LoadingState.tsx" kind="component" symbol="LoadingState" lines="35-48" reason="Loading indicator that displays during API calls - doesn't interfere with search again state transitions">
+        LoadingState provides user feedback during API calls with accessibility support. Conditionally rendered based on isLoading state. Component is lightweight and doesn't affect state management for search again.
+      </file>
+    </code>
+    <dependencies>
+      <node>
+        <dependency>react@18.x</dependency>
+        <dependency>next@15.x</dependency>
+        <dependency>typescript@latest</dependency>
+        <dependency>tailwindcss@4.x</dependency>
+        <dependency>@radix-ui/react-* (via Shadcn UI)</dependency>
+      </node>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    - Stateless architecture: No localStorage, sessionStorage, or caching (ADR-002)
+    - State must be cleared explicitly on each new search (answerData and errorData set to null)
+    - Input field must remain visible and enabled in all application states
+    - Focus must return to input after every result display (answer or error)
+    - No page reloads - pure client-side state management with React hooks
+    - Loading state must transition correctly: false → true → false for each search
+    - No state pollution between successive searches
+    - API calls must be non-blocking and support rapid successive searches
+    - Keyboard navigation must work smoothly for repeated searches (Tab, Enter flow)
+    - Component architecture must support conditional rendering without hiding core input
+  </constraints>
+
+  <interfaces>
+    <interface name="RainCheckResponse" kind="TypeScript interface" signature="{ willRain: boolean; probability: number; rainWindows?: RainWindow[]; peakTime?: string; intensity?: string; amount?: string; safeWindows?: SafeWindow[]; closeCall: boolean }" path="will-it-rain/types/api.ts">
+      API response interface for successful rain checks. Used in answerData state that gets cleared on new searches.
+    </interface>
+    <interface name="ErrorResponse" kind="TypeScript interface" signature="{ error: 'invalid_location' | 'service_unavailable' | 'timeout' | 'network_error'; message: string; suggestions?: string[] }" path="will-it-rain/types/api.ts">
+      API response interface for error cases. Used in errorData state that gets cleared on new searches.
+    </interface>
+    <interface name="handleSubmit" kind="function" signature="async (e: FormEvent<HTMLFormElement>) => Promise<void>" path="will-it-rain/app/page.tsx">
+      Form submission handler that implements search again logic by clearing previous state, making API call, and managing focus.
+    </interface>
+    <interface name="POST /api/check-rain" kind="REST endpoint" signature="POST { location: string } → RainCheckResponse | ErrorResponse" path="will-it-rain/app/api/check-rain/route.ts">
+      Backend API endpoint that processes location searches. Called on every search submission, supporting search again functionality.
+    </interface>
+  </interfaces>
+
+  <tests>
+    <standards>
+      Manual browser testing on http://localhost:3000 with TypeScript type checking (npm run type-check) and ESLint validation (npm run lint). No automated unit tests (deferred to Epic 5.7 per tech spec). Focus on end-to-end flow testing for multiple consecutive searches, state transitions, responsive design, and accessibility (keyboard navigation, focus management). Test rapid search scenarios and edge cases.
+    </standards>
+    <locations>
+      - Manual testing in browser DevTools
+      - TypeScript type checking: npm run type-check
+      - ESLint validation: npm run lint
+      - Responsive testing: DevTools responsive mode (320px, 768px, 1024px, 1280px)
+      - Keyboard navigation testing: Tab/Shift+Tab/Enter flow
+      - Network tab: Verify API calls for each search
+    </locations>
+    <ideas>
+      - Test Scenario 1: Search "San Francisco" → Get YES → Search "Seattle" → Get NO (verify first result cleared)
+      - Test Scenario 2: Search invalid location → Error → Search valid location → Get answer (verify error cleared)
+      - Test Scenario 3: Search same location twice (verify both API calls complete, no caching)
+      - Test Scenario 4: Submit 5 searches rapidly in succession (verify no race conditions, results display in order)
+      - Test Scenario 5: Submit search, immediately submit another before first completes (verify most recent wins)
+      - Test Scenario 6: Keyboard-only flow - Tab to input → Enter location → Enter → Tab through results → Tab back to input → Enter new search (verify smooth navigation)
+      - Test Scenario 7: Mobile 320px - Perform 3 consecutive searches (verify input remains accessible without zoom)
+      - Test Scenario 8: Desktop 1280px - Perform 20 consecutive searches (monitor memory for leaks, verify performance)
+      - Test Scenario 9: Verify focus returns to input after YES answer, NO answer, and error states
+      - Test Scenario 10: Check browser console for errors during rapid searches
+    </ideas>
+  </tests>
+</story-context>
