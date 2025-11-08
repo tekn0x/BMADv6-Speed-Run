@@ -57,16 +57,16 @@ interface DetailCardProps {
 
 export function DetailCard({ title, data, type }: DetailCardProps) {
   return (
-    <Card className="backdrop-blur-md bg-white/10 border border-white/20">
-      <CardHeader>
-        <CardTitle className="text-lg">{title}</CardTitle>
+    <Card className="backdrop-blur-md bg-white/10 border border-white/20 w-full">
+      <CardHeader className="pb-3 sm:pb-4">
+        <CardTitle className="text-base sm:text-lg md:text-xl">{title}</CardTitle>
       </CardHeader>
-      <CardContent>
+      <CardContent className="pt-0">
         {/* Rain windows display */}
         {type === 'rain-windows' && Array.isArray(data) && (
-          <ul className="space-y-2">
+          <ul className="space-y-2 sm:space-y-2.5">
             {data.map((window, index) => (
-              <li key={index} className="text-sm">
+              <li key={index} className="text-base sm:text-sm md:text-base">
                 {window.start} - {window.end}
               </li>
             ))}
@@ -75,9 +75,9 @@ export function DetailCard({ title, data, type }: DetailCardProps) {
 
         {/* Safe windows display */}
         {type === 'safe-windows' && Array.isArray(data) && (
-          <ul className="space-y-2">
+          <ul className="space-y-2 sm:space-y-2.5">
             {data.map((window, index) => (
-              <li key={index} className="text-sm">
+              <li key={index} className="text-base sm:text-sm md:text-base">
                 {window.start} - {window.end}
               </li>
             ))}
@@ -86,7 +86,7 @@ export function DetailCard({ title, data, type }: DetailCardProps) {
 
         {/* Peak details display */}
         {type === 'peak-details' && !Array.isArray(data) && (
-          <div className="space-y-1 text-sm">
+          <div className="space-y-1.5 sm:space-y-1 md:space-y-1.5 text-base sm:text-sm md:text-base">
             <p>
               <span className="font-medium">Time:</span> {data.peakTime}
             </p>
