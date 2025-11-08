@@ -1,0 +1,281 @@
+<story-context id="bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>3</epicId>
+    <storyId>3.2</storyId>
+    <title>Create Location Input Field with Validation</title>
+    <status>drafted</status>
+    <generatedAt>2025-11-07</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/stories/3-2-create-location-input-field-with-validation.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>a user</asA>
+    <iWant>to enter my location easily and get helpful feedback</iWant>
+    <soThat>I can quickly get my rain forecast</soThat>
+    <tasks>
+- [ ] Task 1: Add search button and form submission handler (AC: 1)
+  - [ ] Add Shadcn UI Button component with "Check Forecast" text
+  - [ ] Wrap input and button in HTML form element with onSubmit handler
+  - [ ] Implement handleSubmit function to process location input
+  - [ ] Prevent default form submission (no page reload)
+  - [ ] Call API with location value on form submission
+
+- [ ] Task 2: Implement client-side validation (AC: 1)
+  - [ ] Add validation check for empty input before API call
+  - [ ] Display inline error message "Please enter a location" if empty
+  - [ ] Use Shadcn UI Alert or inline text for error display
+  - [ ] Clear error message when user starts typing
+  - [ ] Prevent API call if validation fails
+
+- [ ] Task 3: Create loading state management (AC: 1)
+  - [ ] Add isLoading state variable using useState
+  - [ ] Set isLoading = true on form submission
+  - [ ] Set isLoading = false when API response received
+  - [ ] Disable input and button during loading (disabled attribute)
+  - [ ] Display loading indicator (Story 3.3 will add visual component)
+
+- [ ] Task 4: Implement focus management for accessibility (AC: 1)
+  - [ ] Ensure input field is keyboard accessible (Tab navigation)
+  - [ ] Add Enter key submission support (built into form element)
+  - [ ] Return focus to input after API response for easy re-search
+  - [ ] Use React useRef and .focus() method for programmatic focus
+  - [ ] Test complete keyboard flow: Tab to input → Type → Enter → Tab to button → Enter
+
+- [ ] Task 5: Add search button styling and accessibility (AC: 1)
+  - [ ] Import Shadcn UI Button component from @/components/ui/button
+  - [ ] Use Button type="submit" for form submission
+  - [ ] Add accessible button label "Check Forecast" or similar
+  - [ ] Style button consistently with landing page design
+  - [ ] Add disabled state styling for loading state
+  - [ ] Ensure button meets 44x44px touch target minimum
+
+- [ ] Task 6: Manual testing and validation (AC: 1)
+  - [ ] Test form submission with valid location (zipcode and city name)
+  - [ ] Test empty input validation error display
+  - [ ] Test keyboard accessibility (Tab to input/button, Enter to submit)
+  - [ ] Test input and button disable during loading state
+  - [ ] Test focus returns to input after result display
+  - [ ] TypeScript compilation passes (npm run type-check)
+  - [ ] ESLint validation passes (npm run lint)
+  - [ ] Verify no console errors in browser
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+**Given** the landing page is displayed
+**When** I interact with the location input
+**Then** a single text input field accepts zipcode or city name
+**And** placeholder text reads "Enter zipcode or city"
+**And** the input field is keyboard accessible (Tab, Enter to submit)
+**And** a clear search button or Enter key triggers submission
+**And** empty input shows validation error before API call
+**And** input is disabled during processing to prevent duplicate requests
+**And** focus returns to input after result display for easy re-search
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <artifact>
+        <path>docs/tech-spec-epic-3.md</path>
+        <title>Epic Technical Specification: Simple Answer Experience</title>
+        <section>Detailed Design - Form Handling</section>
+        <snippet>Form Element: Use standard HTML form element with onSubmit handler. Event Handling: Use e.preventDefault() to prevent page reload. Submission Flow: onSubmit → validate → set loading → call API → handle response. State Management: React useState for location, isLoading, validation errors.</snippet>
+      </artifact>
+      <artifact>
+        <path>docs/tech-spec-epic-3.md</path>
+        <title>Epic Technical Specification: Simple Answer Experience</title>
+        <section>AC-2: Location Input Accepts and Validates Input</section>
+        <snippet>Validation Strategy: Client-Side Only - Empty input validation before API call. No Complex Validation: Backend handles location format validation. Error Display: Inline error message below input field. Validation Timing: On submit (not on every keystroke).</snippet>
+      </artifact>
+      <artifact>
+        <path>docs/tech-spec-epic-3.md</path>
+        <title>Epic Technical Specification: Simple Answer Experience</title>
+        <section>AC-3: Loading State Provides Immediate Feedback</section>
+        <snippet>State Variable: const [isLoading, setIsLoading] = useState(false). Timing: Set true on submit, set false on response (success or error). UI Impact: Disable input and button during loading. Loading Indicator: Story 3.3 will add visual loading component.</snippet>
+      </artifact>
+      <artifact>
+        <path>docs/tech-spec-epic-3.md</path>
+        <title>Epic Technical Specification: Simple Answer Experience</title>
+        <section>AC-10: Accessibility Foundations</section>
+        <snippet>Focus Management: useRef Pattern - const inputRef = useRef&lt;HTMLInputElement&gt;(null). Return Focus: After API response, call inputRef.current?.focus(). Keyboard Flow: Tab → Input → Type → Enter → Loading → Result → Focus returns to input. Rationale: Enables quick successive searches without mouse.</snippet>
+      </artifact>
+      <artifact>
+        <path>docs/tech-spec-epic-3.md</path>
+        <title>Epic Technical Specification: Simple Answer Experience</title>
+        <section>Dependencies and Integrations</section>
+        <snippet>Button Component (Shadcn UI): Import Pattern - import { Button } from '@/components/ui/button'. Submit Type: &lt;Button type="submit"&gt;Check Forecast&lt;/Button&gt;. Disabled State: Pass disabled={isLoading} prop. Styling: Default Shadcn UI button style (matches landing page).</snippet>
+      </artifact>
+      <artifact>
+        <path>docs/PRD.md</path>
+        <title>TEST3 - Product Requirements Document</title>
+        <section>FR1.2 - Location Validation</section>
+        <snippet>Validate location format before API call. Detect invalid locations from OpenWeather API response. Empty input shows helpful error. Clearly invalid formats rejected before API call. OpenWeather API errors caught and translated to user-friendly messages.</snippet>
+      </artifact>
+      <artifact>
+        <path>docs/PRD.md</path>
+        <title>TEST3 - Product Requirements Document</title>
+        <section>FR4.1 - Loading State</section>
+        <snippet>Display loading indicator during API call. Disable input during processing to prevent duplicate requests. Communicate progress to screen readers. Loading indicator appears immediately on submission. Input disabled until response received.</snippet>
+      </artifact>
+      <artifact>
+        <path>docs/architecture.md</path>
+        <title>Architecture</title>
+        <section>Frontend → Backend API Integration</section>
+        <snippet>POST /api/check-rain. Request: { location: string }. Success Response: { willRain: boolean, probability: number, rainWindows?: [...], peakTime?: string, intensity?: string, amount?: string, safeWindows?: [...], closeCall: boolean }. Error Response: { error: 'invalid_location' | 'service_unavailable' | 'timeout' | 'network_error', message: string, suggestions?: string[] }.</snippet>
+      </artifact>
+      <artifact>
+        <path>docs/architecture.md</path>
+        <title>Architecture</title>
+        <section>Implementation Patterns - Code Organization</section>
+        <snippet>Component Structure: 1. Imports (external → internal → types). 2. Types/Interfaces. 3. Component with hooks at top, helper functions, early returns for edge cases, main render. Import only necessary Shadcn UI components. Use TypeScript strict mode with no 'any' types.</snippet>
+      </artifact>
+      <artifact>
+        <path>docs/stories/3-1-build-landing-page-with-value-proposition.md</path>
+        <title>Story 3.1: Build Landing Page with Value Proposition</title>
+        <section>Learnings from Previous Story</section>
+        <snippet>Landing page structure established in app/page.tsx with header, main, footer. Shadcn UI Input component already imported and rendered. Location state variable (const [location, setLocation] = useState('')) already defined. React useState pattern used for location input. Additional state variables prepared for isLoading, answerData, errorData (not yet used). Story 3.2 builds directly on this foundation by adding form submission logic.</snippet>
+      </artifact>
+    </docs>
+    <code>
+      <artifact>
+        <path>will-it-rain/app/page.tsx</path>
+        <kind>component</kind>
+        <symbol>HomePage</symbol>
+        <lines>1-70</lines>
+        <reason>Main landing page component that will be modified to add form submission, validation, and loading state management. Already contains location state and Input component.</reason>
+      </artifact>
+      <artifact>
+        <path>will-it-rain/components/ui/button.tsx</path>
+        <kind>component</kind>
+        <symbol>Button</symbol>
+        <lines>1-58</lines>
+        <reason>Shadcn UI Button component to be imported and used for form submission. Supports type="submit" and disabled state for loading.</reason>
+      </artifact>
+      <artifact>
+        <path>will-it-rain/components/ui/input.tsx</path>
+        <kind>component</kind>
+        <symbol>Input</symbol>
+        <lines>1-23</lines>
+        <reason>Shadcn UI Input component already in use for location field. Supports ref forwarding for focus management and disabled state during loading.</reason>
+      </artifact>
+      <artifact>
+        <path>will-it-rain/types/api.ts</path>
+        <kind>types</kind>
+        <symbol>RainCheckRequest, RainCheckResponse, ErrorResponse</symbol>
+        <lines>1-90</lines>
+        <reason>TypeScript type definitions for API request/response contracts. Used to type API calls and response handling in handleSubmit function.</reason>
+      </artifact>
+      <artifact>
+        <path>will-it-rain/app/api/check-rain/route.ts</path>
+        <kind>api-route</kind>
+        <symbol>POST handler</symbol>
+        <lines>all</lines>
+        <reason>Backend API endpoint that will receive POST requests from the form submission. Already implemented in Epic 2, accepts { location: string } and returns RainCheckResponse or ErrorResponse.</reason>
+      </artifact>
+    </code>
+    <dependencies>
+      <react>19.2.0</react>
+      <next>16.0.1</next>
+      <typescript>^5</typescript>
+      <tailwindcss>^4</tailwindcss>
+      <shadcn-ui>
+        <radix-ui-react-slot>^1.2.4</radix-ui-react-slot>
+        <class-variance-authority>^0.7.1</class-variance-authority>
+        <tailwind-merge>^3.3.1</tailwind-merge>
+      </shadcn-ui>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+- **Use Standard HTML Form Element**: Must wrap Input and Button in &lt;form&gt; element with onSubmit handler to enable Enter key submission
+- **Prevent Default Form Behavior**: Use e.preventDefault() in onSubmit handler to prevent page reload
+- **Client-Side Validation Only**: Check for empty input before API call - backend handles location format validation
+- **Validation Timing**: Validate on form submission, not on every keystroke
+- **State Management**: Use React useState for location, isLoading, validationError, answerData, errorData
+- **Loading State Pattern**: Set isLoading=true on submit, isLoading=false on API response (success or error)
+- **Disable During Loading**: Set disabled={isLoading} on both Input and Button to prevent duplicate requests
+- **Focus Management**: Use useRef&lt;HTMLInputElement&gt; and .focus() to return focus to input after API response
+- **Button Type**: Must use type="submit" on Button component for proper form submission
+- **No Complex Validation**: Do not validate zipcode format or city name - let backend handle this
+- **Error Display**: Use inline text (not Alert component for MVP) - simple &lt;p className="text-sm text-destructive"&gt;
+- **Clear Error on Typing**: Clear validation error when user starts typing in input field
+- **API Call Pattern**: Use native fetch with POST method, Content-Type: application/json, body: JSON.stringify({ location })
+- **TypeScript Strict Mode**: No 'any' types - properly type all state variables and API responses
+- **Accessibility**: Maintain existing aria-label on Input, ensure keyboard navigation works (Tab, Enter)
+- **Responsive Design**: Maintain existing responsive classes from Story 3.1
+- **No Answer Display Yet**: Do not render answerData or errorData - Stories 3.4, 3.5, 3.7 handle display
+  </constraints>
+
+  <interfaces>
+    <interface>
+      <name>POST /api/check-rain</name>
+      <kind>REST endpoint</kind>
+      <signature>Request: { location: string } → Response: RainCheckResponse | ErrorResponse</signature>
+      <path>will-it-rain/app/api/check-rain/route.ts</path>
+    </interface>
+    <interface>
+      <name>Button Component</name>
+      <kind>React component</kind>
+      <signature>Button({ type: "submit", disabled: boolean, className?: string, children: React.ReactNode })</signature>
+      <path>will-it-rain/components/ui/button.tsx</path>
+    </interface>
+    <interface>
+      <name>Input Component</name>
+      <kind>React component</kind>
+      <signature>Input({ ref: React.Ref&lt;HTMLInputElement&gt;, type: string, placeholder: string, value: string, onChange: (e) =&gt; void, disabled: boolean, className?: string, 'aria-label': string })</signature>
+      <path>will-it-rain/components/ui/input.tsx</path>
+    </interface>
+    <interface>
+      <name>RainCheckRequest</name>
+      <kind>TypeScript interface</kind>
+      <signature>interface RainCheckRequest { location: string }</signature>
+      <path>will-it-rain/types/api.ts</path>
+    </interface>
+    <interface>
+      <name>RainCheckResponse</name>
+      <kind>TypeScript interface</kind>
+      <signature>interface RainCheckResponse { location: string, lat: number, lon: number, forecast: Array&lt;{...}&gt; }</signature>
+      <path>will-it-rain/types/api.ts</path>
+    </interface>
+    <interface>
+      <name>ErrorResponse</name>
+      <kind>TypeScript interface</kind>
+      <signature>interface ErrorResponse { error: ErrorCode, message: string }</signature>
+      <path>will-it-rain/types/api.ts</path>
+    </interface>
+  </interfaces>
+
+  <tests>
+    <standards>
+Epic 3 uses manual browser testing approach - no automated unit tests required. Testing standards: (1) TypeScript compilation validation (npm run type-check), (2) ESLint validation (npm run lint), (3) Manual browser testing on http://localhost:3000, (4) Keyboard accessibility testing (Tab to input/button, Enter to submit), (5) Verify no console errors in browser DevTools. Deferred to Epic 5: Automated unit tests, E2E tests with Playwright/Cypress, cross-browser testing beyond Chrome.
+    </standards>
+    <locations>
+- Manual testing: npm run dev, open http://localhost:3000 in Chrome browser
+- TypeScript validation: npm run type-check
+- ESLint validation: npm run lint
+    </locations>
+    <ideas>
+      <test ac="1">
+        <description>Test form submission with valid location</description>
+        <steps>1. Type "San Francisco" or "94102" in input field. 2. Click "Check Forecast" button or press Enter. 3. Verify input and button disable. 4. Verify console shows API call in Network tab. Note: Answer display not yet implemented (Stories 3.4/3.5).</steps>
+      </test>
+      <test ac="1">
+        <description>Test empty input validation</description>
+        <steps>1. Leave input empty. 2. Click "Check Forecast" button or press Enter. 3. Verify "Please enter a location" error displays. 4. Type in input → Verify error clears.</steps>
+      </test>
+      <test ac="1">
+        <description>Test keyboard accessibility</description>
+        <steps>1. Press Tab → Focus moves to input field. 2. Type location → Enter key → Verify form submits. 3. After API response → Press Tab → Verify focus on input.</steps>
+      </test>
+      <test ac="1">
+        <description>Test loading state disables input and button</description>
+        <steps>1. Type location. 2. Submit form. 3. During API call: verify input disabled={true} and button disabled={true}. 4. After response: verify both re-enabled.</steps>
+      </test>
+      <test ac="1">
+        <description>Test TypeScript and ESLint validation</description>
+        <steps>1. Run: npm run type-check. 2. Verify zero TypeScript errors. 3. Run: npm run lint. 4. Verify zero ESLint errors.</steps>
+      </test>
+    </ideas>
+  </tests>
+</story-context>
