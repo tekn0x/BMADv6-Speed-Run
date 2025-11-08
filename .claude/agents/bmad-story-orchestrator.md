@@ -85,18 +85,28 @@ You will orchestrate the complete BMAD story workflow by executing exactly 4 seq
 - **Verify**: Check that story file now contains code review section
 - **Report**: "Step 4 Complete: Code review appended to story file"
 
-### Step 5: Merge Branch to Main (Success Path)
-- **Condition**: Only execute if code review outcome is "APPROVE"
-- **Action**: Merge the story branch back to main and clean up
+### Step 5: Push Story Branch (Backup Checkpoint)
+- **Condition**: Execute if code review outcome is "APPROVE"
+- **Action**: Push story branch to remote as permanent backup before merging
+- **Commands**:
+  1. Push story branch to remote: `git push -u origin story/[X-Y]-[description]`
+  2. Verify push succeeded: `git branch -vv | grep story/[X-Y]-[description]`
+- **Rationale**: Remote story branch serves as permanent backup and audit trail. If merge to main has issues, we can recover from remote. Also provides PR-like history for team review.
+- **Report**: "Step 5 Complete: Story branch pushed to origin/story/[X-Y]-[description] as backup"
+- **Blocked/Changes Requested**: If code review is not APPROVE, optionally push branch for team review: `git push -u origin story/[X-Y]-[description]`
+
+### Step 6: Merge Branch to Main (Success Path)
+- **Condition**: Only execute if code review outcome is "APPROVE" and Step 5 succeeded
+- **Action**: Merge the story branch to main and clean up local branch
 - **Commands**:
   1. Checkout main: `git checkout main`
   2. Merge story branch: `git merge --no-ff story/[X-Y]-[description] -m "Merge story [X.Y]: [story title]"`
-  3. Delete story branch: `git branch -d story/[X-Y]-[description]`
+  3. Delete local story branch: `git branch -d story/[X-Y]-[description]`
   4. Verify on main: `git branch --show-current`
-- **Report**: "Step 5 Complete: Story branch merged to main and deleted. Ready to push."
-- **Blocked/Changes Requested**: If code review is not APPROVE, leave branch as-is and report: "Branch story/[X-Y]-[description] preserved for rework. Use `git checkout story/[X-Y]-[description]` to continue work."
+- **Safety Note**: Remote story branch remains on origin for backup/audit trail
+- **Report**: "Step 6 Complete: Story branch merged to main, local branch deleted. Remote backup preserved at origin/story/[X-Y]-[description]"
 
-### Step 6: Clean Slate - Kill Background Processes
+### Step 7: Clean Slate - Kill Background Processes
 - **Condition**: Execute after story is marked "done" (regardless of branch merge)
 - **Action**: Kill all running background processes to ensure clean environment for next story
 - **Commands**:
@@ -104,7 +114,7 @@ You will orchestrate the complete BMAD story workflow by executing exactly 4 seq
   2. Kill each background process: Use `KillShell` tool for each running bash_id
   3. Verify all processes terminated
 - **Rationale**: Development servers (npm run dev, etc.) may be running from previous story work. Clean slate prevents port conflicts, stale cache, or resource leaks affecting next story.
-- **Report**: "Step 6 Complete: Killed [N] background processes. Clean slate ready for next story."
+- **Report**: "Step 7 Complete: Killed [N] background processes. Clean slate ready for next story."
 - **Safety Note**: This ensures no lingering processes from Story [X.Y] interfere with subsequent stories
 
 ## Quality Assurance Checklist
@@ -134,7 +144,7 @@ After EACH step, explicitly verify:
 
 ## Final Deliverable
 
-Upon successful completion of all 7 steps (including branching and cleanup), provide:
+Upon successful completion of all 8 steps (including branching, backup, and cleanup), provide:
 1. Confirmation that all steps completed successfully
 2. List of all files created or modified
 3. Location of the final story file with all sections (creation, development, review)
