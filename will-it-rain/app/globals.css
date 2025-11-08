@@ -105,3 +105,10 @@
 .glow-primary {
   box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
 }
+
+/* Touch interaction optimizations - prevents double-tap zoom while preserving pinch-zoom */
+button,
+input,
+[role="button"] {
+  touch-action: manipulation;
+}

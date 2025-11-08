@@ -134,6 +134,9 @@ export default function HomePage() {
             className="text-center text-base sm:text-lg md:text-xl h-12 sm:h-14 md:h-16 w-full"
             aria-label="Location input - Enter your zipcode or city name"
             autoComplete="off"
+            inputMode="text"
+            autoCorrect="off"
+            autoCapitalize="words"
           />
 
           {/* Validation Error Display */}
