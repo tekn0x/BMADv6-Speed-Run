@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button'
 import { LoadingState } from '@/components/LoadingState'
 import { AnswerDisplay } from '@/components/AnswerDisplay'
 import { ErrorDisplay } from '@/components/ErrorDisplay'
+import { checkRain } from '@/lib/api-client'
 import type { RainCheckResponse, ErrorResponse } from '@/types/api'
 
 /**
@@ -81,31 +82,20 @@ export default function HomePage() {
     setIsLoading(true)
 
     try {
-      // Call backend API
-      const response = await fetch('/api/check-rain', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ location: location.trim() }),
-      })
+      // Call backend API using centralized API client
+      const result = await checkRain(location.trim())
 
-      const data = await response.json()
-
-      if (response.ok) {
+      // Check if result is a success response or error response
+      // Success responses have 'willRain' property, errors have 'error' property
+      if ('willRain' in result) {
         // Success response
-        setAnswerData(data)
+        setAnswerData(result)
         setErrorData(null)
       } else {
-        // Error response from API
-        setErrorData(data)
+        // Error response
+        setErrorData(result)
         setAnswerData(null)
       }
-    } catch {
-      // Network error - catch block required but error details not used
-      setErrorData({
-        error: 'network_error',
-        message: 'Network connection failed. Please check your internet and try again.',
-      })
-      setAnswerData(null)
     } finally {
       // Always clear loading state and return focus
       setIsLoading(false)
