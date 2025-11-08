@@ -52,8 +52,8 @@ development_status:
   2-3-implement-rain-probability-calculation-logic: done
   2-4-implement-rain-window-detection: done
   2-5-implement-safe-window-calculation: done
-  2-6-integrate-complete-decision-logic: backlog
-  2-7-add-privacy-first-analytics-logging: backlog
+  2-6-integrate-complete-decision-logic: done
+  2-7-add-privacy-first-analytics-logging: done
   2-8-implement-comprehensive-error-handling: backlog
   epic-2-retrospective: optional
 
