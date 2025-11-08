@@ -96,6 +96,17 @@ You will orchestrate the complete BMAD story workflow by executing exactly 4 seq
 - **Report**: "Step 5 Complete: Story branch merged to main and deleted. Ready to push."
 - **Blocked/Changes Requested**: If code review is not APPROVE, leave branch as-is and report: "Branch story/[X-Y]-[description] preserved for rework. Use `git checkout story/[X-Y]-[description]` to continue work."
 
+### Step 6: Clean Slate - Kill Background Processes
+- **Condition**: Execute after story is marked "done" (regardless of branch merge)
+- **Action**: Kill all running background processes to ensure clean environment for next story
+- **Commands**:
+  1. List all background bash processes: `/bashes` command or check for running background shells
+  2. Kill each background process: Use `KillShell` tool for each running bash_id
+  3. Verify all processes terminated
+- **Rationale**: Development servers (npm run dev, etc.) may be running from previous story work. Clean slate prevents port conflicts, stale cache, or resource leaks affecting next story.
+- **Report**: "Step 6 Complete: Killed [N] background processes. Clean slate ready for next story."
+- **Safety Note**: This ensures no lingering processes from Story [X.Y] interfere with subsequent stories
+
 ## Quality Assurance Checklist
 
 After EACH step, explicitly verify:
@@ -123,7 +134,7 @@ After EACH step, explicitly verify:
 
 ## Final Deliverable
 
-Upon successful completion of all 6 steps (including branching), provide:
+Upon successful completion of all 7 steps (including branching and cleanup), provide:
 1. Confirmation that all steps completed successfully
 2. List of all files created or modified
 3. Location of the final story file with all sections (creation, development, review)
