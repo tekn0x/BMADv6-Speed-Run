@@ -110,5 +110,23 @@ export function AnswerDisplay({ response, searchedLocation }: AnswerDisplayProps
   }
 
   // NO answer rendering (Story 3.5)
-  return null
+  return (
+    <div className="space-y-4 mt-8">
+      {/* Location tag with glassmorphic styling */}
+      <div className="backdrop-blur-md bg-white/10 border border-white/20 rounded-lg px-4 py-2 text-center">
+        <p className="text-sm">📍 {searchedLocation}</p>
+      </div>
+
+      {/* Main answer */}
+      <h2 className="text-3xl sm:text-4xl font-bold text-center text-foreground">
+        NO, it won&apos;t rain
+      </h2>
+      <p className="text-center text-xl sm:text-2xl text-muted-foreground">
+        {probability}% chance
+      </p>
+
+      {/* Close call badge (only if 40-49% probability) */}
+      {closeCall && <CloseCallBadge show={true} />}
+    </div>
+  )
 }
