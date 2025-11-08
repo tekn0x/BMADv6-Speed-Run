@@ -104,16 +104,27 @@ You will orchestrate the complete BMAD story workflow by executing exactly 4 seq
   3. Verify on main: `git branch --show-current`
 - **Rationale**: Preserve local branch for quick restore if needed. Both local and remote branches are cheap (just pointers) and provide convenient rollback options.
 - **Report**: "Step 6 Complete: Story branch merged to main. Both local and remote branches preserved for quick restore."
+- **Blocked/Changes Requested**: If code review is not APPROVE, report: "Code review outcome: [outcome]. Branch story/[X-Y]-[description] preserved. To fix issues: 1) Checkout branch: git checkout story/[X-Y]-[description], 2) Make fixes, 3) Re-run dev-story or manually commit fixes, 4) Re-run code-review workflow."
 
-### Step 7: Clean Slate - Kill Background Processes
-- **Condition**: Execute after story is marked "done" (regardless of branch merge)
+### Step 7: Push Main to Remote (Complete Deployment)
+- **Condition**: Only execute if code review outcome is "APPROVE" and Step 6 merge succeeded
+- **Action**: Push main branch to remote to complete the story deployment
+- **Commands**:
+  1. Ensure on main branch: `git branch --show-current`
+  2. Push main to remote: `git push origin main`
+  3. Verify push succeeded
+- **Rationale**: Approved and merged changes should be immediately available on remote. This completes the deployment pipeline and ensures team has latest code.
+- **Report**: "Step 7 Complete: Main branch pushed to origin/main. Story [X.Y] fully deployed."
+
+### Step 8: Clean Slate - Kill Background Processes
+- **Condition**: Execute after story is marked "done" (regardless of branch merge or push)
 - **Action**: Kill all running background processes to ensure clean environment for next story
 - **Commands**:
   1. List all background bash processes: `/bashes` command or check for running background shells
   2. Kill each background process: Use `KillShell` tool for each running bash_id
   3. Verify all processes terminated
 - **Rationale**: Development servers (npm run dev, etc.) may be running from previous story work. Clean slate prevents port conflicts, stale cache, or resource leaks affecting next story.
-- **Report**: "Step 7 Complete: Killed [N] background processes. Clean slate ready for next story."
+- **Report**: "Step 8 Complete: Killed [N] background processes. Clean slate ready for next story."
 - **Safety Note**: This ensures no lingering processes from Story [X.Y] interfere with subsequent stories
 
 ## Quality Assurance Checklist
@@ -143,7 +154,7 @@ After EACH step, explicitly verify:
 
 ## Final Deliverable
 
-Upon successful completion of all 8 steps (including branching, backup, and cleanup), provide:
+Upon successful completion of all 9 steps (including branching, backup, deployment, and cleanup), provide:
 1. Confirmation that all steps completed successfully
 2. List of all files created or modified
 3. Location of the final story file with all sections (creation, development, review)
