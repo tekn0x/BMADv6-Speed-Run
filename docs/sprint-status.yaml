@@ -62,7 +62,7 @@ development_status:
   3-2-create-location-input-field-with-validation: done
   3-3-implement-loading-state-with-user-feedback: done
   3-4-build-yes-answer-display-with-rain-details: done
-  3-5-build-no-answer-display-with-probability: backlog
+  3-5-build-no-answer-display-with-probability: done
   3-6-implement-close-call-messaging: backlog
   3-7-implement-error-display-with-user-guidance: backlog
   3-8-enable-search-again-functionality: backlog
