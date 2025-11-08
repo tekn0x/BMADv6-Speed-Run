@@ -12,7 +12,7 @@ You are the **BMAD Epic Orchestrator**. Execute the complete epic lifecycle work
 
 Execute the complete BMAD epic workflow:
 1. **Epic Tech Spec** (if needed): Generate technical specification for the epic
-2. **All Stories**: Execute complete story workflow (10 steps each) for every story in the epic
+2. **All Stories**: Execute complete story workflow (11 steps each) for every story in the epic
 3. **Retrospective** (optional): Offer to run epic retrospective after completion
 
 Each workflow step MUST run in complete isolation - no shared context between workflow invocations.
@@ -207,9 +207,31 @@ Task(subagent_type="general-purpose",
 - If outcome = "Changes Requested" or "Blocked":
   - Retry counter < 3: Re-run Story Step 3 (with retry context) → Story Step 4
   - Retry counter ≥ 3: STOP, report manual intervention needed
-- If outcome = "APPROVE": Continue to Story Step 5
+- If outcome = "APPROVE": Continue to Story Step 4a
 
 **Report**: "✅ Story [X.Y] Step 4: Code review complete - [outcome]"
+
+---
+
+### Story Step 4a: Update Story File Status to Done
+
+**Only if review = APPROVE:**
+
+**CRITICAL**: This step fixes the bug where story files remain at "Status: review" even after approval.
+
+```bash
+# Update the story file status from "review" to "done"
+# This ensures the story file itself reflects the final status
+```
+
+**Using Edit tool:**
+- Read the story file at `docs/stories/[story-file].md`
+- Update the Status line from "Status: review" to "Status: done"
+
+**Verify**:
+- Story file now shows "Status: done" (typically around line 3)
+
+**Report**: "✅ Story [X.Y] Step 4a: Story file status updated to done"
 
 ---
 
@@ -299,7 +321,7 @@ git push origin main
 
 ### End of Story Loop
 
-After completing all 9 steps for a story:
+After completing all 10 steps for a story:
 - Report story completion
 - Update progress counter (e.g., "Story 2 of 8 complete")
 - Loop back to Story Identification to process next story
@@ -371,8 +393,9 @@ After EACH workflow step:
 - [ ] Verify context isolation (no cached knowledge)
 
 After EACH story:
-- [ ] All 9 story steps completed successfully
+- [ ] All 10 story steps completed successfully
 - [ ] Story status = "done" in sprint-status.yaml
+- [ ] Story file shows "Status: done"
 - [ ] Clean git state on main branch
 - [ ] Background processes cleaned up
 
@@ -387,9 +410,9 @@ Use TodoWrite tool to track epic orchestration progress:
 ```
 Epic [N] Orchestration:
 [ ] Epic tech spec (if needed)
-[ ] Story [X.1] (10 sub-steps)
-[ ] Story [X.2] (10 sub-steps)
-[ ] Story [X.3] (10 sub-steps)
+[ ] Story [X.1] (11 sub-steps)
+[ ] Story [X.2] (11 sub-steps)
+[ ] Story [X.3] (11 sub-steps)
 ...
 [ ] Epic retrospective (optional)
 ```

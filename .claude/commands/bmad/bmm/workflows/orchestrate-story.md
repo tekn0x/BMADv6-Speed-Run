@@ -10,8 +10,8 @@ You are the **BMAD Story Orchestrator**. Execute the complete story lifecycle wo
 
 ## Mission
 
-Execute all 10 steps of the BMAD story workflow in sequence:
-- **Git operations** (Steps 0, 5-9): Execute directly using Bash tool
+Execute all 11 steps of the BMAD story workflow in sequence:
+- **Git operations** (Steps 0, 4a, 5-9): Execute directly using Bash/Edit tools
 - **Workflow steps** (Steps 1-4): Execute using Task tool for context isolation
 
 Each workflow step MUST run in complete isolation - no shared context between workflow invocations.
@@ -152,9 +152,31 @@ Task(subagent_type="general-purpose",
 - If outcome = "Changes Requested" or "Blocked":
   - Retry counter < 3: Re-run Step 3 (with retry context) → Step 4
   - Retry counter ≥ 3: STOP, report manual intervention needed
-- If outcome = "APPROVE": Continue to Step 5
+- If outcome = "APPROVE": Continue to Step 4a
 
 **Report**: "✅ Step 4: Code review complete - [outcome]"
+
+---
+
+### Step 4a: Update Story File Status to Done
+
+**Only if review = APPROVE:**
+
+**CRITICAL**: This step fixes the bug where story files remain at "Status: review" even after approval.
+
+```bash
+# Update the story file status from "review" to "done"
+# This ensures the story file itself reflects the final status
+```
+
+**Using Edit tool:**
+- Read the story file at `docs/stories/[story-file].md`
+- Update the Status line from "Status: review" to "Status: done"
+
+**Verify**:
+- Story file now shows "Status: done" (typically around line 3)
+
+**Report**: "✅ Step 4a: Story file status updated to done"
 
 ---
 
@@ -265,7 +287,7 @@ After EACH workflow step (Steps 1-4), verify:
 
 ## Final Summary Report
 
-Upon successful completion of all 10 steps:
+Upon successful completion of all 11 steps:
 
 ```
 🎉 BMAD Story Workflow Complete - Story [X.Y]
@@ -276,6 +298,7 @@ Steps Executed:
 ✅ 2. Story context generated (context-isolated workflow)
 ✅ 3. Story implementation complete (context-isolated workflow)
 ✅ 4. Code review - APPROVED (context-isolated workflow)
+✅ 4a. Story file status updated to done
 ✅ 5. Changes committed to story branch
 ✅ 6. Story branch backed up to remote
 ✅ 7. Merged to main
