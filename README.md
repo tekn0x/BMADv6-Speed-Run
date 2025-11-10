@@ -2,7 +2,7 @@
 
 Two Claude Code slash commands for automating BMAD story and epic development workflows.
 
-> **Note**: These slash commands are exclusively for **BMAD v6** at the moment.
+> **Note**: These slash commands are exclusively for **BMAD v6** and require a full BMAD v6 installation, as they rely on existing v6 workflows.
 
 ## What's Included
 
@@ -14,11 +14,8 @@ Two Claude Code slash commands for automating BMAD story and epic development wo
 ### 1. Installation
 
 ```bash
-# Navigate to your project
+# Navigate to your project with BMAD v6 installed
 cd your-project
-
-# Create directory structure
-mkdir -p .claude/commands/bmad/bmm/workflows
 
 # Copy the slash command files
 cp orchestrate-story.md .claude/commands/bmad/bmm/workflows/
