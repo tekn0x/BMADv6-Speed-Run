@@ -2,7 +2,7 @@
 
 Two Claude Code slash commands for automating BMAD story and epic development workflows.
 
-> **Note**: These slash commands are exclusively for **BMAD v6** and require a full BMAD v6 installation, as they rely on existing v6 workflows.
+> **Note**: These slash commands have only been tested with **BMAD Alpha v6** and require a full BMAD v6 installation, as they rely on existing v6 workflows. The commands might need to be updated for newer versions.
 
 ## What's Included
 
