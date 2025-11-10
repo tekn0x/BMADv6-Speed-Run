@@ -1,0 +1,170 @@
+<story-context id="bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>2</epicId>
+    <storyId>3</storyId>
+    <title>Implement Rain Probability Calculation Logic</title>
+    <status>drafted</status>
+    <generatedAt>2025-11-07</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/stories/2-3-implement-rain-probability-calculation-logic.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>a developer</asA>
+    <iWant>to analyze 24-hour forecast data to determine maximum rain probability</iWant>
+    <soThat>I can make the YES/NO decision for the user</soThat>
+    <tasks>
+      - Task 1: Create rain probability calculation module (AC: 1, 7)
+      - Task 2: Implement maximum probability detection (AC: 1, 2)
+      - Task 3: Implement intensity categorization logic (AC: 3)
+      - Task 4: Implement precipitation amount formatting (AC: 4)
+      - Task 5: Implement decision threshold logic (AC: 5, 6)
+      - Task 6: Integrate and orchestrate calculation (AC: 7)
+      - Task 7: Manual testing and verification (AC: 1-7)
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+    AC1: Given 24 hours of parsed forecast data, identify maximum rain probability across all periods
+    AC2: Determine peak rain time (earliest occurrence if tied)
+    AC3: Categorize intensity as "light", "moderate", or "heavy" based on rainfall thresholds
+    AC4: Extract and format precipitation amount (convert mm to inches)
+    AC5: Apply 50% threshold for YES/NO decision (≥50% = YES, <50% = NO)
+    AC6: Detect close call scenarios (40-49% probability range)
+    AC7: Return structured RainProbabilityResult object with all required fields
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc path="docs/tech-spec-epic-2.md" title="Epic 2 Technical Specification" section="Rain Probability Calculation Logic">
+        Defines calculateRainProbability() function signature, RainProbabilityResult interface with maxProbability (0-100), peakTime (Date), peakHourData (ParsedForecast), willRain (boolean), closeCall (boolean). Specifies 50% threshold for YES/NO decision. Data normalization rules: probability 0-100, rainfall mm to inches (÷25.4), intensity mapping (Light: 0.004-0.1 in/hr, Moderate: 0.1-0.3 in/hr, Heavy: >0.3 in/hr).
+      </doc>
+      <doc path="docs/tech-spec-epic-2.md" title="Epic 2 Technical Specification" section="System Architecture Alignment">
+        Specifies /lib/rain-logic.ts as business logic module for rain probability calculation. Accepts ParsedForecast[] array, returns RainProbabilityResult. Follows stateless architecture (ADR-002), separation of concerns pattern, no side effects or external dependencies.
+      </doc>
+      <doc path="docs/PRD.md" title="Product Requirements Document" section="Core Decision Logic">
+        Defines 50% probability threshold: ≥50% = YES, &lt;50% = NO. Close call scenarios: 40-49% probability flagged for user context with "consider bringing umbrella" messaging. Core value proposition: immediate, trustworthy answers with decision clarity.
+      </doc>
+      <doc path="docs/architecture.md" title="Architecture Document" section="Project Structure">
+        Confirms /lib/rain-logic.ts location for rain probability calculation module. TypeScript strict mode required, Next.js 16 with App Router, native Fetch API, no external dependencies for calculation logic.
+      </doc>
+    </docs>
+    <code>
+      <artifact path="will-it-rain/types/weather.ts" kind="interface" symbol="ParsedForecast" lines="172-200" reason="Input interface for rain probability calculation - contains time, probability (0-100), intensity classification, amount in inches, temperature, and description for each 3-hour forecast period">
+        interface ParsedForecast {
+          time: Date;
+          timestamp: number;
+          probability: number; // 0-100
+          intensity: 'none' | 'light' | 'moderate' | 'heavy';
+          amount: number; // inches
+          temperature: number;
+          description: string;
+        }
+      </artifact>
+      <artifact path="will-it-rain/types/api.ts" kind="interface" symbol="RainCheckResponse" lines="22-50" reason="API response structure - shows expected output format for future integration with willRain, intensity, amount fields (currently only includes forecast array)">
+        interface RainCheckResponse {
+          location: string;
+          lat: number;
+          lon: number;
+          forecast: ParsedForecast[]; // 8 data points for 24 hours
+        }
+      </artifact>
+      <artifact path="will-it-rain/lib/forecast-parser.ts" kind="module" symbol="parseForecastData" lines="60-125" reason="Existing parser that produces ParsedForecast[] input - demonstrates data normalization patterns, error handling, and type safety standards to follow">
+        Converts raw OpenWeather data to ParsedForecast[]: probability 0.0-1.0 → 0-100, rainfall mm → inches (÷25.4), classifyIntensity() based on 3-hour period thresholds (0mm=none, &lt;2.5mm=light, &lt;7.6mm=moderate, ≥7.6mm=heavy), Unix timestamp → Date object. Includes comprehensive validation and error handling.
+      </artifact>
+      <artifact path="will-it-rain/lib/forecast-parser.ts" kind="helper" symbol="classifyIntensity" lines="37-44" reason="Existing intensity classification for 3-hour periods - this story needs similar logic but for HOURLY rates (3-hour total ÷ 3)">
+        function classifyIntensity(amountMm: number): 'none' | 'light' | 'moderate' | 'heavy' {
+          if (amountMm === 0) return 'none';
+          if (amountMm &lt; 2.5) return 'light';  // 3-hour period
+          if (amountMm &lt; 7.6) return 'moderate'; // 3-hour period
+          return 'heavy';
+        }
+      </artifact>
+      <artifact path="will-it-rain/app/api/check-rain/route.ts" kind="api-route" symbol="POST" lines="24-107" reason="API route that will consume rain-logic module - shows integration pattern, error handling, and how parsedForecast is currently used (Story 2.6 will add rain calculation integration)">
+        Fetches weather data, parses forecast (8 data points), returns RainCheckResponse. Future stories will integrate calculateRainProbability() here to add willRain, peakTime, intensity, amount to response.
+      </artifact>
+    </code>
+    <dependencies>
+      <node>
+        next: "16.0.1"
+        react: "19.2.0"
+        typescript: "^5"
+      </node>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint type="architecture">Stateless pure functions only - no side effects, no API calls, no database queries (ADR-002: Stateless Architecture)</constraint>
+    <constraint type="module-structure">Create /will-it-rain/lib/rain-logic.ts - separate business logic from API integration and UI (separation of concerns pattern)</constraint>
+    <constraint type="type-safety">TypeScript strict mode required - no 'any' types, full type coverage for all functions and interfaces</constraint>
+    <constraint type="data-format">Input: ParsedForecast[] array (already normalized by forecast-parser). Output: RainProbabilityResult interface</constraint>
+    <constraint type="thresholds">Fixed constants: 50% for YES/NO decision, 40-49% for close call detection. No dynamic adjustment.</constraint>
+    <constraint type="intensity">Hourly rate calculation: divide 3-hour rainfall by 3 before applying thresholds (Light: 0.004-0.1 in/hr, Moderate: 0.1-0.3 in/hr, Heavy: &gt;0.3 in/hr)</constraint>
+    <constraint type="testing">Manual testing only (Epic 2 standard) - no automated unit tests until Epic 5. Use TypeScript type-check and ESLint for validation.</constraint>
+    <constraint type="reuse">DO NOT recreate existing functions from forecast-parser.ts (mmToInches, classifyIntensity). Reference existing ParsedForecast interface from types/weather.ts.</constraint>
+    <constraint type="next-js">Follow Next.js 16 conventions: use @/ path alias for imports, export functions for API route consumption</constraint>
+  </constraints>
+
+  <interfaces>
+    <interface name="RainProbabilityResult" kind="return-type" path="will-it-rain/lib/rain-logic.ts">
+      export interface RainProbabilityResult {
+        maxProbability: number;        // 0-100 (highest probability across 24 hours)
+        peakTime: Date;                // When max probability occurs
+        peakHourData: ParsedForecast;  // Full forecast data for peak hour
+        willRain: boolean;             // true if maxProbability ≥ 50%, false otherwise
+        closeCall: boolean;            // true if 40 ≤ maxProbability &lt; 50
+      }
+    </interface>
+    <interface name="calculateRainProbability" kind="function-signature" path="will-it-rain/lib/rain-logic.ts">
+      export function calculateRainProbability(
+        forecast: ParsedForecast[]
+      ): RainProbabilityResult
+    </interface>
+    <interface name="ParsedForecast" kind="input-type" path="will-it-rain/types/weather.ts">
+      interface ParsedForecast {
+        time: Date;
+        timestamp: number;
+        probability: number;  // 0-100
+        intensity: 'none' | 'light' | 'moderate' | 'heavy';
+        amount: number;       // inches for 3-hour period
+        temperature: number;
+        description: string;
+      }
+    </interface>
+  </interfaces>
+
+  <tests>
+    <standards>
+      Manual testing approach per Epic 2 Tech Spec: Create sample ParsedForecast[] arrays with various test scenarios, call calculateRainProbability(), verify results manually via console.log(). Automated unit tests deferred to Epic 5. TypeScript compilation required (npm run type-check). ESLint validation required (npm run lint). Integration testing via curl to /api/check-rain endpoint in Story 2.6.
+    </standards>
+    <locations>
+      No test files for Epic 2. Manual testing via inline test data or temporary test scripts. Future automated tests (Epic 5) will go in: will-it-rain/__tests__/ or will-it-rain/lib/__tests__/
+    </locations>
+    <ideas>
+      <test id="AC1" description="Max probability detection with various values (0%, 30%, 45%, 50%, 65%, 100%)">
+        Create forecast arrays with different probabilities, verify maxProbability correctly identifies highest value
+      </test>
+      <test id="AC2" description="Tie-breaking logic (multiple periods with same max probability)">
+        Create forecast with two periods at 65% probability, verify peakTime selects earliest occurrence
+      </test>
+      <test id="AC3" description="Intensity categorization for light/moderate/heavy">
+        Test with amounts: 0.05 in (light), 0.15 in (moderate), 0.4 in (heavy), verify correct classification based on hourly rate
+      </test>
+      <test id="AC4" description="Precipitation amount formatting and conversion">
+        Verify amount from ParsedForecast.amount (already in inches) is correctly extracted and formatted as string (e.g., "0.2 inches")
+      </test>
+      <test id="AC5" description="Decision threshold at boundaries">
+        Test with 49% (NO), 50% (YES), 51% (YES) to verify willRain flag correctness
+      </test>
+      <test id="AC6" description="Close call flag for 40-49% range">
+        Test with 39% (false), 40% (true), 49% (true), 50% (false) to verify closeCall flag
+      </test>
+      <test id="AC7" description="Result structure completeness">
+        Verify RainProbabilityResult includes all required fields with correct types
+      </test>
+      <test id="edge-cases" description="Edge cases: all zeros, all 100%, single data point, missing rainfall">
+        Test extreme scenarios to ensure robustness
+      </test>
+    </ideas>
+  </tests>
+</story-context>

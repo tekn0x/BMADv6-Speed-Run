@@ -1,0 +1,326 @@
+<story-context id="bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>4</epicId>
+    <storyId>6</storyId>
+    <title>Optimize Installation Experience</title>
+    <status>drafted</status>
+    <generatedAt>2025-11-08</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/stories/4-6-optimize-installation-experience.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>a user</asA>
+    <iWant>to easily install the app</iWant>
+    <soThat>I can access it like a native application</soThat>
+    <tasks>
+      <task id="1">Verify PWA installability criteria are met (AC: All)
+        - Confirm manifest.json is valid and accessible at /manifest.json
+        - Verify service worker is registered successfully
+        - Confirm app is served over HTTPS
+        - Verify all required icon sizes are present (192x192, 512x512, maskable)
+        - Run Lighthouse PWA audit and confirm installability checklist passes
+      </task>
+      <task id="2">Test installation flow on Chrome/Edge desktop (AC: 1, 2, 4, 6)
+        - Verify install prompt appears in address bar (+ icon) after engagement
+        - Test installation via address bar prompt
+        - Confirm installed app appears in Start Menu (Windows) or Applications (macOS)
+        - Verify installed app opens in standalone mode (no browser UI)
+        - Test app behavior after installation (navigation, API calls work normally)
+        - Confirm app shortcut is clearly labeled "Will It Rain?"
+      </task>
+      <task id="3">Test installation flow on Chrome Mobile (Android) (AC: 1, 2, 3, 4, 6)
+        - Verify install banner appears automatically or via menu
+        - Test installation flow (Add to Home Screen)
+        - Confirm app icon appears on home screen with correct branding
+        - Verify installed app opens in standalone mode (no browser chrome)
+        - Test app uninstall flow (long-press icon → Uninstall)
+        - Confirm app behavior after installation matches web version
+      </task>
+      <task id="4">Test iOS "Add to Home Screen" flow (AC: 2, 5, 6)
+        - Document iOS manual installation process (no automatic prompt)
+        - Test Safari Share → Add to Home Screen flow
+        - Verify apple-touch-icon displays correctly during installation
+        - Confirm app icon appears on iOS home screen
+        - Verify installed app opens in standalone mode (full-screen, no Safari UI)
+        - Test app behavior after installation on iOS
+        - Confirm app name is correctly displayed
+      </task>
+      <task id="5">Verify standalone mode behavior (AC: 2, 6)
+        - Confirm no browser UI elements (address bar, navigation buttons) appear
+        - Verify app uses full viewport in standalone mode
+        - Test navigation within app (no browser back/forward buttons)
+        - Confirm external links open in default browser (not in app)
+        - Verify app theme colors apply correctly in standalone mode
+        - Test app switcher appearance (icon and name)
+      </task>
+      <task id="6">Test app uninstallation across platforms (AC: 3)
+        - Windows: Right-click Start Menu → Uninstall
+        - macOS: Move app from Applications to Trash
+        - Android: Long-press icon → Uninstall
+        - iOS: Long-press icon → Remove App
+        - Confirm app data is cleared after uninstall
+        - Test reinstallation works correctly
+      </task>
+      <task id="7">Verify PWA installability with Lighthouse (AC: 1, All)
+        - Run Lighthouse PWA audit in Chrome DevTools
+        - Confirm "Installable" criteria passes
+        - Verify "PWA Optimized" score is 100/100 or close
+        - Fix any PWA-related warnings or errors
+        - Document Lighthouse score in completion notes
+      </task>
+      <task id="8">Document installation experience (AC: 6, 7)
+        - Create installation guide for users (optional documentation)
+        - Document browser-specific installation steps
+        - Note any platform limitations (e.g., iOS no auto-prompt)
+        - Document expected vs. actual behavior after installation
+        - Add screenshots of installation flow (optional)
+      </task>
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+    <criterion id="AC-1">
+      <given>the app meets PWA installation criteria</given>
+      <when>installation is triggered</when>
+      <then>browser shows install prompt on supported platforms</then>
+      <and>installed app opens in standalone mode (no browser UI)</and>
+      <and>app can be uninstalled like any other app</and>
+      <and>installation works on Chrome/Edge (desktop and mobile)</and>
+      <and>iOS "Add to Home Screen" works correctly</and>
+      <and>app behavior after installation matches expectations</and>
+      <and>installed app shortcut is clearly labeled</and>
+    </criterion>
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc>
+        <path>docs/PRD.md</path>
+        <title>Product Requirements Document</title>
+        <section>Progressive Web App (PWA) - FR6: PWA Installability</section>
+        <snippet>FR6.1 - PWA Manifest: Web app manifest with app metadata, icons, display mode: standalone, theme colors. FR6.2 - Service Worker: Cache static assets, online-only functionality, update strategy. FR6.3 - Responsive Experience: Mobile-first responsive design, works seamlessly across mobile, tablet, desktop, touch-friendly interactions.</snippet>
+      </doc>
+      <doc>
+        <path>docs/PRD.md</path>
+        <title>Product Requirements Document</title>
+        <section>Non-Functional Requirements - Performance</section>
+        <snippet>NFR-P1: Initial page load &lt; 1 second, Time to Interactive &lt; 1.5 seconds. NFR-P2: Answer delivery &lt; 2 seconds. Lighthouse Performance score &gt; 90.</snippet>
+      </doc>
+      <doc>
+        <path>docs/architecture.md</path>
+        <title>Architecture Document</title>
+        <section>PWA Architecture - Next.js Native PWA Support</section>
+        <snippet>PWA Manifest: app/manifest.ts using Next.js native metadata API. Service Worker: Implemented via Serwist service worker library. Caching Strategy: Cache-first for static assets (JS, CSS, fonts), network-only for API routes. Display mode: "standalone" (no browser chrome when installed).</snippet>
+      </doc>
+      <doc>
+        <path>docs/tech-spec-epic-4.md</path>
+        <title>Epic 4 Technical Specification: Universal Access (PWA)</title>
+        <section>PWA Installability Criteria</section>
+        <snippet>Required for Installation: HTTPS (enforced by Vercel), Valid Manifest (name, icons, start_url), Service Worker (registered with fetch handler), Icons (192x192, 512x512), User engagement signals (varies by browser). Manifest Configuration: display: "standalone", start_url: "/", theme_color, background_color.</snippet>
+      </doc>
+      <doc>
+        <path>docs/tech-spec-epic-4.md</path>
+        <title>Epic 4 Technical Specification</title>
+        <section>PWA Installation Workflow (Chrome/Edge Desktop)</section>
+        <snippet>1. User visits app in Chrome → Browser detects manifest and service worker. 2. Browser evaluates installability criteria. 3. Install prompt appears in address bar (+ icon) after engagement. 4. User clicks "Install" → Installation dialog. 5. App added to Start Menu (Windows) or Applications (macOS). 6. User launches app → Opens in standalone window (no browser UI).</snippet>
+      </doc>
+      <doc>
+        <path>docs/tech-spec-epic-4.md</path>
+        <title>Epic 4 Technical Specification</title>
+        <section>PWA Installation Workflow (iOS Safari)</section>
+        <snippet>1. User visits app in Safari (iOS) → No automatic install prompt (iOS limitation). 2. User taps Share button → "Add to Home Screen". 3. Add to Home Screen dialog shows app icon and name. 4. User taps "Add" → App icon added to home screen. 5. User taps app icon → Opens in standalone mode (full-screen). Note: iOS has limited PWA support (no push notifications, limited background sync).</snippet>
+      </doc>
+      <doc>
+        <path>docs/tech-spec-epic-4.md</path>
+        <title>Epic 4 Technical Specification</title>
+        <section>Standalone Mode Behavior</section>
+        <snippet>Expected Behavior: No browser UI (address bar, navigation buttons, tabs), app uses full viewport, external links open in default browser (not in app window), app theme colors apply to status bar and app switcher, navigation within app is seamless.</snippet>
+      </doc>
+      <doc>
+        <path>docs/stories/4-5-configure-app-icons-and-splash-screens.md</path>
+        <title>Story 4.5: Configure App Icons and Splash Screens (Completed)</title>
+        <section>Completion Notes - Learnings for Story 4.6</section>
+        <snippet>Manifest Configuration: All required manifest fields configured in app/manifest.ts (icons: 192x192, 512x512, maskable-icon.png, display: "standalone", theme_color: "#000000", background_color: "#ffffff"). Service Worker: Implemented in Story 4.2 via Serwist plugin (cache-first for static assets, network-only for API routes). Icon Quality: All icons generated and optimized. Testing Deferred: Lighthouse PWA audit and manual device testing deferred to Story 4-7. Story 4.6 focuses on installation experience testing.</snippet>
+      </doc>
+    </docs>
+
+    <code>
+      <artifact>
+        <path>will-it-rain/app/manifest.ts</path>
+        <kind>PWA Manifest</kind>
+        <symbol>manifest</symbol>
+        <lines>1-36</lines>
+        <reason>Defines PWA manifest with all required fields for installability: name, short_name, description, start_url, display: "standalone", theme_color, background_color, icons array (192x192, 512x512, maskable). This is the primary artifact for PWA installation.</reason>
+      </artifact>
+      <artifact>
+        <path>will-it-rain/app/layout.tsx</path>
+        <kind>Root Layout Component</kind>
+        <symbol>metadata, viewport</symbol>
+        <lines>10-36</lines>
+        <reason>Exports metadata object with appleWebApp configuration for iOS PWA support (capable: true, statusBarStyle, title, apple-touch-icon). Also exports viewport configuration. Critical for iOS "Add to Home Screen" functionality.</reason>
+      </artifact>
+      <artifact>
+        <path>will-it-rain/app/sw.ts</path>
+        <kind>Service Worker</kind>
+        <symbol>serwist</symbol>
+        <lines>1-65</lines>
+        <reason>Service worker implementation using Serwist library. Configures caching strategies: cache-first for static assets (/_next/static/, images), network-only for API routes (/api/). Enables skipWaiting and clientsClaim for immediate service worker activation. Required for PWA installability.</reason>
+      </artifact>
+      <artifact>
+        <path>will-it-rain/next.config.ts</path>
+        <kind>Next.js Configuration</kind>
+        <symbol>withSerwist, nextConfig</symbol>
+        <lines>1-20</lines>
+        <reason>Configures Serwist service worker plugin (swSrc: "app/sw.ts", swDest: "public/sw.js", disable in development). This configuration generates and registers the service worker during production builds.</reason>
+      </artifact>
+      <artifact>
+        <path>will-it-rain/public/icons/</path>
+        <kind>PWA Icon Assets</kind>
+        <symbol>icon-192.png, icon-512.png, maskable-icon.png, apple-touch-icon.png</symbol>
+        <lines>N/A</lines>
+        <reason>PWA icon files in required sizes. icon-192.png (Android home screen), icon-512.png (Android splash), maskable-icon.png (Android adaptive icons), apple-touch-icon.png (iOS home screen). Referenced by manifest.ts icons array and layout.tsx metadata.</reason>
+      </artifact>
+    </code>
+
+    <dependencies>
+      <ecosystem name="Node.js">
+        <package name="next" version="^16.0.0">Next.js framework with native PWA manifest support (manifest.ts)</package>
+        <package name="@serwist/next" version="^9.0.0">Service worker library for Next.js with caching strategies</package>
+        <package name="react" version="^19.0.0">React library for UI components</package>
+        <package name="typescript" version="^5.0.0">TypeScript for type safety</package>
+      </ecosystem>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint id="ARCH-001">PWA manifest must use Next.js native manifest.ts API (ADR-001). No external manifest.json file.</constraint>
+    <constraint id="ARCH-002">Service worker implemented via Serwist library configured in next.config.ts. Must use cache-first for static assets, network-only for API routes (ADR-002 - stateless architecture).</constraint>
+    <constraint id="ARCH-003">Display mode must be "standalone" (no browser chrome when installed). start_url must be "/" (root landing page).</constraint>
+    <constraint id="ARCH-004">Service worker must never cache API routes (/api/check-rain). Fresh data required per PRD (ADR-002).</constraint>
+    <constraint id="ARCH-005">HTTPS enforced by Vercel deployment (automatic). Required for PWA installability and service worker registration.</constraint>
+    <constraint id="ARCH-006">Icons must be referenced correctly in manifest.ts: /icons/icon-192.png, /icons/icon-512.png, /icons/maskable-icon.png. All icons already generated in Story 4.5.</constraint>
+    <constraint id="ARCH-007">iOS PWA limitations accepted: No automatic install prompt (manual "Add to Home Screen" required), limited service worker support, no push notifications.</constraint>
+    <constraint id="STORY-001">Story 4.6 focuses on testing and verification of installation experience. No code changes expected unless bugs found.</constraint>
+    <constraint id="STORY-002">Lighthouse PWA audit must pass with "Installable" criteria. Target PWA score: 100/100 or close.</constraint>
+    <constraint id="STORY-003">Manual device testing required: Chrome/Edge desktop, Chrome Mobile (Android), Safari (iOS). Real device testing preferred over emulators.</constraint>
+    <constraint id="STORY-004">Service worker already implemented in Story 4.2. Verification only in Story 4.6 (check registration, caching behavior).</constraint>
+  </constraints>
+
+  <interfaces>
+    <interface>
+      <name>PWA Manifest API</name>
+      <kind>Next.js Metadata Route</kind>
+      <signature>export default function manifest(): MetadataRoute.Manifest</signature>
+      <path>will-it-rain/app/manifest.ts</path>
+      <description>Next.js native PWA manifest API. Exports manifest object automatically served at /manifest.json. Used by browsers to determine PWA installability (name, icons, display mode, theme colors).</description>
+    </interface>
+    <interface>
+      <name>Service Worker API</name>
+      <kind>Browser Service Worker</kind>
+      <signature>Serwist service worker with runtime caching strategies</signature>
+      <path>will-it-rain/app/sw.ts</path>
+      <description>Service worker registered via Serwist plugin. Implements caching strategies: CacheFirst for static assets (/_next/static/, images), NetworkOnly for API routes (/api/). Required for PWA installability and offline asset caching.</description>
+    </interface>
+    <interface>
+      <name>iOS PWA Metadata</name>
+      <kind>Next.js Metadata Export</kind>
+      <signature>export const metadata: Metadata (with appleWebApp configuration)</signature>
+      <path>will-it-rain/app/layout.tsx</path>
+      <description>iOS-specific PWA metadata exported from root layout. Configures apple-web-app-capable, apple-web-app-status-bar-style, apple-touch-icon. Enables iOS "Add to Home Screen" functionality and standalone mode.</description>
+    </interface>
+    <interface>
+      <name>Browser Install Prompt API</name>
+      <kind>Browser Web API</kind>
+      <signature>beforeinstallprompt event (Chrome/Edge only)</signature>
+      <path>N/A - Browser API</path>
+      <description>Browser-triggered event when PWA installability criteria met (manifest, service worker, HTTPS, engagement). Chrome/Edge show install prompt automatically. iOS requires manual "Add to Home Screen" (no programmatic prompt).</description>
+    </interface>
+  </interfaces>
+
+  <tests>
+    <standards>
+      Testing standards for Story 4.6 focus on manual device testing and Lighthouse PWA audit. No unit tests required (PWA installation is browser behavior, not code logic). Manual testing verifies: 1) PWA installability criteria met (manifest valid, service worker registered, HTTPS), 2) Install prompt appears (Chrome/Edge) or manual flow works (iOS), 3) Installed app opens in standalone mode (no browser UI), 4) App behavior after installation matches web version, 5) Uninstall flow works correctly. Lighthouse PWA audit validates all installability criteria automatically.
+    </standards>
+    <locations>
+      <location>No automated test files for Story 4.6 (manual testing only)</location>
+      <location>Lighthouse PWA audit: Chrome DevTools → Lighthouse → PWA category</location>
+      <location>Service worker inspection: Chrome DevTools → Application → Service Workers</location>
+      <location>Manifest validation: Chrome DevTools → Application → Manifest</location>
+      <location>Cache inspection: Chrome DevTools → Application → Cache Storage</location>
+    </locations>
+    <ideas>
+      <idea criterion="AC-1">
+        Test: Run Lighthouse PWA audit in Chrome DevTools.
+        Expected: "Installable" criteria passes (manifest valid, service worker registered, HTTPS enforced, icons present).
+        Expected: PWA score 100/100 or close (all PWA best practices met).
+        Verify: Manifest at /manifest.json accessible and valid.
+        Verify: Service worker status "activated and running" in DevTools.
+      </idea>
+      <idea criterion="AC-1">
+        Test: Verify all required icon sizes present.
+        Expected: /icons/icon-192.png, /icons/icon-512.png, /icons/maskable-icon.png exist and load correctly.
+        Expected: apple-touch-icon.png exists for iOS.
+        Verify: Icons referenced correctly in manifest.ts icons array.
+      </idea>
+      <idea criterion="AC-1">
+        Test: Install app on Chrome/Edge desktop (Windows or macOS).
+        Expected: Install prompt appears in address bar (+ icon) after engagement.
+        Expected: Click "Install" → App added to Start Menu (Windows) or Applications (macOS).
+        Expected: Installed app opens in standalone window (no browser UI - no address bar, tabs, navigation buttons).
+        Expected: App shortcut labeled "Will It Rain?" (from manifest short_name).
+      </idea>
+      <idea criterion="AC-1">
+        Test: Install app on Chrome Mobile (Android).
+        Expected: Install banner appears automatically or via menu (Add to Home Screen).
+        Expected: App icon appears on Android home screen with raindrop icon.
+        Expected: Installed app opens in standalone mode (no browser chrome).
+        Expected: Maskable icon adapts to Android launcher shape (circle, squircle, rounded square).
+      </idea>
+      <idea criterion="AC-1">
+        Test: iOS "Add to Home Screen" flow (Safari).
+        Expected: No automatic install prompt (iOS limitation - manual process required).
+        Expected: User taps Share → "Add to Home Screen" → App icon added to iOS home screen.
+        Expected: apple-touch-icon displays correctly during installation (raindrop icon).
+        Expected: Installed app opens in standalone mode (full-screen, no Safari UI).
+        Expected: App name displayed as "Will It Rain?" on home screen.
+      </idea>
+      <idea criterion="AC-1">
+        Test: Verify standalone mode behavior across platforms.
+        Expected: No browser UI elements visible (no address bar, navigation buttons, tabs).
+        Expected: App uses full viewport (status bar visible on mobile, no browser chrome).
+        Expected: Navigation within app works normally (location search, answer display).
+        Expected: External links open in default browser (not in app window).
+        Expected: App theme colors apply to status bar and app switcher (theme_color: #000000).
+      </idea>
+      <idea criterion="AC-1">
+        Test: Verify app behavior after installation matches web version.
+        Expected: Location search works (enter zipcode/city → get rain forecast).
+        Expected: API calls work normally (check DevTools Network tab for /api/check-rain).
+        Expected: Static assets load from cache (fast repeat visits - check Cache Storage).
+        Expected: API responses always fetch from network (never cached - verify network-only strategy).
+      </idea>
+      <idea criterion="AC-1">
+        Test: Uninstall app across platforms.
+        Expected: Windows - Right-click Start Menu → Uninstall → App removed.
+        Expected: macOS - Move app from Applications to Trash → App removed.
+        Expected: Android - Long-press icon → Uninstall → App removed.
+        Expected: iOS - Long-press icon → Remove App → App removed.
+        Expected: Test reinstallation works correctly (install again after uninstall).
+      </idea>
+      <idea criterion="AC-1">
+        Test: Service worker caching behavior.
+        Expected: First visit - Service worker registers and pre-caches assets (check DevTools → Application → Service Workers).
+        Expected: Subsequent visits - Static assets served from cache (/_next/static/, /icons/, fonts).
+        Expected: API routes always fetch from network (/api/check-rain - never cached).
+        Expected: Cache hit rate 100% for static assets on repeat visits (check Network tab - "from service worker").
+      </idea>
+      <idea criterion="AC-1">
+        Test: Document installation experience for users (optional documentation task).
+        Expected: Create simple installation guide documenting: 1) Chrome/Edge - Install prompt, 2) iOS - Manual "Add to Home Screen" process, 3) Android - Automatic install banner.
+        Expected: Note platform limitations (iOS no auto-prompt, limited PWA features).
+        Expected: Document expected behavior after installation (standalone mode, no browser UI).
+      </idea>
+    </ideas>
+  </tests>
+</story-context>

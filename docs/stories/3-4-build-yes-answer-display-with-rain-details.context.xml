@@ -1,0 +1,433 @@
+<story-context id="bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>3</epicId>
+    <storyId>4</storyId>
+    <title>Build YES Answer Display with Rain Details</title>
+    <status>drafted</status>
+    <generatedAt>2025-11-07</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/stories/3-4-build-yes-answer-display-with-rain-details.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>a user</asA>
+    <iWant>to see clear rain information when rain is expected</iWant>
+    <soThat>I can plan my activities around specific rain times</soThat>
+    <tasks>
+      - Task 1: Create AnswerDisplay component structure (AC: 1)
+      - Task 2: Implement YES answer header display (AC: 1)
+      - Task 3: Create DetailCard component for rain information (AC: 1)
+      - Task 4: Implement rain windows display (AC: 1)
+      - Task 5: Implement peak rain details display (AC: 1)
+      - Task 6: Implement safe windows display (AC: 1)
+      - Task 7: Integrate CloseCallBadge component (AC: 1)
+      - Task 8: Implement glassmorphic styling (AC: 1)
+      - Task 9: Integrate AnswerDisplay into page.tsx (AC: 1)
+      - Task 10: Test YES answer display flow (AC: 1)
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+    AC-1: Given the API returns a YES decision (≥50% probability)
+    When the answer is displayed
+    Then "YES, it will rain" is prominently displayed
+    And the location tag displays the searched location (e.g., "📍 San Francisco, CA") above the answer
+    And the location tag uses glassmorphic styling consistent with detail cards
+    And the probability percentage is shown (e.g., "65% chance")
+    And rain windows show all expected rain periods with start/end times
+    And peak rain details show time, intensity, and amount
+    And safe windows are displayed if multiple rain periods exist
+    And close call message appears if probability is 40-49%
+    And all information is clearly organized and readable
+    And the display is responsive across all device sizes
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <!-- Epic 3 Technical Specification -->
+      <artifact>
+        <path>docs/tech-spec-epic-3.md</path>
+        <title>Epic 3 Technical Specification: Simple Answer Experience</title>
+        <section>AC-4: YES Answer Displays with Complete Details</section>
+        <snippet>
+          YES answer display requirements: "YES, it will rain" in large text, location tag with 📍 emoji,
+          probability percentage, rain windows with start/end times, peak details (time, intensity, amount),
+          safe windows if multiple periods, close call messaging for 40-49% probability, glassmorphic
+          DetailCard components, responsive design across all device sizes.
+        </snippet>
+      </artifact>
+
+      <artifact>
+        <path>docs/tech-spec-epic-3.md</path>
+        <title>Epic 3 Technical Specification</title>
+        <section>Detailed Design - AnswerDisplay Component</section>
+        <snippet>
+          AnswerDisplay is a presentational component receiving API response data (RainCheckResponse) and
+          searchedLocation string. No internal state - purely presentational. Conditional logic for YES vs NO
+          rendering. Story 3.4 handles YES only, Story 3.5 will extend for NO answer display.
+        </snippet>
+      </artifact>
+
+      <artifact>
+        <path>docs/tech-spec-epic-3.md</path>
+        <title>Epic 3 Technical Specification</title>
+        <section>Detailed Design - DetailCard Component</section>
+        <snippet>
+          DetailCard is a reusable presentational component for structured data display. Supported types:
+          'rain-windows', 'safe-windows', 'peak-details'. Uses glassmorphic styling with backdrop-blur,
+          subtle border, bg-opacity. Based on Shadcn UI Card component with custom glassmorphic styling.
+        </snippet>
+      </artifact>
+
+      <artifact>
+        <path>docs/tech-spec-epic-3.md</path>
+        <title>Epic 3 Technical Specification</title>
+        <section>Data Models and Contracts - RainCheckResponse</section>
+        <snippet>
+          RainCheckResponse interface: willRain (boolean), probability (0-100), rainWindows (RainWindow[]),
+          peakTime (string), intensity (light/moderate/heavy), amount (string), safeWindows (SafeWindow[]),
+          closeCall (boolean). Only rainWindows, peakTime, intensity, amount, safeWindows present for YES answers.
+        </snippet>
+      </artifact>
+
+      <artifact>
+        <path>docs/architecture.md</path>
+        <title>Architecture - Component Structure</title>
+        <section>Project Structure</section>
+        <snippet>
+          Components directory structure: /components/ui/ for Shadcn UI base components (button, input, card),
+          /components/ for custom components (AnswerDisplay, DetailCard, LoadingState, CloseCallBadge, etc.).
+          Uses absolute imports with @/ prefix.
+        </snippet>
+      </artifact>
+
+      <artifact>
+        <path>docs/architecture.md</path>
+        <title>Architecture - Naming Conventions</title>
+        <section>Implementation Patterns - Naming Conventions</section>
+        <snippet>
+          Components: PascalCase (AnswerDisplay.tsx, DetailCard.tsx). Functions: camelCase with verb-noun pattern.
+          Types/Interfaces: PascalCase. TypeScript strict mode, no 'any' types allowed.
+        </snippet>
+      </artifact>
+
+      <artifact>
+        <path>docs/ux-design-specification.md</path>
+        <title>UX Design Specification</title>
+        <section>Glassmorphic Styling Pattern</section>
+        <snippet>
+          Glassmorphic dark mode theme inspired by Linear.app. Tailwind utilities: backdrop-blur-md,
+          bg-white/10, border border-white/20. Subtle, professional aesthetic with high contrast.
+          Apply to location tag and all DetailCard components for visual consistency.
+        </snippet>
+      </artifact>
+
+      <artifact>
+        <path>docs/PRD.md</path>
+        <title>Product Requirements Document</title>
+        <section>Core Value Proposition</section>
+        <snippet>
+          Will It Rain delivers radical simplicity: one question, one answer. YES answer provides
+          necessary context (rain windows, peak details) without overwhelming the user. Privacy-first,
+          stateless architecture with no data persistence.
+        </snippet>
+      </artifact>
+    </docs>
+
+    <code>
+      <artifact>
+        <path>will-it-rain/types/api.ts</path>
+        <kind>type-definitions</kind>
+        <symbol>RainCheckResponse</symbol>
+        <lines>22-50</lines>
+        <reason>
+          Defines the API response contract that AnswerDisplay component will consume. Currently contains
+          forecast array with parsed data. Will need update or new interface for YES/NO answer format
+          with willRain, probability, rainWindows, peakTime, intensity, amount, safeWindows, closeCall fields.
+        </reason>
+      </artifact>
+
+      <artifact>
+        <path>will-it-rain/app/page.tsx</path>
+        <kind>page-component</kind>
+        <symbol>HomePage</symbol>
+        <lines>44-176</lines>
+        <reason>
+          Main landing page component where AnswerDisplay will be integrated. Contains state management
+          (location, isLoading, answerData, errorData), API call logic (POST /api/check-rain), and form
+          submission handler. Need to import AnswerDisplay and add conditional rendering based on answerData.
+        </reason>
+      </artifact>
+
+      <artifact>
+        <path>will-it-rain/components/LoadingState.tsx</path>
+        <kind>component</kind>
+        <symbol>LoadingState</symbol>
+        <lines>1-48</lines>
+        <reason>
+          Example of completed component pattern from Story 3.3. Shows proper JSDoc documentation,
+          TypeScript interface, accessibility (ARIA attributes), and Tailwind styling. AnswerDisplay
+          and DetailCard should follow identical component architecture patterns.
+        </reason>
+      </artifact>
+
+      <artifact>
+        <path>will-it-rain/components/ui/card.tsx</path>
+        <kind>ui-component</kind>
+        <symbol>Card, CardHeader, CardTitle, CardContent</symbol>
+        <lines>1-76</lines>
+        <reason>
+          Shadcn UI Card component base that DetailCard will extend. Provides Card, CardHeader, CardTitle,
+          CardContent exports. DetailCard will apply glassmorphic styling on top of these base components.
+        </reason>
+      </artifact>
+
+      <artifact>
+        <path>will-it-rain/components/ui/button.tsx</path>
+        <kind>ui-component</kind>
+        <symbol>Button</symbol>
+        <lines>N/A</lines>
+        <reason>
+          Shadcn UI Button component available for any interactive elements needed in AnswerDisplay
+          (e.g., search again functionality in Story 3.8).
+        </reason>
+      </artifact>
+    </code>
+
+    <dependencies>
+      <node>
+        <package>next</package>
+        <version>16.0.1</version>
+        <usage>Framework for App Router, page components, and routing</usage>
+      </node>
+      <node>
+        <package>react</package>
+        <version>19.2.0</version>
+        <usage>Component library for AnswerDisplay and DetailCard</usage>
+      </node>
+      <node>
+        <package>typescript</package>
+        <version>^5</version>
+        <usage>Type safety for component props and API interfaces</usage>
+      </node>
+      <node>
+        <package>tailwindcss</package>
+        <version>^4</version>
+        <usage>Utility-first styling including glassmorphic effects</usage>
+      </node>
+      <node>
+        <package>@radix-ui/react-slot</package>
+        <version>^1.2.4</version>
+        <usage>Shadcn UI dependency for Card component composition</usage>
+      </node>
+      <node>
+        <package>class-variance-authority</package>
+        <version>^0.7.1</version>
+        <usage>Variant styling for Shadcn UI components</usage>
+      </node>
+      <node>
+        <package>clsx</package>
+        <version>^2.1.1</version>
+        <usage>Conditional className utility</usage>
+      </node>
+      <node>
+        <package>tailwind-merge</package>
+        <version>^3.3.1</version>
+        <usage>Merge Tailwind classes without conflicts (used in cn() helper)</usage>
+      </node>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    1. Component Type: AnswerDisplay and DetailCard must be presentational components with no internal state
+       management. All data passed via props.
+
+    2. TypeScript Strict Mode: All components must use explicit TypeScript interfaces for props. No 'any'
+       types allowed. Import types from types/api.ts.
+
+    3. Accessibility: Must include comprehensive JSDoc documentation, ARIA labels where appropriate,
+       semantic HTML structure, and keyboard navigation support.
+
+    4. Glassmorphic Styling: Location tag and all DetailCard instances must use identical glassmorphic
+       pattern: backdrop-blur-md, bg-white/10, border border-white/20. Consistent with UX design spec.
+
+    5. Responsive Design: All components must be mobile-first responsive using Tailwind breakpoints
+       (sm:, md:, lg:). Test at 320px, 768px, 1024px widths.
+
+    6. Component Architecture: Follow LoadingState.tsx pattern - imports ordered (external, internal, types),
+       interface at top, component export with JSDoc, hooks at top of component, helper functions, render.
+
+    7. Naming Conventions: Components in PascalCase, files in PascalCase for components, camelCase for
+       functions, PascalCase for interfaces. Use verb-noun pattern for functions.
+
+    8. Client Component: AnswerDisplay must use "use client" directive for client-side rendering since
+       it may contain interactive elements in future stories.
+
+    9. Import Paths: Use absolute imports with @/ prefix (e.g., @/components/ui/card, @/types/api).
+
+    10. Testing Requirements: TypeScript compilation (npm run type-check) and ESLint (npm run lint) must
+        pass with zero errors. Manual browser testing required for visual verification.
+
+    11. NO Automated Tests: Epic 3 defers unit tests to Epic 5. Focus on TypeScript, ESLint, and manual
+        browser testing only.
+
+    12. CloseCallBadge Dependency: Story 3.6 creates CloseCallBadge component, but Story 3.4 AC requires
+        close call rendering for YES answers with 40-49% probability. Create minimal CloseCallBadge in
+        Story 3.4, enhance in 3.6 if needed.
+  </constraints>
+
+  <interfaces>
+    <interface>
+      <name>AnswerDisplayProps</name>
+      <kind>React Component Props</kind>
+      <signature>
+        interface AnswerDisplayProps {
+          response: RainCheckResponse;
+          searchedLocation: string;
+        }
+      </signature>
+      <path>will-it-rain/components/AnswerDisplay.tsx</path>
+      <notes>
+        Props for AnswerDisplay component. response contains API data with willRain, probability,
+        rain details. searchedLocation is the user-entered location string for display in location tag.
+      </notes>
+    </interface>
+
+    <interface>
+      <name>DetailCardProps</name>
+      <kind>React Component Props</kind>
+      <signature>
+        interface DetailCardProps {
+          title: string;
+          data: RainWindow[] | SafeWindow[] | { peakTime: string; intensity: string; amount: string };
+          type: 'rain-windows' | 'safe-windows' | 'peak-details';
+        }
+      </signature>
+      <path>will-it-rain/components/DetailCard.tsx</path>
+      <notes>
+        Props for DetailCard component. title is the card heading. data is union type accepting arrays
+        (rain/safe windows) or object (peak details). type determines rendering logic.
+      </notes>
+    </interface>
+
+    <interface>
+      <name>RainCheckResponse (Expected Format for Story 3.4)</name>
+      <kind>API Response Interface</kind>
+      <signature>
+        interface RainCheckResponse {
+          willRain: boolean;
+          probability: number; // 0-100
+          rainWindows?: RainWindow[];
+          peakTime?: string;
+          intensity?: string; // "light" | "moderate" | "heavy"
+          amount?: string; // e.g., "0.2 inches"
+          safeWindows?: SafeWindow[];
+          closeCall: boolean;
+        }
+      </signature>
+      <path>will-it-rain/types/api.ts</path>
+      <notes>
+        Expected API response format for YES/NO answers. Current types/api.ts has different format
+        (forecast array). May need to update existing interface or create new one. rainWindows,
+        peakTime, intensity, amount, safeWindows only present for YES answers (willRain: true).
+      </notes>
+    </interface>
+
+    <interface>
+      <name>RainWindow</name>
+      <kind>Type Definition</kind>
+      <signature>
+        interface RainWindow {
+          start: string; // e.g., "2:00 PM"
+          end: string;   // e.g., "5:00 PM"
+        }
+      </signature>
+      <path>will-it-rain/types/api.ts</path>
+      <notes>
+        Defines rain window structure with formatted time strings (12-hour AM/PM format).
+      </notes>
+    </interface>
+
+    <interface>
+      <name>SafeWindow</name>
+      <kind>Type Definition</kind>
+      <signature>
+        interface SafeWindow {
+          start: string;
+          end: string;
+        }
+      </signature>
+      <path>will-it-rain/types/api.ts</path>
+      <notes>
+        Defines safe window structure (identical to RainWindow). Only present when multiple rain periods exist.
+      </notes>
+    </interface>
+
+    <interface>
+      <name>CloseCallBadgeProps</name>
+      <kind>React Component Props</kind>
+      <signature>
+        interface CloseCallBadgeProps {
+          show: boolean;
+        }
+      </signature>
+      <path>will-it-rain/components/CloseCallBadge.tsx</path>
+      <notes>
+        Props for CloseCallBadge component. show determines visibility. Displays message:
+        "It's a close call - consider bringing an umbrella just in case" when show is true.
+      </notes>
+    </interface>
+  </interfaces>
+
+  <tests>
+    <standards>
+      Epic 3 testing standards: TypeScript compilation validation (npm run type-check), ESLint validation
+      (npm run lint), manual browser testing on http://localhost:3000. NO automated unit tests (deferred
+      to Epic 5). Test on Chrome primary, defer Safari/Firefox to Epic 4.7. Responsive testing at 320px
+      (mobile), 768px (tablet), 1024px (desktop). Keyboard accessibility testing (Tab navigation).
+      All tests must pass before marking story complete.
+    </standards>
+
+    <locations>
+      will-it-rain/app/page.tsx - Integration point for AnswerDisplay component
+      will-it-rain/components/AnswerDisplay.tsx - YES answer display component
+      will-it-rain/components/DetailCard.tsx - Reusable detail card component
+      will-it-rain/components/CloseCallBadge.tsx - Close call messaging component
+    </locations>
+
+    <ideas>
+      Test Idea 1 (AC-1): Submit location with YES answer (≥50% probability). Verify "YES, it will rain"
+      displays in large text, location tag shows "📍 [location]" with glassmorphic styling, probability
+      percentage displays (e.g., "65% chance").
+
+      Test Idea 2 (AC-1): Test rain windows display. Verify all rain periods display with formatted
+      start/end times (e.g., "2:00 PM - 5:00 PM"). Test with single rain window and multiple rain windows.
+
+      Test Idea 3 (AC-1): Test peak details display. Verify peak time, intensity (light/moderate/heavy),
+      and amount (e.g., "0.2 inches") display in DetailCard with structured layout.
+
+      Test Idea 4 (AC-1): Test safe windows display. Verify safe windows only display when multiple rain
+      periods exist. Verify correct time formatting. Test scenario with no safe windows (single rain period).
+
+      Test Idea 5 (AC-1): Test close call messaging. Submit location with 40-49% probability. Verify
+      close call message displays: "It's a close call - consider bringing an umbrella just in case".
+      Test with 50%+ probability - close call should NOT appear.
+
+      Test Idea 6 (AC-1): Test glassmorphic styling. Verify location tag and all DetailCards use
+      backdrop-blur-md, bg-white/10, border border-white/20. Inspect with browser DevTools.
+
+      Test Idea 7 (AC-1): Test responsive design. Open browser DevTools responsive mode. Test at 320px
+      (mobile), 768px (tablet), 1024px (desktop). Verify all detail cards display correctly, text is
+      readable, no horizontal scrolling.
+
+      Test Idea 8 (TypeScript/ESLint): Run "npm run type-check" - must pass with zero errors. Run
+      "npm run lint" - must pass with zero errors.
+
+      Test Idea 9 (Integration): Start dev server (npm run dev). Open http://localhost:3000. Enter
+      location, submit search. Verify smooth transition from loading state to answer display.
+
+      Test Idea 10 (Edge Cases): Test with API response containing empty rainWindows array (should handle
+      gracefully). Test with missing safeWindows field (should not display safe windows section).
+    </ideas>
+  </tests>
+</story-context>

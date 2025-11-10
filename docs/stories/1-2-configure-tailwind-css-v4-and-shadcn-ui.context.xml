@@ -1,0 +1,288 @@
+<story-context id="bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>1</epicId>
+    <storyId>2</storyId>
+    <title>Configure Tailwind CSS v4 and Shadcn UI</title>
+    <status>drafted</status>
+    <generatedAt>2025-11-06</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/stories/1-2-configure-tailwind-css-v4-and-shadcn-ui.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>a developer</asA>
+    <iWant>to set up Tailwind CSS v4 and Shadcn UI components</iWant>
+    <soThat>I have a consistent, accessible UI framework for building the interface</soThat>
+    <tasks>
+- Task 1: Verify Tailwind CSS v4 Installation (AC: 1)
+  - Confirm Tailwind CSS v4 is already installed from Story 1.1
+  - Verify `postcss.config.mjs` contains `@tailwindcss/postcss` plugin
+  - Check that Tailwind directives exist in `app/globals.css`
+  - Test Tailwind utilities work in a component
+
+- Task 2: Configure Tailwind for Monochrome Storm Theme (AC: 1)
+  - Create/update `tailwind.config.ts` with custom theme colors
+  - Add dark mode configuration (`darkMode: ['class']`)
+  - Configure Inter font family
+  - Add custom border radius values
+  - Add glassmorphic utilities to globals.css
+
+- Task 3: Initialize Shadcn UI (AC: 1)
+  - Run `npx shadcn@latest init`
+  - Configure Shadcn with TypeScript, RSC, CSS variables
+  - Set base color to slate
+  - Configure path aliases (@/components, @/lib/utils)
+  - Verify `components.json` created with correct config
+
+- Task 4: Install Required Shadcn UI Components (AC: 1)
+  - Run `npx shadcn@latest add button`
+  - Run `npx shadcn@latest add input`
+  - Run `npx shadcn@latest add card`
+  - Verify components created in `components/ui/`
+  - Verify `lib/utils.ts` created with `cn()` helper
+
+- Task 5: Test Styling System Integration (AC: 1)
+  - Import Button component in `app/page.tsx`
+  - Test Button with variants (default, outline, ghost)
+  - Apply custom Tailwind utilities to verify theme works
+  - Test dark mode styling
+  - Verify no TypeScript errors in Shadcn components
+
+- Task 6: Verify Build Process (AC: 1)
+  - Run `npm run dev` and verify no styling errors
+  - Run `npm run build` to ensure production build succeeds
+  - Check that Tailwind purges unused styles correctly
+  - Verify bundle size remains reasonable
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+1. **Given** the Next.js project is initialized
+   **When** I configure the styling system
+   **Then** Tailwind CSS v4 is installed and configured
+   **And** Shadcn UI is initialized with the default theme
+   **And** necessary Shadcn UI components are available (Button, Input, Card at minimum)
+   **And** styles are applied correctly in the app
+   **And** Tailwind utilities work in components
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <!-- Tech Spec - Tailwind Configuration -->
+      <doc>
+        <path>docs/tech-spec-epic-1.md</path>
+        <title>Epic 1 Technical Specification</title>
+        <section>Tailwind Configuration Schema</section>
+        <snippet>Complete Tailwind config with Monochrome Storm theme: background #0a0a0a, foreground #ffffff, primary #3b82f6. Dark mode class-based, Inter font, custom border radius (16px/12px/6px).</snippet>
+      </doc>
+
+      <!-- Tech Spec - Shadcn Configuration -->
+      <doc>
+        <path>docs/tech-spec-epic-1.md</path>
+        <title>Epic 1 Technical Specification</title>
+        <section>Shadcn UI Configuration (components.json)</section>
+        <snippet>Shadcn config: RSC true, TypeScript, Tailwind baseColor slate, CSS variables enabled, aliases @/components and @/lib/utils.</snippet>
+      </doc>
+
+      <!-- Architecture - ADR-006 -->
+      <doc>
+        <path>docs/architecture.md</path>
+        <title>Architecture</title>
+        <section>ADR-006: Shadcn UI Over Material-UI or Chakra</section>
+        <snippet>Decision to use Shadcn UI (Radix UI + Tailwind) for copy-paste architecture, full customization, dark mode built-in, WCAG 2.1 AA accessible by default.</snippet>
+      </doc>
+
+      <!-- UX Design - Color System -->
+      <doc>
+        <path>docs/ux-design-specification.md</path>
+        <title>UX Design Specification</title>
+        <section>Color System - Monochrome Storm Theme</section>
+        <snippet>Base colors: Background #0a0a0a, Text #ffffff, Muted #666666, Border #222222. Semantic: Primary #3b82f6, Surface #1a1a1a, Error #ef4444, Success #10b981.</snippet>
+      </doc>
+
+      <!-- UX Design - Glassmorphic Utilities -->
+      <doc>
+        <path>docs/ux-design-specification.md</path>
+        <title>UX Design Specification</title>
+        <section>Glassmorphic Card Design</section>
+        <snippet>Glass card: rgba(26, 26, 26, 0.6) background, blur(20px) backdrop, 1px rgba(255, 255, 255, 0.1) border, 16px border-radius, 0 8px 32px rgba(0, 0, 0, 0.3) shadow.</snippet>
+      </doc>
+
+      <!-- UX Design - Typography -->
+      <doc>
+        <path>docs/ux-design-specification.md</path>
+        <title>UX Design Specification</title>
+        <section>Typography System</section>
+        <snippet>Inter font family (variable weight). Type scale: h1 2.5rem/700, h2 3rem/700, h3 1.5rem/600, body 1rem/400, small 0.875rem/400.</snippet>
+      </doc>
+    </docs>
+    <code>
+      <!-- Existing Configuration Files -->
+      <artifact>
+        <path>will-it-rain/postcss.config.mjs</path>
+        <kind>config</kind>
+        <symbol>@tailwindcss/postcss</symbol>
+        <lines>1-7</lines>
+        <reason>Tailwind v4 PostCSS plugin already configured from Story 1.1 - DO NOT recreate</reason>
+      </artifact>
+
+      <artifact>
+        <path>will-it-rain/tsconfig.json</path>
+        <kind>config</kind>
+        <symbol>paths</symbol>
+        <lines>21-23</lines>
+        <reason>Path aliases already configured (@/*) - Shadcn components.json must match this</reason>
+      </artifact>
+
+      <artifact>
+        <path>will-it-rain/app/globals.css</path>
+        <kind>stylesheet</kind>
+        <symbol>@import "tailwindcss"</symbol>
+        <lines>1-26</lines>
+        <reason>Tailwind directives exist but theme needs replacement with Monochrome Storm colors and glassmorphic utilities</reason>
+      </artifact>
+
+      <artifact>
+        <path>will-it-rain/app/layout.tsx</path>
+        <kind>component</kind>
+        <symbol>RootLayout</symbol>
+        <lines>1-34</lines>
+        <reason>Currently uses Geist fonts - needs to be changed to Inter font from next/font/google</reason>
+      </artifact>
+
+      <artifact>
+        <path>will-it-rain/app/page.tsx</path>
+        <kind>component</kind>
+        <symbol>Home</symbol>
+        <lines>1-65</lines>
+        <reason>Default Next.js page - will be modified to test Button component and Tailwind utilities</reason>
+      </artifact>
+    </code>
+    <dependencies>
+      <node>
+        <dependency name="next" version="16.0.1" />
+        <dependency name="react" version="19.2.0" />
+        <dependency name="react-dom" version="19.2.0" />
+        <dependency name="typescript" version="^5" />
+        <dependency name="@tailwindcss/postcss" version="^4" />
+        <dependency name="tailwindcss" version="^4" />
+      </node>
+      <shadcn-required>
+        <dependency name="@radix-ui/react-slot" note="Shadcn UI base primitive" />
+        <dependency name="class-variance-authority" note="Component variants" />
+        <dependency name="clsx" note="Class merging utility" />
+        <dependency name="tailwind-merge" note="Tailwind class conflict resolution" />
+        <dependency name="tailwindcss-animate" note="Animation utilities" />
+      </shadcn-required>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+- **CRITICAL**: Tailwind CSS v4 uses PostCSS plugin architecture (@tailwindcss/postcss in postcss.config.mjs), NOT traditional tailwind.config.ts
+- Must verify postcss.config.mjs exists from Story 1.1 before proceeding
+- Shadcn UI is copy-paste architecture - components copied into project, not npm installed
+- Dark mode MUST use class-based approach: darkMode: ['class']
+- Inter font MUST be imported from next/font/google in app/layout.tsx
+- All custom theme colors defined in Monochrome Storm specification must be implemented
+- Glassmorphic utilities must be added to app/globals.css (not inline styles)
+- Components.json path aliases MUST match tsconfig.json (@/components, @/lib/utils)
+- Tailwind directives (@import "tailwindcss") must be in app/globals.css
+- No automated tests required for Epic 1 - validation through successful builds only
+  </constraints>
+  <interfaces>
+    <!-- Shadcn UI Component Interfaces -->
+    <interface>
+      <name>cn() utility</name>
+      <kind>function signature</kind>
+      <signature>function cn(...inputs: ClassValue[]): string</signature>
+      <path>lib/utils.ts</path>
+      <note>Merges Tailwind class names, resolves conflicts using tailwind-merge and clsx</note>
+    </interface>
+
+    <interface>
+      <name>Button component</name>
+      <kind>React component</kind>
+      <signature>Button({ variant, size, className, ...props }): JSX.Element</signature>
+      <path>components/ui/button.tsx</path>
+      <note>Variants: default, outline, ghost. Sizes: default, sm, lg, icon</note>
+    </interface>
+
+    <interface>
+      <name>Input component</name>
+      <kind>React component</kind>
+      <signature>Input({ type, className, ...props }): JSX.Element</signature>
+      <path>components/ui/input.tsx</path>
+      <note>Extends HTMLInputElement, styled with glass theme</note>
+    </interface>
+
+    <interface>
+      <name>Card components</name>
+      <kind>React component collection</kind>
+      <signature>Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter</signature>
+      <path>components/ui/card.tsx</path>
+      <note>Composable card components for glassmorphic containers</note>
+    </interface>
+  </interfaces>
+  <tests>
+    <standards>
+No automated testing infrastructure required for Epic 1 (Foundation). Configuration validated through successful builds and manual verification. Testing standards per Tech Spec:
+- Configuration validated through successful builds (npm run dev, npm run build)
+- Manual verification: Shadcn Button component renders correctly, Tailwind utilities apply as expected, dark mode theme visible
+- TypeScript compilation: tsc --noEmit must pass with no errors
+- Production build: npm run build must complete successfully
+    </standards>
+    <locations>
+No test files required for this story. Manual testing performed in:
+- Development server: npm run dev (verify styling applies)
+- Browser: localhost:3000 (visual inspection of Button, dark mode, custom theme)
+- Build process: npm run build (verify production build succeeds)
+    </locations>
+    <ideas>
+      <!-- Testing ideas mapped to acceptance criteria -->
+      <test id="AC-1">
+        <criteria>Tailwind CSS v4 installed and configured</criteria>
+        <idea>Verify postcss.config.mjs contains @tailwindcss/postcss plugin</idea>
+        <idea>Check app/globals.css has @import "tailwindcss" directive</idea>
+        <idea>Test Tailwind utility class (e.g., bg-primary, text-foreground) applies correctly in browser</idea>
+      </test>
+
+      <test id="AC-1">
+        <criteria>Shadcn UI initialized with default theme</criteria>
+        <idea>Verify components.json created with correct RSC, TypeScript, baseColor slate settings</idea>
+        <idea>Check tailwind.config.ts has dark mode class-based configuration</idea>
+        <idea>Verify custom Monochrome Storm colors in tailwind.config.ts match UX spec</idea>
+      </test>
+
+      <test id="AC-1">
+        <criteria>Shadcn UI components available (Button, Input, Card)</criteria>
+        <idea>Verify components/ui/button.tsx exists and exports Button component</idea>
+        <idea>Verify components/ui/input.tsx exists and exports Input component</idea>
+        <idea>Verify components/ui/card.tsx exists and exports Card components</idea>
+        <idea>Verify lib/utils.ts exists with cn() helper function</idea>
+      </test>
+
+      <test id="AC-1">
+        <criteria>Styles applied correctly in app</criteria>
+        <idea>Import Button in app/page.tsx and verify it renders with correct styling</idea>
+        <idea>Test Button variants (default, outline, ghost) display correctly</idea>
+        <idea>Apply custom Tailwind utilities to verify Monochrome Storm theme works</idea>
+        <idea>Check dark mode styling is active (background #0a0a0a)</idea>
+      </test>
+
+      <test id="AC-1">
+        <criteria>Tailwind utilities work in components</criteria>
+        <idea>Apply utility classes like bg-surface, text-muted, border-border</idea>
+        <idea>Verify glassmorphic utilities (.glass-card, .glass-surface) apply correctly</idea>
+        <idea>Test that Tailwind purges unused styles in production build</idea>
+      </test>
+
+      <test id="build">
+        <criteria>Build process succeeds</criteria>
+        <idea>Run npm run dev - verify no styling errors, server starts successfully</idea>
+        <idea>Run npm run build - ensure production build completes without errors</idea>
+        <idea>Verify bundle size remains reasonable (check build output)</idea>
+        <idea>Check that Inter font loads and displays correctly</idea>
+      </test>
+    </ideas>
+  </tests>
+</story-context>

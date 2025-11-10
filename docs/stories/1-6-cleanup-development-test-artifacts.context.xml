@@ -1,0 +1,242 @@
+<story-context id="bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>1</epicId>
+    <storyId>6</storyId>
+    <title>Cleanup Development Test Artifacts</title>
+    <status>drafted</status>
+    <generatedAt>2025-11-06</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/stories/1-6-cleanup-development-test-artifacts.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>a developer</asA>
+    <iWant>to remove temporary test files and artifacts from Epic 1</iWant>
+    <soThat>the codebase is clean and production-ready before Epic 2 development begins</soThat>
+    <tasks>
+- Task 1: Remove environment variable test files (from Story 1.3)
+  - Delete app/api/test-env/route.ts and directory
+  - Delete app/test-client-env.tsx
+  - Remove TestClientEnv import from app/page.tsx (line 4)
+  - Remove &lt;TestClientEnv /&gt; component usage from app/page.tsx (line 20)
+  - Verify /api/test-env endpoint returns 404 after removal
+
+- Task 2: Clean up app/page.tsx to production-ready state
+  - Remove or comment out Story 1.2 Tailwind/Shadcn test content
+  - Replace with simple placeholder for Epic 3 frontend work
+  - Keep it minimal - just enough to verify the app runs
+  - Add comment indicating "Epic 3 will implement the actual UI"
+
+- Task 3: Verify production readiness
+  - Run TypeScript compilation: npx tsc --noEmit (should pass)
+  - Run ESLint: npm run lint (should pass)
+  - Run development server: npm run dev (should start successfully)
+  - Run production build: npm run build (should complete successfully)
+  - Verify no console errors or warnings in browser
+
+- Task 4: Move favicon to public/ directory for consistency
+  - Move app/favicon.ico to public/favicon.ico
+  - Verify favicon still loads correctly in browser tabs
+  - Test across Chrome, Safari, Firefox to confirm
+  - Rationale: Aligns with public/icons/ structure, more conventional per Next.js docs
+  - Source: Low severity advisory from Story 1.4 review
+
+- Task 5: Update documentation
+  - Remove references to test files from README if any
+  - Add note in CHANGELOG or README about Epic 1 completion
+  - Document that foundation is ready for Epic 2
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+1. **Given** Epic 1 stories are complete and validated
+   **When** I clean up test artifacts
+   **Then** all temporary test files created during Epic 1 validation are removed
+   **And** the app/page.tsx landing page is restored to a clean state without test components
+   **And** no test-related imports remain in production code
+   **And** the development server runs successfully without the test files
+   **And** the production build completes successfully
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc>
+        <path>docs/tech-spec-epic-1.md</path>
+        <title>Epic 1 Technical Specification: Foundation &amp; Infrastructure</title>
+        <section>Overview and Success Criteria</section>
+        <snippet>Epic 1 establishes the technical foundation for Will It Rain. Success criteria include: development server runs without errors, TypeScript compiles with strict mode, production build completes successfully.</snippet>
+      </doc>
+      <doc>
+        <path>docs/epics.md</path>
+        <title>Epics: Will It Rain</title>
+        <section>Epic 1: Foundation &amp; Infrastructure</section>
+        <snippet>Epic 1 establishes foundation for all subsequent development work. Includes Next.js initialization, styling configuration, environment management, and PWA setup.</snippet>
+      </doc>
+      <doc>
+        <path>docs/architecture.md</path>
+        <title>Architecture</title>
+        <section>Project Structure</section>
+        <snippet>Defines the project structure for will-it-rain/, including app/, components/, lib/, and public/ directories with their respective contents and purposes.</snippet>
+      </doc>
+      <doc>
+        <path>docs/stories/1-3-set-up-environment-variables-and-api-key-management.md</path>
+        <title>Story 1.3: Set Up Environment Variables and API Key Management</title>
+        <section>Test Files Created</section>
+        <snippet>Story 1.3 created test files for validation: app/api/test-env/route.ts (server-side test endpoint) and app/test-client-env.tsx (client-side security test component). These were temporary validation artifacts.</snippet>
+      </doc>
+    </docs>
+    <code>
+      <file>
+        <path>will-it-rain/app/page.tsx</path>
+        <kind>component</kind>
+        <symbol>Home</symbol>
+        <lines>1-101</lines>
+        <reason>Contains test content from Stories 1.2 and 1.3 that needs cleanup. Must be simplified to production-ready placeholder while keeping essential structure.</reason>
+      </file>
+      <file>
+        <path>will-it-rain/app/test-client-env.tsx</path>
+        <kind>test-component</kind>
+        <symbol>TestClientEnv</symbol>
+        <lines>1-50</lines>
+        <reason>TEST ARTIFACT - Created in Story 1.3 for environment variable security validation. Must be deleted as it's temporary test code.</reason>
+      </file>
+      <file>
+        <path>will-it-rain/app/api/test-env/route.ts</path>
+        <kind>api-route</kind>
+        <symbol>GET</symbol>
+        <lines>all</lines>
+        <reason>TEST ARTIFACT - Server-side test endpoint from Story 1.3. Directory and file must be deleted. No production code depends on this.</reason>
+      </file>
+      <file>
+        <path>will-it-rain/lib/env.ts</path>
+        <kind>utility</kind>
+        <symbol>validateEnv, env</symbol>
+        <lines>1-104</lines>
+        <reason>KEEP - Essential environment validation utility used by Epic 2+. Provides type-safe access to server-side environment variables.</reason>
+      </file>
+      <file>
+        <path>will-it-rain/app/favicon.ico</path>
+        <kind>asset</kind>
+        <symbol>N/A</symbol>
+        <lines>N/A</lines>
+        <reason>Must be moved from app/ to public/ directory for better alignment with Next.js conventions and public/icons/ structure (per Story 1.4 advisory).</reason>
+      </file>
+      <file>
+        <path>will-it-rain/components/ui/button.tsx</path>
+        <kind>component</kind>
+        <symbol>Button</symbol>
+        <lines>all</lines>
+        <reason>KEEP - Shadcn UI component, will be used by Epic 3 frontend.</reason>
+      </file>
+      <file>
+        <path>will-it-rain/components/ui/input.tsx</path>
+        <kind>component</kind>
+        <symbol>Input</symbol>
+        <lines>all</lines>
+        <reason>KEEP - Shadcn UI component, will be used by Epic 3 for location input.</reason>
+      </file>
+      <file>
+        <path>will-it-rain/components/ui/card.tsx</path>
+        <kind>component</kind>
+        <symbol>Card, CardHeader, CardTitle, CardDescription, CardContent</symbol>
+        <lines>all</lines>
+        <reason>KEEP - Shadcn UI component, will be used by Epic 3 for answer display.</reason>
+      </file>
+    </code>
+    <dependencies>
+      <node>
+        <package name="next" version="16.0.1" />
+        <package name="react" version="19.2.0" />
+        <package name="react-dom" version="19.2.0" />
+        <package name="typescript" version="^5" />
+        <package name="tailwindcss" version="^4" />
+        <package name="@tailwindcss/postcss" version="^4" />
+        <package name="eslint" version="^9" />
+        <package name="eslint-config-next" version="16.0.1" />
+      </node>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint>TypeScript strict mode must be maintained - no compilation errors allowed</constraint>
+    <constraint>ESLint must pass with no warnings or errors</constraint>
+    <constraint>Development server (npm run dev) must start successfully after cleanup</constraint>
+    <constraint>Production build (npm run build) must complete successfully after cleanup</constraint>
+    <constraint>All Shadcn UI components must remain intact - they will be used by Epic 3</constraint>
+    <constraint>lib/env.ts must NOT be removed - it's essential for Epic 2+ environment management</constraint>
+    <constraint>Do not remove any configuration files (next.config.ts, tailwind.config.ts, tsconfig.json, etc.)</constraint>
+    <constraint>Cleaned app/page.tsx must maintain valid Next.js App Router structure</constraint>
+    <constraint>Next.js 16 conventions must be followed for all remaining code</constraint>
+    <constraint>Favicon must end up in public/ directory, not app/, per Next.js conventions</constraint>
+  </constraints>
+  <interfaces>
+    <interface>
+      <name>validateEnv</name>
+      <kind>function</kind>
+      <signature>function validateEnv(): EnvironmentVariables</signature>
+      <path>will-it-rain/lib/env.ts</path>
+    </interface>
+    <interface>
+      <name>env (exported constant)</name>
+      <kind>environment-object</kind>
+      <signature>const env: EnvironmentVariables = { OPENWEATHER_API_KEY, UPSTASH_REDIS_REST_URL, UPSTASH_REDIS_REST_TOKEN, NODE_ENV }</signature>
+      <path>will-it-rain/lib/env.ts</path>
+    </interface>
+  </interfaces>
+  <tests>
+    <standards>
+For Story 1.6, testing is verification-based rather than automated testing. The story requires manual verification that:
+1. TypeScript compilation passes (npx tsc --noEmit)
+2. ESLint passes with no warnings (npm run lint)
+3. Development server starts successfully (npm run dev)
+4. Production build completes successfully (npm run build)
+5. No console errors or warnings in browser
+6. Test files no longer exist in the codebase
+7. Favicon loads from public/ directory
+
+No automated test framework is configured yet in Epic 1. Future epics (Epic 5) will add comprehensive testing infrastructure.
+    </standards>
+    <locations>
+No test directory currently exists. Testing for this story is manual verification via build commands and browser inspection.
+    </locations>
+    <ideas>
+      <test ac="1" type="verification">
+        <description>Verify test files are completely removed</description>
+        <steps>
+          1. Confirm app/api/test-env/ directory does not exist
+          2. Confirm app/test-client-env.tsx does not exist
+          3. Grep codebase for "test-env" references - should find none
+          4. Grep codebase for "TestClientEnv" - should find none
+        </steps>
+      </test>
+      <test ac="1" type="verification">
+        <description>Verify cleaned app/page.tsx is production-ready</description>
+        <steps>
+          1. Review app/page.tsx - should be minimal placeholder
+          2. No test component imports should remain
+          3. Should have comment indicating "Epic 3 will implement UI"
+          4. Should still render valid React component
+        </steps>
+      </test>
+      <test ac="1" type="verification">
+        <description>Verify build and dev server work after cleanup</description>
+        <steps>
+          1. Run: npx tsc --noEmit (should pass with no errors)
+          2. Run: npm run lint (should pass with no warnings)
+          3. Run: npm run dev (should start on localhost)
+          4. Run: npm run build (should complete successfully)
+          5. Open browser - no console errors
+        </steps>
+      </test>
+      <test ac="1" type="verification">
+        <description>Verify favicon moved to public/ directory</description>
+        <steps>
+          1. Confirm app/favicon.ico does not exist
+          2. Confirm public/favicon.ico exists
+          3. Load app in browser - favicon appears in tab
+          4. Test in Chrome, Safari, Firefox
+        </steps>
+      </test>
+    </ideas>
+  </tests>
+</story-context>

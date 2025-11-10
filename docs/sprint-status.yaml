@@ -1,0 +1,93 @@
+# generated: 2025-11-06
+# project: TEST3
+# project_key: TEST3
+# tracking_system: file-system
+# story_location: {project-root}/docs/stories
+
+# STATUS DEFINITIONS:
+# ==================
+# Epic Status:
+#   - backlog: Epic exists in epic file but not contexted
+#   - contexted: Epic tech context created (required before drafting stories)
+#
+# Story Status:
+#   - backlog: Story only exists in epic file
+#   - drafted: Story file created in stories folder
+#   - ready-for-dev: Draft approved and story context created
+#   - in-progress: Developer actively working on implementation
+#   - review: Under SM review (via code-review workflow)
+#   - done: Story completed
+#
+# Retrospective Status:
+#   - optional: Can be completed but not required
+#   - completed: Retrospective has been done
+
+# WORKFLOW NOTES:
+# ===============
+# - Epics should be 'contexted' before stories can be 'drafted'
+# - Stories can be worked in parallel if team capacity allows
+# - SM typically drafts next story after previous one is 'done' to incorporate learnings
+# - Dev moves story to 'review', SM reviews, then Dev moves to 'done'
+
+generated: 2025-11-06
+project: TEST3
+project_key: TEST3
+tracking_system: file-system
+story_location: "{project-root}/docs/stories"
+
+development_status:
+  epic-1: contexted
+  1-1-initialize-nextjs-project-with-typescript: done
+  1-2-configure-tailwind-css-v4-and-shadcn-ui: done
+  1-3-set-up-environment-variables-and-api-key-management: done
+  1-4-configure-basic-pwa-manifest-and-metadata: done
+  1-5-set-up-development-and-build-scripts: done
+  1-6-cleanup-development-test-artifacts: done
+  epic-1-retrospective: optional
+
+  epic-2: contexted
+  2-1-create-openweather-api-integration-layer: done
+  2-2-fetch-and-parse-24-hour-forecast-data: done
+  2-2a-add-zip-code-location-support: done
+  2-3-implement-rain-probability-calculation-logic: done
+  2-4-implement-rain-window-detection: done
+  2-5-implement-safe-window-calculation: done
+  2-6-integrate-complete-decision-logic: done
+  2-7-add-privacy-first-analytics-logging: done
+  2-8-implement-comprehensive-error-handling: done
+  epic-2-retrospective: optional
+
+  epic-3: contexted
+  3-1-build-landing-page-with-value-proposition: done
+  3-2-create-location-input-field-with-validation: done
+  3-3-implement-loading-state-with-user-feedback: done
+  3-4-build-yes-answer-display-with-rain-details: done
+  3-5-build-no-answer-display-with-probability: done
+  3-6-implement-close-call-messaging: done
+  3-7-implement-error-display-with-user-guidance: done
+  3-8-enable-search-again-functionality: done
+  3-9-connect-frontend-to-backend-api: done
+  epic-3-retrospective: completed
+
+  epic-4: contexted
+  4-1-complete-pwa-manifest-configuration: done
+  4-2-implement-service-worker-for-asset-caching: done
+  4-3-optimize-responsive-design-for-all-devices: done
+  4-4-implement-touch-friendly-interactions: done
+  4-5-configure-app-icons-and-splash-screens: done
+  4-6-optimize-installation-experience: done
+  4-7-cross-browser-testing-and-compatibility: backlog
+  epic-4-retrospective: optional
+
+  epic-5: backlog
+  5-1-performance-optimization-for-sub-2-second-response: backlog
+  5-2-implement-wcag-21-level-aa-accessibility: backlog
+  5-3-screen-reader-testing-and-optimization: backlog
+  5-4-keyboard-navigation-and-focus-management: backlog
+  5-5-color-contrast-and-visual-accessibility: backlog
+  5-6-comprehensive-error-handling-refinement: backlog
+  5-7-end-to-end-testing-and-quality-assurance: backlog
+  5-8-seo-and-metadata-optimization: backlog
+  5-9-production-build-and-deployment-preparation: backlog
+  5-10-final-ux-polish-and-refinement: backlog
+  epic-5-retrospective: optional

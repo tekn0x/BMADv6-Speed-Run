@@ -1,0 +1,353 @@
+<story-context id="bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>4</epicId>
+    <storyId>5</storyId>
+    <title>Configure App Icons and Splash Screens</title>
+    <status>drafted</status>
+    <generatedAt>2025-11-08</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/stories/4-5-configure-app-icons-and-splash-screens.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>a user</asA>
+    <iWant>the installed app to look professional</iWant>
+    <soThat>it feels like a real application on my device</soThat>
+    <tasks>
+- [ ] Design and create app icon (AC: 1, 2)
+  - [ ] Design simple, recognizable icon for "Will It Rain" app
+  - [ ] Create master icon file (SVG or high-res PNG 1024x1024+)
+  - [ ] Ensure icon works on both light and dark backgrounds
+  - [ ] Verify icon is clear and recognizable at small sizes
+
+- [ ] Generate required icon sizes (AC: 1, 5, 7)
+  - [ ] Generate 192x192 icon for Android home screen (PWA standard)
+  - [ ] Generate 512x512 icon for Android splash screen (PWA standard)
+  - [ ] Generate 180x180 apple-touch-icon for iOS home screen
+  - [ ] Generate favicon.ico for browser tabs (16x16, 32x32, 48x48 multi-size)
+  - [ ] Verify all icons render clearly without distortion
+
+- [ ] Create maskable icon for Android (AC: 5)
+  - [ ] Generate 512x512 maskable icon with safe zone compliance
+  - [ ] Ensure icon content stays within 80% safe zone (40px padding on 512px)
+  - [ ] Test maskable icon with maskable.app tool
+  - [ ] Verify icon adapts correctly to different Android launcher shapes
+
+- [ ] Configure iOS splash screens and metadata (AC: 3)
+  - [ ] Add apple-touch-icon link to layout.tsx metadata
+  - [ ] Configure apple-mobile-web-app-capable meta tag
+  - [ ] Configure apple-mobile-web-app-status-bar-style meta tag
+  - [ ] Test splash screen appearance on iOS devices (if needed)
+
+- [ ] Update PWA manifest with icon paths (AC: 1, 2, 5)
+  - [ ] Update manifest.ts icons array with all icon sizes
+  - [ ] Set purpose: "any" for standard icons (192x192, 512x512)
+  - [ ] Set purpose: "maskable" for Android adaptive icon
+  - [ ] Verify manifest.json serves correct icon paths
+
+- [ ] Configure theme colors and branding (AC: 4)
+  - [ ] Set theme_color in manifest.ts (matches app color scheme)
+  - [ ] Set background_color in manifest.ts (white or app background)
+  - [ ] Add theme-color meta tag to layout.tsx
+  - [ ] Verify theme colors integrate with OS (status bar, app switcher)
+
+- [ ] Test icon appearance across devices (AC: 1, 2, 5, 6, 7)
+  - [ ] Test app icon on Android home screen (Chrome, Samsung Internet)
+  - [ ] Test app icon on iOS home screen (Safari Add to Home Screen)
+  - [ ] Test favicon in browser tabs (Chrome, Safari, Firefox, Edge)
+  - [ ] Test maskable icon on Android (various launcher apps)
+  - [ ] Verify all icons render clearly at actual device resolutions
+  - [ ] Document any device-specific icon issues
+
+- [ ] Verify PWA installability with Lighthouse (AC: All)
+  - [ ] Run Lighthouse PWA audit
+  - [ ] Confirm "Installable" criteria passes
+  - [ ] Verify manifest includes all required icon sizes
+  - [ ] Fix any icon-related PWA audit warnings
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+**Given** the app can be installed
+**When** I install it on my device
+**Then** the app icon appears correctly on home screen
+**And** the icon is recognizable and matches app branding
+**And** splash screen displays while app loads (iOS)
+**And** theme colors integrate with device OS
+**And** maskable icons adapt to device requirements (Android)
+**And** favicon displays correctly in browser tabs
+**And** all icon sizes render clearly without distortion
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc>
+        <path>docs/PRD.md</path>
+        <title>TEST3 - Product Requirements Document</title>
+        <section>Progressive Web App (PWA) Requirements</section>
+        <snippet>FR6.1 - PWA Manifest: Web app manifest with app metadata, app icons (multiple sizes for different platforms), display mode: standalone (no browser chrome when installed), theme colors for OS integration. FR6.3 - Responsive Experience: Works seamlessly across mobile, tablet, desktop with touch-friendly interactions.</snippet>
+      </doc>
+      <doc>
+        <path>docs/PRD.md</path>
+        <title>Product Requirements Document</title>
+        <section>SEO Strategy</section>
+        <snippet>Required Elements: Favicon and PWA icons for visual recognition in browser tabs and home screens across platforms.</snippet>
+      </doc>
+      <doc>
+        <path>docs/architecture.md</path>
+        <title>Architecture</title>
+        <section>Project Structure</section>
+        <snippet>PWA icons stored in public/icons/ directory. Required sizes: icon-192.png (Android home screen), icon-512.png (Android splash), maskable-icon.png (Android adaptive). Favicon.ico in public/ root. PWA manifest at app/manifest.ts using Next.js native support.</snippet>
+      </doc>
+      <doc>
+        <path>docs/architecture.md</path>
+        <title>Architecture</title>
+        <section>ADR-001: Use Next.js 16 App Router</section>
+        <snippet>Native PWA support via manifest.ts added in fall 2024. Use Next.js metadata API for iOS meta tags (appleWebApp configuration) rather than manual meta tags.</snippet>
+      </doc>
+      <doc>
+        <path>docs/tech-spec-epic-4.md</path>
+        <title>Epic Technical Specification: Universal Access (PWA)</title>
+        <section>PWA Manifest API</section>
+        <snippet>File: app/manifest.ts exports MetadataRoute.Manifest with name, short_name, description, start_url, display: standalone, background_color, theme_color, icons array. Icons: 192x192 (purpose: any), 512x512 (purpose: any), maskable-icon 512x512 (purpose: maskable for Android adaptive icons).</snippet>
+      </doc>
+      <doc>
+        <path>docs/tech-spec-epic-4.md</path>
+        <title>Epic Technical Specification: Universal Access (PWA)</title>
+        <section>iOS PWA Meta Tags</section>
+        <snippet>File: app/layout.tsx metadata object. appleWebApp: { capable: true, statusBarStyle: 'default', title: 'Will It Rain?' }. icons: { apple: '/icons/apple-touch-icon.png' } for 180x180 iOS home screen icon. iOS automatically generates splash screens from icon and theme colors.</snippet>
+      </doc>
+      <doc>
+        <path>docs/tech-spec-epic-4.md</path>
+        <title>Epic Technical Specification: Universal Access (PWA)</title>
+        <section>Data Models and Contracts</section>
+        <snippet>PWA Manifest icons array structure specifies src paths, sizes (192x192, 512x512), type (image/png), purpose (any or maskable). Theme colors: theme_color integrates with device OS (status bar, app switcher), background_color for splash screen. Maskable icons require 80% safe zone compliance to prevent clipping on Android launcher shapes.</snippet>
+      </doc>
+    </docs>
+    <code>
+      <artifact>
+        <path>will-it-rain/app/manifest.ts</path>
+        <kind>pwa-manifest</kind>
+        <symbol>manifest</symbol>
+        <lines>1-36</lines>
+        <reason>Existing PWA manifest configuration that needs icon paths updated. Currently references /icons/icon-192.png, icon-512.png, and maskable-icon.png which need to be created.</reason>
+      </artifact>
+      <artifact>
+        <path>will-it-rain/app/layout.tsx</path>
+        <kind>layout</kind>
+        <symbol>metadata</symbol>
+        <lines>10-26</lines>
+        <reason>Contains iOS PWA metadata configuration with appleWebApp settings and apple-touch-icon reference. Already configured correctly per ADR-001 using Next.js metadata API.</reason>
+      </artifact>
+      <artifact>
+        <path>will-it-rain/app/layout.tsx</path>
+        <kind>layout</kind>
+        <symbol>viewport</symbol>
+        <lines>28-33</lines>
+        <reason>Viewport configuration for PWA. Theme-color meta tag should be added here for device OS integration.</reason>
+      </artifact>
+      <artifact>
+        <path>will-it-rain/app/globals.css</path>
+        <kind>stylesheet</kind>
+        <symbol>globals</symbol>
+        <lines>all</lines>
+        <reason>Global styles define dark mode color scheme. Theme colors in manifest.ts should match the app's color scheme (dark mode monochrome storm theme).</reason>
+      </artifact>
+    </code>
+    <dependencies>
+      <node>
+        <package>next</package>
+        <version>16.0.1</version>
+        <purpose>Next.js framework with native PWA manifest support via manifest.ts and metadata API</purpose>
+      </node>
+      <node>
+        <package>@serwist/next</package>
+        <version>^9.2.1</version>
+        <purpose>Service worker for PWA functionality (installed in Story 4.2)</purpose>
+      </node>
+      <node>
+        <package>sharp</package>
+        <version>^0.34.5</version>
+        <purpose>Image processing library for icon generation and optimization (already installed as devDependency)</purpose>
+      </node>
+      <node>
+        <package>react</package>
+        <version>19.2.0</version>
+        <purpose>React framework for component rendering</purpose>
+      </node>
+      <node>
+        <package>tailwindcss</package>
+        <version>^4</version>
+        <purpose>CSS framework for styling (dark mode theme colors)</purpose>
+      </node>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+**Development Constraints:**
+
+1. **Icon File Location:** All icon files must be stored in public/icons/ directory (per architecture.md lines 96-101). Favicon.ico must be in public/ root.
+
+2. **Next.js 16 Best Practices:** Use Next.js metadata API for iOS meta tags (appleWebApp configuration in layout.tsx) rather than manual meta tags in head block. Violating this is an architecture violation (ADR-001).
+
+3. **PWA Manifest Configuration:** manifest.ts must export a function returning MetadataRoute.Manifest type. Use native Next.js PWA support (no external manifest.json file needed).
+
+4. **Icon Requirements (from tech-spec-epic-4.md):**
+   - 192x192 PNG (purpose: "any") - Android home screen (required)
+   - 512x512 PNG (purpose: "any") - Android splash screen (required)
+   - 512x512 PNG (purpose: "maskable") - Android adaptive icon with 80% safe zone (required)
+   - 180x180 PNG - iOS apple-touch-icon (already referenced in layout.tsx:19)
+   - favicon.ico - Multi-size favicon (16x16, 32x32, 48x48)
+
+5. **Maskable Icon Safe Zone:** Maskable icons must keep content within 80% safe zone (40px padding on 512px canvas) to prevent clipping on different Android launcher shapes. Test with https://maskable.app
+
+6. **Theme Color Consistency:** theme_color in manifest.ts must match app's color scheme. Based on layout.tsx line 41 (className="dark") and architecture.md, the app uses dark mode with monochrome storm theme. Set theme_color: '#000000' (black) to match.
+
+7. **No Custom Splash Screens:** iOS automatically generates splash screens from icon and theme colors. Custom splash screens not required for MVP (per tech-spec-epic-4.md Open Questions).
+
+8. **Build Verification:** After icon changes, verify Next.js build succeeds with no warnings. Icons must be optimized for web (PNG format, reasonable file sizes).
+
+9. **Testing Strategy:** Comprehensive device testing deferred to Story 4-7 (cross-browser testing). Story 4.5 focuses on basic verification (Lighthouse PWA audit, visual inspection of icons).
+
+10. **No New Dependencies:** Use existing tools (Sharp for icon generation if needed). Do not add new icon generation libraries.
+  </constraints>
+
+  <interfaces>
+**PWA Manifest Icon Interface:**
+
+```typescript
+// app/manifest.ts icon array structure
+icons: [
+  {
+    src: string,        // Path to icon file (e.g., '/icons/icon-192.png')
+    sizes: string,      // Icon dimensions (e.g., '192x192')
+    type: string,       // MIME type (e.g., 'image/png')
+    purpose: string     // 'any' | 'maskable' | 'any maskable'
+  }
+]
+```
+
+**iOS Meta Tags Interface:**
+
+```typescript
+// app/layout.tsx metadata.appleWebApp
+export const metadata = {
+  appleWebApp: {
+    capable: boolean,              // Enable full-screen mode on iOS
+    statusBarStyle: string,        // 'default' | 'black' | 'black-translucent'
+    title: string                  // App title when added to home screen
+  },
+  icons: {
+    apple: string                  // Path to apple-touch-icon (180x180)
+  }
+}
+```
+
+**Theme Color Interface:**
+
+```typescript
+// Manifest theme colors
+{
+  theme_color: string,      // Hex color for OS integration (e.g., '#000000')
+  background_color: string  // Hex color for splash screen background (e.g., '#ffffff')
+}
+
+// HTML meta tag (add to layout.tsx metadata)
+{
+  themeColor: string        // Should match manifest.ts theme_color
+}
+```
+
+**Icon File Naming Convention:**
+
+- Standard icons: icon-{size}.png (e.g., icon-192.png, icon-512.png)
+- Maskable icon: maskable-icon.png (512x512)
+- Apple touch icon: apple-touch-icon.png (180x180)
+- Favicon: favicon.ico (multi-size: 16x16, 32x32, 48x48)
+  </interfaces>
+
+  <tests>
+    <standards>
+**Testing Standards for Story 4.5:**
+
+Based on architecture.md and tech-spec-epic-4.md, icon testing should verify:
+
+1. **Icon File Verification:**
+   - All required icon files exist at correct paths in public/icons/
+   - Files are optimized PNG format with reasonable file sizes
+   - Icons render clearly without distortion at specified sizes
+
+2. **PWA Manifest Validation:**
+   - manifest.json (generated from manifest.ts) serves correctly at /manifest.json
+   - Icons array includes all required sizes with correct paths
+   - Theme colors match app color scheme
+
+3. **Lighthouse PWA Audit:**
+   - Run Lighthouse audit on development or production build
+   - Verify "Installable" criteria passes
+   - Confirm manifest includes all required icon sizes (192x192, 512x512 minimum)
+   - Fix any icon-related warnings
+
+4. **Visual Inspection:**
+   - Favicon displays correctly in browser tabs
+   - Icons appear crisp and clear at actual sizes
+   - Maskable icon safe zone compliance verified with https://maskable.app
+
+5. **Deferred Testing (Story 4-7):**
+   - iOS home screen icon appearance (Safari Add to Home Screen)
+   - Android home screen icon appearance (Chrome, Samsung Internet)
+   - Maskable icon adaptation on various Android launchers
+   - Theme color integration with device OS (status bar, app switcher)
+
+**Testing Framework:** Manual verification + Lighthouse PWA audit (no automated unit tests needed for icon files)
+    </standards>
+    <locations>
+- Icon files: public/icons/ directory
+- Favicon: public/favicon.ico
+- Manifest configuration: will-it-rain/app/manifest.ts
+- iOS metadata: will-it-rain/app/layout.tsx (metadata.appleWebApp, metadata.icons)
+- Lighthouse audit: Run against development build (npm run build && npm run start)
+    </locations>
+    <ideas>
+**Test Ideas Mapped to Acceptance Criteria:**
+
+**AC-1: App icon appears correctly on home screen**
+- Test Idea: Verify icon-192.png and icon-512.png files exist and are valid PNG format
+- Test Idea: Check manifest.ts references correct icon paths
+- Test Idea: Visual inspection of icons at actual sizes (192x192, 512x512)
+
+**AC-2: Icon is recognizable and matches app branding**
+- Test Idea: Design simple icon related to rain/weather theme (umbrella, cloud, raindrop)
+- Test Idea: Verify icon works on both light and dark backgrounds
+- Test Idea: Confirm icon is clear and recognizable at small sizes (48x48 or smaller)
+
+**AC-3: Splash screen displays while app loads (iOS)**
+- Test Idea: Verify apple-touch-icon.png (180x180) exists
+- Test Idea: Confirm layout.tsx metadata.icons.apple references correct path
+- Test Idea: Verify iOS appleWebApp metadata is configured (already done in layout.tsx)
+- Deferred to Story 4-7: Manual testing on iOS device
+
+**AC-4: Theme colors integrate with device OS**
+- Test Idea: Set theme_color in manifest.ts to match dark mode (#000000)
+- Test Idea: Set background_color in manifest.ts (white or app background)
+- Test Idea: Add themeColor to layout.tsx metadata
+- Deferred to Story 4-7: Verify integration on real devices
+
+**AC-5: Maskable icons adapt to device requirements (Android)**
+- Test Idea: Create maskable-icon.png (512x512) with 80% safe zone compliance
+- Test Idea: Test icon with https://maskable.app for safe zone verification
+- Test Idea: Set purpose: "maskable" in manifest.ts icons array
+- Deferred to Story 4-7: Verify adaptation on Android launchers
+
+**AC-6: Favicon displays correctly in browser tabs**
+- Test Idea: Create favicon.ico (multi-size: 16x16, 32x32, 48x48)
+- Test Idea: Place favicon.ico in public/ root
+- Test Idea: Verify favicon displays in Chrome, Safari, Firefox, Edge tabs
+
+**AC-7: All icon sizes render clearly without distortion**
+- Test Idea: Visual inspection of all generated icons at actual sizes
+- Test Idea: Verify icon clarity at 192x192, 512x512, 180x180, and favicon sizes
+- Test Idea: Run Lighthouse PWA audit to confirm icon requirements met
+    </ideas>
+  </tests>
+</story-context>

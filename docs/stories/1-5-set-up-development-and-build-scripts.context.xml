@@ -1,0 +1,268 @@
+<story-context id="bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>1</epicId>
+    <storyId>5</storyId>
+    <title>Set Up Development and Build Scripts</title>
+    <status>drafted</status>
+    <generatedAt>2025-11-06</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/stories/1-5-set-up-development-and-build-scripts.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>a developer</asA>
+    <iWant>standardized development and build scripts</iWant>
+    <soThat>the development workflow is consistent and deployment-ready</soThat>
+    <tasks>
+      <task id="1">
+        <description>Verify and standardize package.json scripts (AC: 1)</description>
+        <subtasks>
+          <subtask>Verify `npm run dev` script exists and uses correct command</subtask>
+          <subtask>Verify `npm run build` script exists for production builds</subtask>
+          <subtask>Verify `npm run start` script exists for serving production builds</subtask>
+          <subtask>Verify `npm run lint` script exists for ESLint checks</subtask>
+          <subtask>Add `npm run type-check` script for TypeScript validation (`tsc --noEmit`)</subtask>
+          <subtask>Document all scripts in README.md</subtask>
+        </subtasks>
+      </task>
+      <task id="2">
+        <description>Validate development server functionality (AC: 2)</description>
+        <subtasks>
+          <subtask>Run `npm run dev` and verify server starts on localhost:3000</subtask>
+          <subtask>Test hot module replacement (HMR) by editing a component</subtask>
+          <subtask>Verify changes reflect in browser &lt; 1 second (Turbopack optimization)</subtask>
+          <subtask>Check dev server logs for errors or warnings</subtask>
+          <subtask>Verify dev server runs without crashes during active development</subtask>
+        </subtasks>
+      </task>
+      <task id="3">
+        <description>Validate production build process (AC: 3, 4)</description>
+        <subtasks>
+          <subtask>Run `npm run build` and verify build completes without errors</subtask>
+          <subtask>Check build output for bundle sizes and route generation</subtask>
+          <subtask>Verify TypeScript compilation passes during build</subtask>
+          <subtask>Run `npm run start` to serve production build locally</subtask>
+          <subtask>Test production build in browser (localhost:3000)</subtask>
+          <subtask>Verify all pages and routes accessible in production mode</subtask>
+        </subtasks>
+      </task>
+      <task id="4">
+        <description>Verify and enhance ESLint configuration (AC: 5, 6)</description>
+        <subtasks>
+          <subtask>Confirm eslint.config.mjs exists and has Next.js rules</subtask>
+          <subtask>Run `npm run lint` and verify it checks all TypeScript/TSX files</subtask>
+          <subtask>Ensure ESLint enforces TypeScript strict mode rules</subtask>
+          <subtask>Verify no `@typescript-eslint/no-explicit-any` violations</subtask>
+          <subtask>Add custom rules if needed for code quality (optional)</subtask>
+          <subtask>Confirm ESLint passes with zero errors</subtask>
+        </subtasks>
+      </task>
+      <task id="5">
+        <description>TypeScript strict mode validation (AC: 6)</description>
+        <subtasks>
+          <subtask>Run `npm run type-check` (or `tsc --noEmit`)</subtask>
+          <subtask>Verify tsconfig.json has `"strict": true`</subtask>
+          <subtask>Confirm no type errors in entire codebase</subtask>
+          <subtask>Test with intentional type error to verify checking works</subtask>
+          <subtask>Document TypeScript version and configuration</subtask>
+        </subtasks>
+      </task>
+      <task id="6">
+        <description>Create comprehensive validation checklist (AC: All)</description>
+        <subtasks>
+          <subtask>Document complete testing checklist in story</subtask>
+          <subtask>Run all validation steps (dev, build, start, lint, type-check)</subtask>
+          <subtask>Capture output/evidence of successful validation</subtask>
+          <subtask>Update README.md with development workflow documentation</subtask>
+          <subtask>Verify Epic 1 foundation is complete and ready for Epic 2</subtask>
+        </subtasks>
+      </task>
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+    <criterion id="1">npm/yarn scripts are defined for dev, build, start, and lint</criterion>
+    <criterion id="2">development server runs with hot reload</criterion>
+    <criterion id="3">production build completes successfully</criterion>
+    <criterion id="4">production build can be served locally for testing</criterion>
+    <criterion id="5">ESLint is configured for Next.js and TypeScript</criterion>
+    <criterion id="6">basic code quality checks pass</criterion>
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc>
+        <path>docs/tech-spec-epic-1.md</path>
+        <title>Epic Technical Specification: Foundation &amp; Infrastructure</title>
+        <section>Non-Functional Requirements</section>
+        <snippet>Performance targets: NFR-P1 (dev server startup &lt; 3 seconds), NFR-P2 (production build &lt; 30 seconds for Epic 1), NFR-P3 (HMR &lt; 1 second), NFR-P4 (initial bundle &lt; 50KB JS gzipped). Build tools: Turbopack (dev), Webpack (prod).</snippet>
+      </doc>
+      <doc>
+        <path>docs/tech-spec-epic-1.md</path>
+        <title>Epic Technical Specification: Foundation &amp; Infrastructure</title>
+        <section>Acceptance Criteria</section>
+        <snippet>Epic-Level AC #5: Development tooling ready - Development server runs without errors, TypeScript compiles with strict mode enabled, ESLint runs without configuration errors.</snippet>
+      </doc>
+      <doc>
+        <path>docs/tech-spec-epic-1.md</path>
+        <title>Epic Technical Specification: Foundation &amp; Infrastructure</title>
+        <section>Test Strategy Summary</section>
+        <snippet>Integration tests for build workflow to ensure dev, build, start, and lint scripts work correctly across the toolchain.</snippet>
+      </doc>
+      <doc>
+        <path>docs/architecture.md</path>
+        <title>Architecture</title>
+        <section>Decision Summary</section>
+        <snippet>Build Tool: Turbopack (dev) / Webpack (prod) for fast HMR (&lt; 1s) and optimized production builds. Linting: ESLint with Next.js config for code quality and React/Next.js best practices enforcement.</snippet>
+      </doc>
+      <doc>
+        <path>docs/architecture.md</path>
+        <title>Architecture</title>
+        <section>Project Initialization</section>
+        <snippet>Initial setup commands: npx create-next-app@latest will-it-rain --typescript --tailwind --eslint --app. Establishes Next.js 16 with App Router, TypeScript, Tailwind CSS v4, and ESLint.</snippet>
+      </doc>
+      <doc>
+        <path>docs/epics.md</path>
+        <title>Epics</title>
+        <section>Story 1.5: Set Up Development and Build Scripts</section>
+        <snippet>Configure build scripts with npm/yarn scripts for dev, build, start, and lint. Development server must run with hot reload, production build must complete successfully and be servable locally, ESLint configured for Next.js and TypeScript.</snippet>
+      </doc>
+      <doc>
+        <path>docs/stories/1-4-configure-basic-pwa-manifest-and-metadata.md</path>
+        <title>Story 1.4: Configure Basic PWA Manifest and Metadata</title>
+        <section>Dev Agent Record</section>
+        <snippet>ESLint configuration exists at eslint.config.mjs with scripts/ directory added to ignores. Validation completed: TypeScript compilation passes, ESLint passes with zero errors, production build successful.</snippet>
+      </doc>
+    </docs>
+    <code>
+      <artifact>
+        <path>will-it-rain/package.json</path>
+        <kind>configuration</kind>
+        <symbol>scripts</symbol>
+        <lines>5-10</lines>
+        <reason>Contains all npm scripts to verify: dev, build, start, lint. Missing type-check script that needs to be added.</reason>
+      </artifact>
+      <artifact>
+        <path>will-it-rain/tsconfig.json</path>
+        <kind>configuration</kind>
+        <symbol>compilerOptions</symbol>
+        <lines>7</lines>
+        <reason>TypeScript strict mode is enabled (line 7: "strict": true) - validates AC #6 for code quality checks.</reason>
+      </artifact>
+      <artifact>
+        <path>will-it-rain/eslint.config.mjs</path>
+        <kind>configuration</kind>
+        <symbol>eslintConfig</symbol>
+        <lines>5-20</lines>
+        <reason>ESLint configuration using eslint-config-next for Next.js and TypeScript rules. Modified in Story 1.4 to ignore scripts/ directory.</reason>
+      </artifact>
+      <artifact>
+        <path>will-it-rain/next.config.ts</path>
+        <kind>configuration</kind>
+        <symbol>nextConfig</symbol>
+        <lines>3-5</lines>
+        <reason>Next.js configuration - currently minimal, serves as build configuration reference.</reason>
+      </artifact>
+    </code>
+    <dependencies>
+      <ecosystem name="Node.js / npm">
+        <package name="next" version="16.0.1" type="production">Next.js framework with App Router</package>
+        <package name="react" version="19.2.0" type="production">React library</package>
+        <package name="react-dom" version="19.2.0" type="production">React DOM renderer</package>
+        <package name="typescript" version="^5" type="development">TypeScript compiler</package>
+        <package name="eslint" version="^9" type="development">ESLint linter</package>
+        <package name="eslint-config-next" version="16.0.1" type="development">Next.js ESLint configuration</package>
+        <package name="tailwindcss" version="^4" type="development">Tailwind CSS v4</package>
+        <package name="@tailwindcss/postcss" version="^4" type="development">Tailwind CSS PostCSS plugin</package>
+        <package name="sharp" version="^0.34.5" type="development">Image optimization library</package>
+        <package name="@radix-ui/react-slot" version="^1.2.4" type="production">Radix UI slot component</package>
+        <package name="class-variance-authority" version="^0.7.1" type="production">CVA for component variants</package>
+        <package name="clsx" version="^2.1.1" type="production">Class name utility</package>
+        <package name="tailwind-merge" version="^3.3.1" type="production">Tailwind class merger</package>
+        <package name="lucide-react" version="^0.552.0" type="production">Icon library</package>
+      </ecosystem>
+      <framework name="Next.js 16">
+        <feature>App Router - File-system based routing</feature>
+        <feature>Turbopack - Fast development bundler</feature>
+        <feature>Webpack - Production bundler</feature>
+        <feature>Native PWA support via manifest.ts</feature>
+        <feature>Built-in TypeScript support</feature>
+        <feature>Built-in ESLint integration</feature>
+      </framework>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint>Must use Next.js 16 (not 14 or older) - verified in package.json at 16.0.1</constraint>
+    <constraint>TypeScript strict mode required - enforced in tsconfig.json with "strict": true</constraint>
+    <constraint>No `any` types allowed - ESLint should enforce @typescript-eslint/no-explicit-any rule</constraint>
+    <constraint>Development server must use Turbopack for HMR &lt; 1 second (Next.js 16 default)</constraint>
+    <constraint>Production build must use Webpack for optimized bundles (Next.js 16 default)</constraint>
+    <constraint>ESLint must use eslint-config-next for Next.js and React best practices</constraint>
+    <constraint>All scripts must be defined in package.json scripts section: dev, build, start, lint, type-check</constraint>
+    <constraint>Build performance targets: dev server startup &lt; 3s, production build &lt; 30s, HMR &lt; 1s, bundle &lt; 50KB gzipped</constraint>
+    <constraint>This is a validation story - focus is on verifying existing tooling, not implementing new features</constraint>
+    <constraint>README.md must document the complete development workflow for developers</constraint>
+  </constraints>
+  <interfaces>
+    <interface>
+      <name>npm scripts</name>
+      <kind>CLI interface</kind>
+      <signature>
+        npm run dev - Start development server with Turbopack (localhost:3000)
+        npm run build - Create production build with Webpack
+        npm run start - Serve production build locally (localhost:3000)
+        npm run lint - Run ESLint on all TypeScript/TSX files
+        npm run type-check - Run TypeScript type checking without emitting files (tsc --noEmit)
+      </signature>
+      <path>will-it-rain/package.json</path>
+    </interface>
+    <interface>
+      <name>tsconfig.json compilerOptions</name>
+      <kind>TypeScript configuration</kind>
+      <signature>
+        strict: true - Enables all strict type checking options
+        noEmit: true - Type check only, no output files
+        target: ES2017 - JavaScript version target
+        jsx: react-jsx - JSX transform mode
+      </signature>
+      <path>will-it-rain/tsconfig.json</path>
+    </interface>
+    <interface>
+      <name>eslint configuration</name>
+      <kind>Linting configuration</kind>
+      <signature>
+        eslint-config-next/core-web-vitals - Core Web Vitals rules
+        eslint-config-next/typescript - TypeScript-specific rules
+        globalIgnores: .next/, out/, build/, scripts/, next-env.d.ts
+      </signature>
+      <path>will-it-rain/eslint.config.mjs</path>
+    </interface>
+  </interfaces>
+  <tests>
+    <standards>
+      For Story 1.5 (Tooling Validation), no automated tests are required per Epic 1 tech spec.
+      Manual validation is performed through script execution and verification checklists.
+      All Epic 1 stories focus on foundation setup with manual validation only.
+      Automated testing begins in Epic 5 (Quality Assurance and Polish).
+      Testing approach: Execute each script (dev, build, start, lint, type-check) and verify successful completion with zero errors.
+    </standards>
+    <locations>
+      No test files for this story. Validation is manual through:
+      - will-it-rain/package.json (script definitions)
+      - Terminal output from script execution
+      - Browser testing at localhost:3000 (dev and production modes)
+      - Build output directory (.next/)
+      - ESLint and TypeScript compiler output
+    </locations>
+    <ideas>
+      <idea ac="1">Verify package.json scripts: Check dev, build, start, lint exist. Add type-check script if missing. Document all scripts in README.md.</idea>
+      <idea ac="2">Validate dev server: Run npm run dev, verify Turbopack starts &lt; 3s, test HMR by editing app/page.tsx, verify changes reflect &lt; 1s.</idea>
+      <idea ac="3">Validate production build: Run npm run build, verify completion &lt; 30s, check bundle sizes in output, verify no TypeScript errors.</idea>
+      <idea ac="4">Validate production serve: Run npm run start after build, verify app loads at localhost:3000, test all routes accessible.</idea>
+      <idea ac="5">Validate ESLint: Run npm run lint, verify it checks all TS/TSX files, confirm zero errors, verify eslint.config.mjs has Next.js rules.</idea>
+      <idea ac="6">Validate TypeScript: Run npm run type-check (or tsc --noEmit), verify strict mode enabled in tsconfig.json, confirm zero type errors.</idea>
+      <idea ac="all">Create comprehensive checklist: Document complete testing procedure, run all validation steps, capture evidence, update README.md, verify Epic 1 complete.</idea>
+    </ideas>
+  </tests>
+</story-context>

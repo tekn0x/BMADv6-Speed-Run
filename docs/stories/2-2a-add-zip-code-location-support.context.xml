@@ -1,0 +1,228 @@
+<story-context id="bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>2</epicId>
+    <storyId>2A</storyId>
+    <title>Add ZIP Code Location Support</title>
+    <status>drafted</status>
+    <generatedAt>2025-11-07</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/stories/2-2a-add-zip-code-location-support.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>a user</asA>
+    <iWant>to search by ZIP code in addition to city names</iWant>
+    <soThat>I can quickly check rain forecasts using my postal code without typing full city names</soThat>
+    <tasks>- Task 1: Add ZIP code detection utility (AC: 1, 2, 5)
+  - Create utility function to detect ZIP code format (regex: /^\d{5}(-\d{4})?$/)
+  - Handle both 5-digit and ZIP+4 formats
+  - Add unit tests for ZIP detection logic
+  - Document ZIP code patterns in code comments
+
+- Task 2: Implement ZIP Code Geocoding API integration (AC: 1, 4)
+  - Add new function `geocodeZipCode(zip: string)` to `lib/openweather.ts`
+  - Use OpenWeather ZIP Code API endpoint: `/geo/1.0/zip`
+  - Parse ZIP Code API response format (different from Direct Geocoding)
+  - Handle ZIP code not found errors (404)
+  - Reuse existing timeout and retry logic
+  - Return standardized coordinates format
+
+- Task 3: Update location routing logic (AC: 1, 3, 5)
+  - Modify `geocodeLocation()` to detect input type
+  - Route ZIP codes to `geocodeZipCode()`
+  - Route city names to existing `geocodeLocation()` (Direct Geocoding API)
+  - Maintain unified return interface
+  - Preserve existing error handling
+
+- Task 4: Testing and verification (AC: 1, 2, 3, 4, 5)
+  - Test valid ZIP: "94102" → San Francisco coordinates
+  - Test ZIP+4: "94102-1234" → same result as "94102"
+  - Test invalid ZIP: "00000" → invalid_location error
+  - Test city name: "San Francisco" → existing behavior works
+  - Test numeric city name edge case: "90210" vs "Beverly Hills"
+  - Verify backward compatibility with existing tests
+  - TypeScript compilation passes
+  - ESLint validation passes
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>1. **Given** a user provides a 5-digit US ZIP code (e.g., "94102")
+   **When** the API route processes the request
+   **Then** the ZIP code is detected using pattern matching
+   **And** OpenWeather ZIP Code Geocoding API is called (`/geo/1.0/zip`)
+   **And** coordinates are successfully retrieved
+   **And** forecast data is fetched and returned normally
+
+2. **Given** a user provides a ZIP+4 format (e.g., "94102-1234")
+   **When** the API route processes the request
+   **Then** the ZIP code is detected and truncated to 5 digits
+   **And** location lookup proceeds with the 5-digit code
+
+3. **Given** a user provides a city name (existing functionality)
+   **When** the API route processes the request
+   **Then** Direct Geocoding API is used (existing behavior)
+   **And** backward compatibility is maintained
+
+4. **Given** a user provides an invalid ZIP code (e.g., "00000", "99999")
+   **When** the API route processes the request
+   **Then** `invalid_location` error is returned with helpful message
+   **And** error response follows existing error format
+
+5. **Given** the location input format is ambiguous
+   **When** determining which API to use
+   **Then** ZIP code pattern takes precedence (5 digits = ZIP code)
+   **And** all other inputs use city name geocoding
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc>
+        <path>docs/tech-spec-epic-2.md</path>
+        <title>Epic 2 Technical Specification - Weather Intelligence Engine</title>
+        <section>ADR-005: Direct Fetch (No SDK)</section>
+        <snippet>Uses native fetch() for OpenWeather API calls with manual retry logic and timeout handling. No external HTTP library dependencies. This pattern is already established in lib/openweather.ts for Direct Geocoding and can be extended for ZIP Code API.</snippet>
+      </doc>
+      <doc>
+        <path>docs/tech-spec-epic-2.md</path>
+        <title>Epic 2 Technical Specification - Weather Intelligence Engine</title>
+        <section>Architecture Components Referenced</section>
+        <snippet>Business Logic Layer located at /lib/openweather.ts handles API integration. Story 2.2A extends this module with ZIP Code Geocoding capability while maintaining separation of concerns.</snippet>
+      </doc>
+      <doc>
+        <path>docs/epics.md</path>
+        <title>Epic Breakdown Document</title>
+        <section>Story 2.2A: Add ZIP Code Location Support</section>
+        <snippet>Extends location input handling to support US ZIP codes via OpenWeather ZIP Code API (/geo/1.0/zip). Maintains backward compatibility with existing city name searches. Prerequisites: Story 2.2.</snippet>
+      </doc>
+      <doc>
+        <path>docs/stories/2-1-create-openweather-api-integration-layer.md</path>
+        <title>Story 2.1 - Create OpenWeather API Integration Layer</title>
+        <section>Completion Notes</section>
+        <snippet>Established lib/openweather.ts with Direct Geocoding API support, OpenWeatherError class for error handling, and timeout/retry logic. ZIP Code API integration in Story 2.2A follows the same patterns.</snippet>
+      </doc>
+      <doc>
+        <path>docs/stories/2-2-fetch-and-parse-24-hour-forecast-data.md</path>
+        <title>Story 2.2 - Fetch and Parse 24-Hour Forecast Data</title>
+        <section>Known Limitations</section>
+        <snippet>OpenWeather Direct Geocoding API (/geo/1.0/direct) supports city names but not ZIP codes directly. Story 2.2A addresses this gap by adding ZIP Code API (/geo/1.0/zip) integration.</snippet>
+      </doc>
+    </docs>
+    <code>
+      <artifact>
+        <path>will-it-rain/lib/openweather.ts</path>
+        <kind>service</kind>
+        <symbol>geocodeLocation</symbol>
+        <lines>100-153</lines>
+        <reason>Existing function that handles city name geocoding using Direct Geocoding API. Story 2.2A will extend this to detect ZIP codes and route to appropriate API endpoint.</reason>
+      </artifact>
+      <artifact>
+        <path>will-it-rain/lib/openweather.ts</path>
+        <kind>service</kind>
+        <symbol>fetchWithTimeout</symbol>
+        <lines>46-91</lines>
+        <reason>Reusable timeout and retry logic with AbortController. ZIP Code API integration will use this existing function for consistent error handling.</reason>
+      </artifact>
+      <artifact>
+        <path>will-it-rain/lib/openweather.ts</path>
+        <kind>class</kind>
+        <symbol>OpenWeatherError</symbol>
+        <lines>26-35</lines>
+        <reason>Custom error class with standardized error codes (invalid_location, service_unavailable, timeout, network_error). ZIP Code API will use same error handling pattern.</reason>
+      </artifact>
+      <artifact>
+        <path>will-it-rain/lib/openweather.ts</path>
+        <kind>service</kind>
+        <symbol>fetchWeatherData</symbol>
+        <lines>228-246</lines>
+        <reason>Main entry point that calls geocodeLocation(). No changes needed, but understanding the flow is important for testing end-to-end functionality with ZIP codes.</reason>
+      </artifact>
+      <artifact>
+        <path>will-it-rain/types/weather.ts</path>
+        <kind>interface</kind>
+        <symbol>GeocodingResponse</symbol>
+        <lines>127-141</lines>
+        <reason>Existing interface for Direct Geocoding API response. ZIP Code API has different response structure (single object, not array) that needs handling.</reason>
+      </artifact>
+      <artifact>
+        <path>will-it-rain/types/api.ts</path>
+        <kind>type</kind>
+        <symbol>ErrorCode</symbol>
+        <lines>43-49</lines>
+        <reason>Standardized error codes including invalid_location for ZIP code not found scenarios. No changes needed, existing codes cover all error cases.</reason>
+      </artifact>
+      <artifact>
+        <path>will-it-rain/app/api/check-rain/route.ts</path>
+        <kind>route</kind>
+        <symbol>POST</symbol>
+        <lines>23-105</lines>
+        <reason>API route handler that validates location input and calls fetchWeatherData(). No direct changes needed since ZIP code handling is transparent at this layer, but useful for understanding request flow.</reason>
+      </artifact>
+    </code>
+    <dependencies>
+      <node>
+        <dependency name="next" version="16.0.1" />
+        <dependency name="typescript" version="^5" />
+        <dependency name="eslint" version="^9" />
+      </node>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+- **ADR-005: Direct Fetch (No SDK)** - Continue using native fetch() from Story 2.1, no external HTTP libraries for ZIP Code API integration
+- **Backward Compatibility** - Existing city name searches must continue working exactly as before. No breaking changes to API interface or response format
+- **Error Handling Consistency** - Use existing OpenWeatherError class and error codes (invalid_location for not found ZIP codes)
+- **TypeScript Strict Mode** - All code must pass strict type checking with no 'any' types
+- **Single Module Extension** - All changes contained within lib/openweather.ts, maintaining separation of concerns
+- **US ZIP Codes Only** - Scope limited to 5-digit US ZIP codes (ZIP+4 supported but truncated). International postal codes out of scope
+- **Deterministic Routing** - Regex pattern /^\d{5}(-\d{4})?$/ unambiguously identifies ZIP codes vs city names
+- **Unified Return Interface** - Both geocoding paths must return {lat, lon, name} in same format
+  </constraints>
+
+  <interfaces>
+    <interface>
+      <name>geocodeLocation (existing - to be modified)</name>
+      <kind>Function</kind>
+      <signature>async function geocodeLocation(location: string): Promise&lt;{ lat: number; lon: number; name: string }&gt;</signature>
+      <path>will-it-rain/lib/openweather.ts</path>
+    </interface>
+    <interface>
+      <name>geocodeZipCode (new - to be created)</name>
+      <kind>Function</kind>
+      <signature>async function geocodeZipCode(zip: string): Promise&lt;{ lat: number; lon: number; name: string }&gt;</signature>
+      <path>will-it-rain/lib/openweather.ts (new function)</path>
+    </interface>
+    <interface>
+      <name>OpenWeather ZIP Code API Response</name>
+      <kind>External API</kind>
+      <signature>GET /geo/1.0/zip?zip={zip},{country}&appid={key} → { "zip": "94102", "name": "San Francisco", "lat": 37.78, "lon": -122.42, "country": "US" }</signature>
+      <path>https://api.openweathermap.org/geo/1.0/zip</path>
+    </interface>
+    <interface>
+      <name>isZipCode (new utility - to be created)</name>
+      <kind>Function</kind>
+      <signature>function isZipCode(location: string): boolean</signature>
+      <path>will-it-rain/lib/openweather.ts (inline or exported utility)</path>
+    </interface>
+  </interfaces>
+
+  <tests>
+    <standards>
+Manual testing via curl with real OpenWeather API. TypeScript compilation validation (npm run type-check). ESLint validation (npm run lint). Development server testing (npm run dev). Test scenarios cover: valid ZIP codes (94102, 10001, 60601), ZIP+4 format (94102-1234), invalid ZIP codes (00000, 99999), city names for backward compatibility, numeric edge cases (90210).
+    </standards>
+    <locations>
+No dedicated test directory yet. Manual testing via API endpoints. Future test files would go in: will-it-rain/__tests__/ or will-it-rain/tests/
+    </locations>
+    <ideas>
+      <idea ac="1">Test valid ZIP "94102" → verify San Francisco coordinates (37.78, -122.42) returned and forecast data fetched successfully</idea>
+      <idea ac="1">Test valid ZIP "10001" (New York) → verify geocoding works for different US region</idea>
+      <idea ac="2">Test ZIP+4 format "94102-1234" → verify truncated to "94102" and returns same coordinates as 5-digit format</idea>
+      <idea ac="4">Test invalid ZIP "00000" → verify invalid_location error returned with helpful message</idea>
+      <idea ac="4">Test invalid ZIP "99999" → verify proper error handling for non-existent ZIP code</idea>
+      <idea ac="3">Test city name "San Francisco" → verify existing Direct Geocoding API still works (backward compatibility)</idea>
+      <idea ac="3">Test city name "Seattle" → verify another city name works to ensure no regression</idea>
+      <idea ac="5">Test edge case "90210" → verify detected as ZIP code, not city name (Beverly Hills)</idea>
+      <idea ac="5">Test edge case "01234" → verify leading zeros preserved in string handling</idea>
+      <idea ac="all">Integration test: Full request flow from API route → ZIP detection → geocoding → forecast → response verification</idea>
+    </ideas>
+  </tests>
+</story-context>

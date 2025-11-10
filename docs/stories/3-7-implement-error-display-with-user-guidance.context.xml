@@ -1,0 +1,467 @@
+<story-context id="bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>3</epicId>
+    <storyId>3.7</storyId>
+    <title>Implement Error Display with User Guidance</title>
+    <status>drafted</status>
+    <generatedAt>2025-11-08</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/stories/3-7-implement-error-display-with-user-guidance.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>user</asA>
+    <iWant>clear, helpful error messages when something goes wrong</iWant>
+    <soThat>I understand the issue and know how to proceed</soThat>
+    <tasks>
+- [ ] Task 1: Create ErrorDisplay component structure (AC: 1)
+  - [ ] Create file: `components/ErrorDisplay.tsx`
+  - [ ] Define ErrorDisplayProps interface with error and onRetry properties
+  - [ ] Import necessary Shadcn UI components (Alert)
+  - [ ] Set up component skeleton with TypeScript strict mode
+  - [ ] Add comprehensive JSDoc documentation
+
+- [ ] Task 2: Implement user-friendly error message mapping (AC: 1)
+  - [ ] Map 'invalid_location' error to "Location not found" message
+  - [ ] Map 'service_unavailable' error to "Unable to get forecast right now. Please try again in a few moments."
+  - [ ] Map 'timeout' error to "Request timed out. Please check your connection and try again."
+  - [ ] Map 'network_error' error to "Network connection failed. Please check your internet and try again."
+  - [ ] Add fallback message for unknown error types
+  - [ ] Ensure no technical details (status codes, stack traces) are shown to users
+
+- [ ] Task 3: Display location suggestions for invalid_location errors (AC: 1)
+  - [ ] Check if error.suggestions array exists and has items
+  - [ ] Render suggestions as a clickable/copyable list
+  - [ ] Display message: "Did you mean one of these?"
+  - [ ] Format suggestions clearly (e.g., "San Francisco, CA")
+  - [ ] Make suggestions visually distinct from error message
+
+- [ ] Task 4: Style error display clearly but not alarming (AC: 1)
+  - [ ] Use Shadcn UI Alert component with variant="destructive" or custom styling
+  - [ ] Apply error color scheme (red tones) that's clear but not harsh
+  - [ ] Use glassmorphic pattern consistent with other components if appropriate
+  - [ ] Add error icon or indicator (⚠️ or Alert icon)
+  - [ ] Ensure readable typography and spacing
+  - [ ] Test responsive design across mobile, tablet, desktop
+
+- [ ] Task 5: Implement screen reader accessibility (AC: 1)
+  - [ ] Add aria-live="assertive" for immediate error announcement
+  - [ ] Use semantic HTML (Alert role or appropriate ARIA role)
+  - [ ] Ensure error message text is clear and descriptive
+  - [ ] Test that suggestions are accessible if present
+  - [ ] Verify role="alert" or equivalent is applied
+
+- [ ] Task 6: Ensure input field remains accessible after error (AC: 1)
+  - [ ] Verify error display doesn't disable or hide location input
+  - [ ] Confirm input field is still enabled and focusable
+  - [ ] Test that user can immediately retry with new location
+  - [ ] Ensure error clears when new search is submitted
+  - [ ] Verify focus management returns to input after error display
+
+- [ ] Task 7: Integrate ErrorDisplay into main page component (AC: 1)
+  - [ ] Import ErrorDisplay in `app/page.tsx`
+  - [ ] Add error state management (useState for error data)
+  - [ ] Conditionally render ErrorDisplay when error state is present
+  - [ ] Pass error response and retry handler to ErrorDisplay
+  - [ ] Clear error state when new search begins
+  - [ ] Test error state transitions (error → retry → loading → answer/error)
+
+- [ ] Task 8: Test all error scenarios (AC: 1)
+  - [ ] Test invalid_location error display (with and without suggestions)
+  - [ ] Test service_unavailable error display
+  - [ ] Test timeout error display
+  - [ ] Test network_error error display
+  - [ ] Verify each error shows appropriate message
+  - [ ] Confirm input remains accessible in all error states
+  - [ ] Test retry functionality clears error and initiates new search
+
+- [ ] Task 9: Validate accessibility compliance (AC: 1)
+  - [ ] Run Lighthouse accessibility audit
+  - [ ] Test keyboard navigation (Tab to error, Tab to input)
+  - [ ] Verify screen reader announcements (use VoiceOver/NVDA if available)
+  - [ ] Check aria-live region is working
+  - [ ] Ensure error color contrast meets WCAG standards
+  - [ ] Verify focus indicators are visible
+
+- [ ] Task 10: Validate code quality and testing standards (AC: 1)
+  - [ ] Run TypeScript type checking: `npm run type-check` (0 errors)
+  - [ ] Run ESLint validation: `npm run lint` (0 warnings)
+  - [ ] Verify responsive design at 320px, 768px, 1024px breakpoints
+  - [ ] Test all error types in browser
+  - [ ] Confirm error → retry flow works seamlessly
+  - [ ] Document testing results in completion notes
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+1. **Given** an error occurs during the request
+   **When** the error is displayed
+   **Then** a user-friendly error message is shown (not technical details)
+   **And** invalid location errors show helpful suggestions if available
+   **And** API failure shows: "Error - Please check back later"
+   **And** network errors show clear connectivity messaging
+   **And** the input field remains accessible to retry
+   **And** error messages are announced to screen readers
+   **And** error styling is clear but not alarming
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc>
+        <path>docs/tech-spec-epic-3.md</path>
+        <title>Epic Technical Specification: Simple Answer Experience</title>
+        <section>AC-7: Error States Display User-Friendly Messages</section>
+        <snippet>Error Response Contract: ErrorResponse interface with error codes (invalid_location, service_unavailable, timeout, network_error), user-friendly messages, and optional suggestions array for location errors. Frontend must map error codes to clear, non-technical messages.</snippet>
+      </doc>
+      <doc>
+        <path>docs/tech-spec-epic-3.md</path>
+        <title>Epic Technical Specification: Simple Answer Experience</title>
+        <section>Detailed Design - ErrorDisplay Component</section>
+        <snippet>ErrorDisplay component is presentational with error state and retry callback. Props: { error: ErrorResponse, onRetry: () => void }. Single component handles all error types using conditional rendering. Styling uses Shadcn UI Alert or custom glassmorphic card.</snippet>
+      </doc>
+      <doc>
+        <path>docs/tech-spec-epic-3.md</path>
+        <title>Epic Technical Specification: Simple Answer Experience</title>
+        <section>Data Models and Contracts - ErrorResponse Interface</section>
+        <snippet>interface ErrorResponse { error: 'invalid_location' | 'service_unavailable' | 'timeout' | 'network_error'; message: string; suggestions?: string[]; }. Backend returns structured error responses with error codes. Frontend can use backend message or override with custom message.</snippet>
+      </doc>
+      <doc>
+        <path>docs/tech-spec-epic-3.md</path>
+        <title>Epic Technical Specification: Simple Answer Experience</title>
+        <section>Workflows and Sequencing - Error Flow</section>
+        <snippet>Error Recovery Flow: User submits → API fails → ErrorDisplay renders → Input remains enabled → User corrects/waits → New search → Error clears → Loading begins → New answer/error displays. Always maintain input accessibility.</snippet>
+      </doc>
+      <doc>
+        <path>docs/tech-spec-epic-3.md</path>
+        <title>Epic Technical Specification: Simple Answer Experience</title>
+        <section>AC-10: Accessibility Foundations</section>
+        <snippet>Error messages must use aria-live="assertive" for immediate announcement, role="alert" for semantic meaning, semantic HTML structure, keyboard navigation support, and clear screen reader text. Loading uses polite, errors use assertive.</snippet>
+      </doc>
+      <doc>
+        <path>docs/architecture.md</path>
+        <title>Architecture</title>
+        <section>API Contracts - Error Response Format</section>
+        <snippet>Frontend API Client Pattern: Catch fetch errors and map to ErrorResponse. Network errors return { error: 'network_error', message: '...' }. HTTP status codes: 400 (invalid request), 404 (location not found), 500 (server error), 504 (timeout).</snippet>
+      </doc>
+      <doc>
+        <path>docs/architecture.md</path>
+        <title>Architecture</title>
+        <section>Error Handling Patterns</section>
+        <snippet>Error Codes: invalid_location (location not found), service_unavailable (API failure/5xx), timeout (request >5s), network_error (connectivity issue). All errors must fail gracefully with user-friendly messages.</snippet>
+      </doc>
+      <doc>
+        <path>docs/stories/3-6-implement-close-call-messaging.md</path>
+        <title>Story 3.6: Implement Close Call Messaging</title>
+        <section>Completion Notes - Glassmorphic Styling Pattern</section>
+        <snippet>CloseCallBadge uses: backdrop-blur-md bg-white/10 border-white/20 with amber color scheme (neutral, not alarming). ErrorDisplay should use similar pattern but with error colors: bg-red-50/90 border-red-200 while maintaining glassmorphic effect and visual consistency.</snippet>
+      </doc>
+      <doc>
+        <path>docs/stories/3-6-implement-close-call-messaging.md</path>
+        <title>Story 3.6: Implement Close Call Messaging</title>
+        <section>Completion Notes - Accessibility Implementation</section>
+        <snippet>CloseCallBadge uses semantic HTML without explicit ARIA role (informational). ErrorDisplay requires role="alert" and aria-live="assertive" for critical error announcements. Screen readers need immediate notification of errors (assertive vs polite).</snippet>
+      </doc>
+    </docs>
+    <code>
+      <artifact>
+        <path>will-it-rain/components/CloseCallBadge.tsx</path>
+        <kind>component</kind>
+        <symbol>CloseCallBadge</symbol>
+        <lines>1-46</lines>
+        <reason>Reference implementation for glassmorphic styling pattern (backdrop-blur-md bg-white/10 border-white/20). ErrorDisplay should use similar pattern but with error color scheme. Shows conditional rendering pattern and semantic HTML structure.</reason>
+      </artifact>
+      <artifact>
+        <path>will-it-rain/types/api.ts</path>
+        <kind>type-definition</kind>
+        <symbol>ErrorResponse</symbol>
+        <lines>120-126</lines>
+        <reason>Defines ErrorResponse interface that ErrorDisplay component will receive as props. Shows error code type union and message field structure. Imported by ErrorDisplay for type safety.</reason>
+      </artifact>
+      <artifact>
+        <path>will-it-rain/types/api.ts</path>
+        <kind>type-definition</kind>
+        <symbol>ErrorCode</symbol>
+        <lines>91-99</lines>
+        <reason>Defines all error code types (invalid_location, service_unavailable, timeout, network_error, etc.). ErrorDisplay must handle all these codes with appropriate user-friendly messages.</reason>
+      </artifact>
+      <artifact>
+        <path>will-it-rain/app/page.tsx</path>
+        <kind>page-component</kind>
+        <symbol>HomePage</symbol>
+        <lines>54-55, 99-108</lines>
+        <reason>Shows current error state management (errorData useState). ErrorDisplay integration point: line 174 comment indicates where ErrorDisplay will be added. Catch block (lines 102-108) shows network_error handling pattern.</reason>
+      </artifact>
+      <artifact>
+        <path>will-it-rain/app/page.tsx</path>
+        <kind>page-component</kind>
+        <symbol>handleSubmit</symbol>
+        <lines>68-114</lines>
+        <reason>Form submission handler showing state management pattern: clear previous results, set loading, call API, handle response/error, clear loading. ErrorDisplay must integrate with this state transition flow.</reason>
+      </artifact>
+      <artifact>
+        <path>will-it-rain/components/ui/card.tsx</path>
+        <kind>shadcn-ui-component</kind>
+        <symbol>Card</symbol>
+        <lines>1-77</lines>
+        <reason>Shadcn UI Card component available for ErrorDisplay styling. Can be used as base component or reference for custom error container. Provides rounded-xl, border, shadow, and responsive structure.</reason>
+      </artifact>
+    </code>
+    <dependencies>
+      <node>
+        <package>react</package>
+        <version>19.2.0</version>
+        <usage>Core React hooks (useState for conditional rendering) and component structure</usage>
+      </node>
+      <node>
+        <package>next</package>
+        <version>16.0.1</version>
+        <usage>Next.js framework providing App Router and TypeScript support</usage>
+      </node>
+      <node>
+        <package>@radix-ui/react-slot</package>
+        <version>^1.2.4</version>
+        <usage>Shadcn UI dependency - used by Alert component if implemented</usage>
+      </node>
+      <node>
+        <package>class-variance-authority</package>
+        <version>^0.7.1</version>
+        <usage>Shadcn UI styling utility - variant management for Alert component</usage>
+      </node>
+      <node>
+        <package>clsx</package>
+        <version>^2.1.1</version>
+        <usage>Conditional className utility - used in cn() helper for dynamic styling</usage>
+      </node>
+      <node>
+        <package>tailwindcss</package>
+        <version>^4</version>
+        <usage>Utility-first CSS framework - provides all styling utilities for ErrorDisplay</usage>
+      </node>
+      <node>
+        <package>typescript</package>
+        <version>^5</version>
+        <usage>Type safety - ErrorDisplayProps interface and ErrorResponse type validation</usage>
+      </node>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+**Component Structure:**
+- ErrorDisplay must be a client component ("use client" directive not required if only presentational, parent handles state)
+- Single component handles all error types using conditional rendering (no separate components per error type)
+- Props interface: ErrorDisplayProps { error: ErrorResponse; onRetry?: () => void; }
+- Component must return null or empty fragment when error is null (defensive programming)
+
+**Error Message Mapping (User-Friendly):**
+- invalid_location: "Location not found." (append "Did you mean one of these?" if suggestions exist)
+- service_unavailable: "Unable to get forecast right now. Please try again in a few moments."
+- timeout: "Request timed out. Please check your connection and try again."
+- network_error: "Network connection failed. Please check your internet and try again."
+- Fallback for unknown errors: "Something went wrong. Please try again."
+- NEVER show technical details (status codes, stack traces, error.name) to users
+
+**Styling Constraints:**
+- Use glassmorphic pattern: backdrop-blur-md with semi-transparent backgrounds
+- Error color scheme: bg-red-50/90 border-red-200 or similar soft red tones (not harsh red)
+- Alternatively: Use Shadcn UI Alert component with variant="destructive"
+- Error icon: ⚠️ emoji or Shadcn UI alert icon (lucide-react AlertCircle)
+- Maintain visual consistency with CloseCallBadge and DetailCard components
+- Responsive design: Works at 320px, 768px, 1024px+ breakpoints
+
+**Accessibility Constraints:**
+- Must include aria-live="assertive" for immediate screen reader announcement
+- Must include role="alert" for semantic error indication
+- Use semantic HTML (not just styled divs)
+- Error message text must be descriptive and screen-reader friendly
+- Suggestions list (if present) must be accessible with proper list structure
+- Focus management: Input field must remain focusable after error displays
+
+**Integration Constraints:**
+- ErrorDisplay integrates into page.tsx at line 174 (after AnswerDisplay)
+- Conditional rendering: {errorData && <ErrorDisplay error={errorData} onRetry={handleRetry} />}
+- Error state clears when new search begins (setErrorData(null) in handleSubmit)
+- onRetry handler is optional - can simply refocus input or clear error state
+- Must not disable or hide input field when error displays
+
+**Testing Requirements (Epic 3 Manual Testing Strategy):**
+- NO automated unit tests required (deferred to Epic 5.7)
+- Manual browser testing on http://localhost:3000
+- Test all error types: invalid_location (with/without suggestions), service_unavailable, timeout, network_error
+- TypeScript validation: npm run type-check (0 errors)
+- ESLint validation: npm run lint (0 warnings)
+- Lighthouse accessibility audit (score > 95)
+- Responsive design testing at 320px, 768px, 1024px breakpoints
+  </constraints>
+
+  <interfaces>
+**ErrorDisplayProps Interface:**
+```typescript
+interface ErrorDisplayProps {
+  error: ErrorResponse;
+  onRetry?: () => void; // Optional - can clear error or refocus input
+}
+```
+
+**ErrorResponse Interface (from types/api.ts):**
+```typescript
+interface ErrorResponse {
+  error: ErrorCode; // 'invalid_location' | 'service_unavailable' | 'timeout' | 'network_error'
+  message: string; // User-friendly message from backend
+  suggestions?: string[]; // Only present for invalid_location errors
+}
+```
+
+**Integration with page.tsx:**
+```typescript
+// State management in page.tsx
+const [errorData, setErrorData] = useState<ErrorResponse | null>(null);
+
+// Error state handling in handleSubmit
+if (response.ok) {
+  setAnswerData(data);
+  setErrorData(null);
+} else {
+  setErrorData(data); // Backend ErrorResponse
+  setAnswerData(null);
+}
+
+// Network error handling in catch block
+catch {
+  setErrorData({
+    error: 'network_error',
+    message: 'Network connection failed. Please check your internet and try again.',
+  });
+}
+
+// Conditional rendering
+{errorData && <ErrorDisplay error={errorData} onRetry={() => inputRef.current?.focus()} />}
+```
+
+**Shadcn UI Alert Component (Optional):**
+```typescript
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+
+<Alert variant="destructive">
+  <AlertCircle className="h-4 w-4" />
+  <AlertTitle>Error</AlertTitle>
+  <AlertDescription>{message}</AlertDescription>
+</Alert>
+```
+
+**Backend API Error Contract (Epic 2):**
+- POST /api/check-rain returns ErrorResponse with HTTP status codes:
+  - 400: Invalid request (empty location) → invalid_request
+  - 404: Location not found → invalid_location (may include suggestions)
+  - 500: Server error / API failure → service_unavailable
+  - 504: Timeout (>5s) → timeout
+- Frontend catch block handles network errors → network_error
+  </interfaces>
+
+  <tests>
+    <standards>
+**Epic 3 Testing Strategy:**
+Manual browser testing is the primary approach for Epic 3. Automated unit tests are deferred to Epic 5.7. Testing standards:
+
+1. **TypeScript Type Checking:** All code must pass `npm run type-check` with 0 errors. No 'any' types allowed.
+
+2. **ESLint Validation:** All code must pass `npm run lint` with 0 warnings. Follow Next.js and React best practices.
+
+3. **Manual Functional Testing:** Test all error scenarios in browser at http://localhost:3000. Verify error messages, suggestions, input accessibility, retry flow.
+
+4. **Accessibility Testing:**
+   - Lighthouse accessibility audit (score > 95)
+   - Keyboard navigation testing (Tab order, focus management)
+   - Screen reader testing with VoiceOver (macOS) or NVDA (Windows) if available
+   - ARIA compliance: role="alert", aria-live="assertive"
+
+5. **Responsive Design Testing:** Use browser DevTools responsive mode to test at 320px (mobile), 768px (tablet), 1024px (desktop). Verify no horizontal scrolling, readable text, proper layout.
+
+6. **Cross-Browser Testing:** Primary development in Chrome. Basic compatibility check in Safari and Firefox (comprehensive cross-browser testing deferred to Epic 4.7).
+    </standards>
+    <locations>
+- **Component File:** will-it-rain/components/ErrorDisplay.tsx (to be created)
+- **Integration Point:** will-it-rain/app/page.tsx (line 174 - add ErrorDisplay rendering)
+- **Type Definitions:** will-it-rain/types/api.ts (ErrorResponse and ErrorCode already exist)
+- **Testing Environment:** http://localhost:3000 (run `npm run dev`)
+- **Type Check Command:** `npm run type-check` (run from will-it-rain/)
+- **Lint Command:** `npm run lint` (run from will-it-rain/)
+    </locations>
+    <ideas>
+**Test Case 1: Invalid Location Error with Suggestions**
+- Mock/trigger invalid_location error with suggestions array
+- Verify: "Location not found." message displays
+- Verify: "Did you mean one of these?" section displays
+- Verify: Suggestions list renders clearly (e.g., "San Francisco, CA", "San Francisco, TX")
+- Verify: Input field remains enabled and accessible
+- Verify: Error clears when new search is submitted
+
+**Test Case 2: Invalid Location Error without Suggestions**
+- Mock/trigger invalid_location error without suggestions array
+- Verify: "Location not found." message displays
+- Verify: No suggestions section appears
+- Verify: No crash or undefined errors
+- Verify: Input remains accessible for retry
+
+**Test Case 3: Service Unavailable Error**
+- Mock/trigger service_unavailable error (backend 500 error)
+- Verify: Message "Unable to get forecast right now. Please try again in a few moments." displays
+- Verify: No suggestions or additional content
+- Verify: Input remains enabled
+- Verify: Retry flow works correctly
+
+**Test Case 4: Timeout Error**
+- Mock/trigger timeout error (request >5s)
+- Verify: Message "Request timed out. Please check your connection and try again." displays
+- Verify: Input remains accessible
+
+**Test Case 5: Network Error**
+- Simulate network offline or connectivity failure
+- Verify: Message "Network connection failed. Please check your internet and try again." displays
+- Verify: Input remains accessible
+
+**Test Case 6: Unknown/Fallback Error**
+- Mock/trigger error with unexpected error code
+- Verify: Fallback message "Something went wrong. Please try again." displays
+- Verify: Graceful degradation (no crash)
+
+**Test Case 7: Error → Retry → Success Flow**
+- Display error → Enter new valid location → Submit
+- Verify: Error clears when loading state begins
+- Verify: Loading state displays
+- Verify: New answer displays correctly (no error state pollution)
+
+**Test Case 8: Error → Retry → New Error Flow**
+- Display error → Enter new invalid location → Submit
+- Verify: Old error clears
+- Verify: New error displays correctly
+- Verify: No state pollution between errors
+
+**Test Case 9: Accessibility - Keyboard Navigation**
+- Display error → Tab through interface
+- Verify: Error message is accessible via keyboard
+- Verify: Input field is still focusable
+- Verify: Submit button is still accessible
+- Verify: Tab order is logical
+
+**Test Case 10: Accessibility - Screen Reader**
+- Display error with VoiceOver/NVDA active
+- Verify: Error is announced immediately (aria-live="assertive")
+- Verify: Error message text is read clearly
+- Verify: Suggestions (if present) are accessible and read correctly
+
+**Test Case 11: Responsive Design**
+- Test error display at 320px (mobile), 768px (tablet), 1024px (desktop)
+- Verify: Error message is readable without zooming
+- Verify: Suggestions list wraps properly on narrow screens
+- Verify: No horizontal scrolling
+- Verify: Layout is professional and clear at all breakpoints
+
+**Test Case 12: Visual Styling**
+- Verify: Error uses soft red color scheme (not harsh/alarming)
+- Verify: Glassmorphic effect or Alert component styling is consistent
+- Verify: Error icon displays clearly
+- Verify: Text is readable with sufficient contrast
+- Verify: Spacing and padding are comfortable
+    </ideas>
+  </tests>
+</story-context>
