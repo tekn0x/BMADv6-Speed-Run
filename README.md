@@ -2,6 +2,8 @@
 
 Two Claude Code slash commands for automating BMAD story and epic development workflows.
 
+> **Note**: These slash commands are exclusively for **BMAD v6** at the moment.
+
 ## What's Included
 
 - **`orchestrate-story.md`** - Automates single story: create → develop → review → merge → deploy
