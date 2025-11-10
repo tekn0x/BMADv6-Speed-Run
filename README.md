@@ -77,7 +77,8 @@ claude
 - Git repository initialized
 - BMAD project structure:
   - `docs/sprint-status.yaml` - Story/epic status tracking
-  - `docs/` - Epic tech specs (e.g., `tech-spec-epic-1.md`)
+  - `docs/epics.md` - Epic definitions
+  - `docs/tech-spec-epic-[N].md` - Epic tech specs
   - `docs/stories/` - Story files
   - PRD and architecture documents
 
@@ -103,6 +104,7 @@ your-project/
 │                   └── orchestrate-epic.md
 ├── docs/
 │   ├── sprint-status.yaml
+│   ├── epics.md
 │   ├── tech-spec-epic-1.md
 │   ├── tech-spec-epic-2.md
 │   └── stories/
